@@ -105,3 +105,117 @@ void updateScore(byte type, word scoreUpdate) {
 			break;
 	}
 }
+
+char updateLevelEvent(word counter) {
+	static byte flash;
+
+	if(counter == 0) {
+		flash = 0;
+	}
+
+	if(counter % 10 == 0) {
+		if(flash == 0) {
+			scoreMap[LEVEL+(level-1)*2] = MAP_LEVEL_ON + SCORE_PAL_ADJUST;
+			flash = 1;
+		} else {
+			scoreMap[LEVEL+(level-1)*2] = MAP_LEVEL_OFF + SCORE_PAL_ADJUST;
+			flash = 0;
+		}
+	}
+
+	if(counter > 70) {
+		scoreMap[LEVEL+(level-1)*2] = MAP_LEVEL_ON + SCORE_PAL_ADJUST;
+		return EVENT_STOP;
+	} else
+		return EVENT_CONTINUE;
+}
+
+char getPlayerStatus() {
+	return (char) playerStatus;
+}
+
+void updatePlayerStatus(byte status) {
+	byte i;
+
+	// we save the status
+	playerStatus = status;
+
+	if(status > 64) status = 64;
+	if(status < 0) status = 0;
+
+	for(i=0; i < status/8; i++) {
+		scoreMap[PLAYER_ENERGY+i] = PLAYER_ENERGY_MAP + SCORE_PAL_ADJUST;
+	}
+	if(i < 8) {
+		scoreMap[PLAYER_ENERGY+i] = PLAYER_ENERGY_MAP+(7-(status%8)) + SCORE_PAL_ADJUST;
+		i++;
+	}
+	for(; i < 8; i++) {
+		scoreMap[PLAYER_ENERGY+i] = ENNEMY_ENERGY_MAP+8 + SCORE_PAL_ADJUST;
+	}
+}
+
+byte getEnnemyStatus() {
+	return ennemyStatus;
+}
+
+void updateEnnemyStatus(byte status) {
+	byte i;
+
+	if(status > 64) status = 64;
+	if(status < 0) status = 0;
+
+	for(i=0; i < status/8; i++) {
+		scoreMap[ENNEMY_ENERGY+i] = ENNEMY_ENERGY_MAP + SCORE_PAL_ADJUST;
+	}
+	if(i < 8) {
+		scoreMap[ENNEMY_ENERGY+i] = ENNEMY_ENERGY_MAP+(7-(status%8)) + SCORE_PAL_ADJUST;
+		i++;
+	}
+	for(; i < 8; i++) {
+		scoreMap[ENNEMY_ENERGY+i] = ENNEMY_ENERGY_MAP+8 + SCORE_PAL_ADJUST;
+	}
+}
+
+void updateLive(void) {
+	// TODO
+}
+
+void updateLevel(byte updateLevel) {
+	byte i;
+	if(updateLevel > 0 && updateLevel <= 5) {
+		level = updateLevel;
+		for(i=1; i<updateLevel; i++)
+			scoreMap[LEVEL+(i-1)*2] = MAP_LEVEL_ON + SCORE_PAL_ADJUST;
+		for(; i<=5; i++)
+			scoreMap[LEVEL+(i-1)*2] = MAP_LEVEL_OFF + SCORE_PAL_ADJUST;
+		addEventWithPriority(&updateLevelEvent, 1, (char) 0x10);
+	}
+}
+
+word writeStringScore(char out[], byte bufferSize, byte x, byte y, byte tileOffset) {
+	int i, j;
+
+	for(j=0; out[j] != '\0'; j++) {}
+
+	for(i=bufferSize-1; j>=0; i--,j--) {
+		out[i] = out[j];
+	}
+
+	for(; i>=0; i--) {
+		out[i] = '0';
+	}
+
+	for(i=0; out[i] != '\0'; i++) {
+		//VRAMByteWrite((byte) out[i]+tileOffset, (word) SCORE_MAP+x+(y*0x20));
+		scoreMap[x+(y*0x20)] = out[i]+tileOffset + SCORE_PAL_ADJUST;
+		x++;
+	}
+
+	return i;
+}
+
+void scoreDisplay(void) {
+	VRAMLoadFromPtr(scoreMap, HEX_A(SCORE_MAP), HEX_A(SCORE_MAP_SIZE));
+	//setINIDSPDirectValue(0x0f);
+}
