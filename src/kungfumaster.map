@@ -8,6 +8,7 @@ main.o:
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=000000  Size=003FC0  Align=00001  Fill=0000
+    BANK2             Offs=000000  Size=006C20  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
     CODE              Offs=00031E  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -55,6 +56,7 @@ RODATA                0085FA  0085FA  000000  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 BANK1                 018000  01BFBF  003FC0  00001
+BANK2                 028000  02EC1F  006C20  00001
 
 
 Exports list by name:

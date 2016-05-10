@@ -50,6 +50,14 @@ titleScreenMap:
 titleScreenPal:
     .incbin "../ressource/titleScreen.clr"
 
+.segment "BANK2"
+
+KFM_Player_final_Tiles:
+	.incbin "../ressource/KFM_Player_final_sprite.pic"
+
+KFM_Player_final_Pal:
+	.incbin "../ressource/KFM_Player_final_sprite.clr"
+
 .segment "BSS"
 
 CONTROL_VALUE_NONE				= $00

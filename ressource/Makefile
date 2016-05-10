@@ -1,6 +1,6 @@
 all: ressource
 
-ressource: splash irem titleScreen
+ressource: splash irem titleScreen KFM_Player_final_sprite
 
 splash: raw/splash.pcx
 	wine ../tools/pcx2snes.exe -screen -s8 -c16 -o16 raw/splash
@@ -17,3 +17,7 @@ titleScreen: raw/titleScreen.pcx
 	mv raw/titleScreen.pic .
 	mv raw/titleScreen.map .
 	mv raw/titleScreen.clr .
+KFM_Player_final_sprite: raw/KFM_Player_final_sprite.pcx
+	wine ../tools/pcx2snes.exe -s16 -c16 -o16 raw/KFM_Player_final_sprite
+	mv raw/KFM_Player_final_sprite.pic .
+	mv raw/KFM_Player_final_sprite.clr .
