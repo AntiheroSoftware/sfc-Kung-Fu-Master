@@ -63,8 +63,11 @@ controlValue:
 controlNextValue:
 	.res 1
 
-fadeOutValue:
+fadeOutValue:						; only used in splashScreen so can be reused
 	.res 1
+
+splashCounter:						; only used in splashScreen so can be reused
+	.res 2
 
 .segment "CODE"
 
@@ -85,7 +88,7 @@ fadeOutValue:
 
 	setINIDSP $0F   				; Enable screen full brightness
 
-	lda #$80        				; Enable NMI
+	lda #$81        				; Enable NMI + pad reading
 	sta CPU_NMITIMEN
 
 infiniteMainLoop:
@@ -124,6 +127,8 @@ antiheroSplash:
 	lda #$00         ; disable all sub screen
 	sta $212d
 
+	jsr splashScreenInit
+
 	lda #.BANKBYTE(splashScreen)
 	ldx #.LOWORD(splashScreen)
 	ldy #$0000
@@ -152,6 +157,8 @@ iremSplash:
 	VRAMLoad iremSplashTiles, SPLASH_TILE_ADDR, $0980
 	VRAMLoad iremSplashMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad iremSplashPal, $00, $20
+
+	jsr splashScreenInit
 
 	lda #.BANKBYTE(splashScreen)
 	ldx #.LOWORD(splashScreen)
@@ -215,16 +222,44 @@ waitForVBlank:
 ;*** Events *******************************************************************
 ;******************************************************************************
 
-.proc splashScreen
+.proc splashScreenInit
 	php
 	phx
-
-	tax 							; put A reg containing counter in X reg
+	pha
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
+
+	ldx #$0000
+	stx splashCounter
+
+	lda #$0f
+	sta fadeOutValue
+
+	pla
+	plx
+	plp
+	rts
+
+.endproc
+
+.proc splashScreen
+	php
+	phx
+
+	;tax 							; put A reg containing counter in X reg
+
+	ldx splashCounter
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	cpx #$0100
+	bpl doFadeOut
 
 	cpx #$0010
 	bpl waitToFadeOut
@@ -235,9 +270,6 @@ waitForVBlank:
 
 waitToFadeOut:
 
-	cpx #$0100
-	bpl fadeOut						; wait time is over -> fade out
-
 	lda padPushData1
 	bit #PAD_START
 	bne fadeOut						; check if START is pressed to fade out
@@ -246,11 +278,8 @@ waitToFadeOut:
 
 fadeOut:
 
-	cpx #$0100
-	bne doFadeOut
-
-	lda #$0f
-	sta fadeOutValue
+	ldx #$0100
+	stx splashCounter
 
 doFadeOut:
 
@@ -270,6 +299,10 @@ exit:
 
 continue:
 	lda #$01                        ; continue event value
+
+	ldx splashCounter
+	inx
+	stx splashCounter
 
 return:
 	plx

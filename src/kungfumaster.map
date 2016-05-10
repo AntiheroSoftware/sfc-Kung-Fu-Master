@@ -1,17 +1,17 @@
 Modules list:
 -------------
 main.o:
-    CODE              Offs=000000  Size=0002F0  Align=00001  Fill=0000
+    CODE              Offs=000000  Size=000311  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000000  Size=000003  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=000005  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=000000  Size=003FC0  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
-    CODE              Offs=0002F0  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=000311  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000003  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000005  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -19,23 +19,23 @@ main.o:
     ROMINFO           Offs=000000  Size=000030  Align=00001  Fill=0000
     VECTORS           Offs=000000  Size=00001C  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(init.o):
-    CODE              Offs=0002F0  Size=0000F3  Align=00001  Fill=0000
+    CODE              Offs=000311  Size=0000F3  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000003  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000005  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(event.o):
-    CODE              Offs=0003E3  Size=0000AA  Align=00001  Fill=0000
+    CODE              Offs=000404  Size=0000AA  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000003  Size=000081  Align=00001  Fill=0000
+    BSS               Offs=000005  Size=000081  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(pad.o):
-    CODE              Offs=00048D  Size=000106  Align=00001  Fill=0000
+    CODE              Offs=0004AE  Size=000106  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000084  Size=000010  Align=00001  Fill=0000
+    BSS               Offs=000086  Size=000010  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -48,10 +48,10 @@ Name                   Start     End    Size  Align
 DATA                  000000  000000  000000  00001
 NULL                  000000  000000  000000  00001
 ZEROPAGE              000000  000000  000000  00001
-BSS                   000200  000293  000094  00001
+BSS                   000200  000295  000096  00001
 STARTUP               008000  008038  000039  00001
-CODE                  008039  0085CB  000593  00001
-RODATA                0085CC  0085CC  000000  00001
+CODE                  008039  0085EC  0005B4  00001
+RODATA                0085ED  0085ED  000000  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 BANK1                 018000  01BFBF  003FC0  00001
@@ -59,42 +59,42 @@ BANK1                 018000  01BFBF  003FC0  00001
 
 Exports list by name:
 ---------------------
-_IRQHandler               0082D8 RLA    _NMIHandler               0082D9 RLA    
+_IRQHandler               0082DE RLA    _NMIHandler               0082DF RLA    
 __ROMINFO_FILEOFFS__      007FB0  EA    __ROMINFO_LAST__          00FFE0  LA    
 __ROMINFO_SIZE__          000034  EA    __ROMINFO_START__         00FFB0  LA    
 __STARTUP__               000001 REA    __VECTORS_FILEOFFS__      007FE4  EA    
 __VECTORS_LAST__          010000  LA    __VECTORS_SIZE__          00001C  EA    
 __VECTORS_START__         00FFE4  LA    _main                     008039 RLA    
-_preInit                  0082E0 RLA    addEvent                  008443 RLA    
-eventsTable               000203  LA    initEvents                00841C RLA    
-initPad                   0084C6 RLA    initSnes                  008329 RLA    
-padPushData1              000284 RLA    padPushData2              000288  LA    
-padPushData3              00028C  LA    padPushData4              000290  LA    
-padReleaseData1           000286  LA    padReleaseData2           00028A  LA    
-padReleaseData3           00028E  LA    padReleaseData4           000292  LA    
-processEvents             00846B RLA    readPad1                  008504 RLA    
-readPad2                  008536  LA    readPad3                  008568  LA    
-readPad4                  00859A  LA    removeEvent               0084AF  LA    
-splashScreen              0082E1  LA    
+_preInit                  0082E6 RLA    addEvent                  008464 RLA    
+eventsTable               000205  LA    initEvents                00843D RLA    
+initPad                   0084E7 RLA    initSnes                  00834A RLA    
+padPushData1              000286 RLA    padPushData2              00028A  LA    
+padPushData3              00028E  LA    padPushData4              000292  LA    
+padReleaseData1           000288  LA    padReleaseData2           00028C  LA    
+padReleaseData3           000290  LA    padReleaseData4           000294  LA    
+processEvents             00848C RLA    readPad1                  008525 RLA    
+readPad2                  008557  LA    readPad3                  008589  LA    
+readPad4                  0085BB  LA    removeEvent               0084D0  LA    
+splashScreen              0082FD  LA    
 
 
 Exports list by value:
 ----------------------
 __STARTUP__               000001 REA    __VECTORS_SIZE__          00001C  EA    
-__ROMINFO_SIZE__          000034  EA    eventsTable               000203  LA    
-padPushData1              000284 RLA    padReleaseData1           000286  LA    
-padPushData2              000288  LA    padReleaseData2           00028A  LA    
-padPushData3              00028C  LA    padReleaseData3           00028E  LA    
-padPushData4              000290  LA    padReleaseData4           000292  LA    
+__ROMINFO_SIZE__          000034  EA    eventsTable               000205  LA    
+padPushData1              000286 RLA    padReleaseData1           000288  LA    
+padPushData2              00028A  LA    padReleaseData2           00028C  LA    
+padPushData3              00028E  LA    padReleaseData3           000290  LA    
+padPushData4              000292  LA    padReleaseData4           000294  LA    
 __ROMINFO_FILEOFFS__      007FB0  EA    __VECTORS_FILEOFFS__      007FE4  EA    
-_main                     008039 RLA    _IRQHandler               0082D8 RLA    
-_NMIHandler               0082D9 RLA    _preInit                  0082E0 RLA    
-splashScreen              0082E1  LA    initSnes                  008329 RLA    
-initEvents                00841C RLA    addEvent                  008443 RLA    
-processEvents             00846B RLA    removeEvent               0084AF  LA    
-initPad                   0084C6 RLA    readPad1                  008504 RLA    
-readPad2                  008536  LA    readPad3                  008568  LA    
-readPad4                  00859A  LA    __ROMINFO_START__         00FFB0  LA    
+_main                     008039 RLA    _IRQHandler               0082DE RLA    
+_NMIHandler               0082DF RLA    _preInit                  0082E6 RLA    
+splashScreen              0082FD  LA    initSnes                  00834A RLA    
+initEvents                00843D RLA    addEvent                  008464 RLA    
+processEvents             00848C RLA    removeEvent               0084D0  LA    
+initPad                   0084E7 RLA    readPad1                  008525 RLA    
+readPad2                  008557  LA    readPad3                  008589  LA    
+readPad4                  0085BB  LA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
 __VECTORS_LAST__          010000  LA    
 
