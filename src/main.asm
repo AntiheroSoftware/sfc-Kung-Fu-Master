@@ -258,6 +258,12 @@ waitForVBlank:
 	.A8
 	.I16
 
+	cpx #$0140
+	bpl exit
+
+	cpx #$0120
+	bpl waitMore
+
 	cpx #$0100
 	bpl doFadeOut
 
@@ -289,6 +295,9 @@ doFadeOut:
 	sta fadeOutValue
 	cmp #$ff
 	bne continue
+
+waitMore:
+	jmp continue
 
 exit:
 	lda controlNextValue
