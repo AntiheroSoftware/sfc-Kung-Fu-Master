@@ -16,6 +16,8 @@
             .export     _NMIHandler
             .export     _preInit
 
+            .import 		initHeroSprite
+
             .export 	splashScreen
 
 SPLASH_TILE_ADDR	= $1000
@@ -49,14 +51,6 @@ titleScreenMap:
 
 titleScreenPal:
     .incbin "../ressource/titleScreen.clr"
-
-.segment "BANK2"
-
-KFM_Player_final_Tiles:
-	.incbin "../ressource/KFM_Player_final_sprite.pic"
-
-KFM_Player_final_Pal:
-	.incbin "../ressource/KFM_Player_final_sprite.clr"
 
 .segment "BSS"
 
@@ -197,6 +191,11 @@ titleScreen:
 	VRAMLoad titleScreenTiles, SPLASH_TILE_ADDR, $14C0
 	VRAMLoad titleScreenMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad titleScreenPal, $00, $20
+
+	jsr initHeroSprite
+
+	lda #$11         				; enable main screen 1 +sprite
+	sta $212c
 
 	setINIDSP $0f   				; Enable screen full darkness
 

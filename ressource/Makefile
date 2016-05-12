@@ -18,6 +18,6 @@ titleScreen: raw/titleScreen.pcx
 	mv raw/titleScreen.map .
 	mv raw/titleScreen.clr .
 KFM_Player_final_sprite: raw/KFM_Player_final_sprite.pcx
-	wine ../tools/pcx2snes.exe -s16 -c16 -o16 raw/KFM_Player_final_sprite
+	wine ../tools/pcx2snes.exe -n -s16 -c16 -o16 raw/KFM_Player_final_sprite
 	mv raw/KFM_Player_final_sprite.pic .
 	mv raw/KFM_Player_final_sprite.clr .
