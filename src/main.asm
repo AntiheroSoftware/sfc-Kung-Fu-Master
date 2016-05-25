@@ -8,6 +8,9 @@
             .include    "snes.inc"
             .include    "snes-pad.inc"
             .include    "snes-event.inc"
+            .include    "snes-sprite.inc"
+
+            .include	"includes/hero.inc"
 
             .forceimport	__STARTUP__
 
@@ -15,8 +18,6 @@
             .export     _IRQHandler
             .export     _NMIHandler
             .export     _preInit
-
-            .import 		initHeroSprite
 
             .export 	splashScreen
 
@@ -197,7 +198,19 @@ titleScreen:
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
 
+	lda #.BANKBYTE(copyOAMEvent)
+	ldx #.LOWORD(copyOAMEvent)
+	ldy #$0000
+	jsr addEvent
+
+	lda #.BANKBYTE(animHeroEvent)
+	ldx #.LOWORD(animHeroEvent)
+	ldy #$0001
+	jsr addEvent
+
 	setINIDSP $0f   				; Enable screen full darkness
+
+	bra infiniteLoop
 
 	lda #CONTROL_VALUE_NONE
 	sta controlValue
@@ -208,6 +221,11 @@ titleScreen:
 waitForVBlank:
 	wai
 	jmp infiniteMainLoop
+
+infiniteLoop:
+	wai
+	; jsr animHero
+	bra infiniteLoop
 
 .endproc
 
@@ -324,4 +342,18 @@ return:
 	plx
 	plp
 	rtl
+.endproc
+
+.proc copyOAMEvent
+    php
+
+    rep #$10
+    sep #$20
+    .A8
+    .I16
+
+    jsr copyOAM
+    lda #$01                        ; continue event value
+    plp
+    rtl
 .endproc

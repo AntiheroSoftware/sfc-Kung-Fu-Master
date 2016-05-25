@@ -12,9 +12,22 @@
 
             .export 	initHeroSprite
 
-            .export		heroStand
-            .export		testValue
             .export 	setHeroOAM
+            .export 	animHero
+            .export 	animHeroEvent
+
+            .export 	animFrameIndex
+            .export		animationFrameCounter
+
+            .export 	heroWalk
+            .export 	heroWalk1
+            .export 	heroWalk2
+            .export 	heroWalk3
+            .export 	heroWalk4
+            .export 	transferHeroSpriteData
+            .export 	KFM_Player_final_Tiles
+            .export 	spriteCounter
+
 
 SPRITE_DATA_BANK = $02
 
@@ -103,7 +116,13 @@ heroWalk:
 
 .segment "BSS"
 
-testValue:
+spriteCounter:
+	.res 1
+
+animFrameIndex:
+	.res 1
+
+animationFrameCounter:
 	.res 1
 
 .segment "CODE"
@@ -133,6 +152,10 @@ testValue:
 
 	jsr copyOAM
 
+	lda #$00
+	sta animFrameIndex
+	sta animationFrameCounter
+
 	plb								; restore data bank
 	plp
 	rts
@@ -141,7 +164,6 @@ testValue:
 ;******************************************************************************
 ;*** Transfer sprite data in VRAM *********************************************
 ;******************************************************************************
-;*** A contains the bank of src                                             ***
 ;*** X contains the address of src                                          ***
 ;******************************************************************************
 
@@ -185,12 +207,15 @@ testValue:
 ;******************************************************************************
 
 .proc setHeroOAM
-    php
+    php								; TODO change order and php last
     phy								; save xPos in the stack
     phx								; save dataAddr in the stack
 
     ldy #$0000						; index in metaprite table
     ldx #$0000						; OAM offset
+
+    lda #$00
+	sta spriteCounter
 
 lineLoop:							; loop for each line
     lda ($01,s),y					; load number block for this line
@@ -208,6 +233,8 @@ blockLoop:
 	beq endBlockLoop				; check all block are done
 	dec
 	sta $02,s						; update counter
+
+	inc	spriteCounter
 
 	iny
 	lda ($03,s),y					; load X pos for that
@@ -242,6 +269,24 @@ endBlockLoop:
 
 endLineLoop:
 
+fillLoop:
+    lda spriteCounter
+    cmp #$08
+    beq endFillLoop
+
+    lda #$e0
+    sta oamData+1,x                 ; V (Y) pos of the sprite
+
+    inx
+    inx
+    inx
+    inx
+
+    inc spriteCounter
+    bra fillLoop
+
+endFillLoop:
+
 	; TODO handle that correctly in function (NOT HARD CODED)
 	lda #%10101010
 	sta oamData + $200
@@ -251,4 +296,119 @@ endLineLoop:
 	ply
     plp
     rts
+.endproc
+
+;******************************************************************************
+;*** anim hero **************************************************************
+;******************************************************************************
+;*** dataAddr   (X register)                                                ***
+;*** xPos       (Y register)                                                ***
+;******************************************************************************
+
+.proc animHero
+
+    pha
+    phx
+    phy
+    php
+
+    rep #$10
+	sep #$20
+	.A8
+	.I16
+
+    phb
+	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
+	pha
+	plb
+
+	rep #$20
+	.A16
+
+	ldx #$0000
+	txa
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+    lda animFrameIndex
+    tay
+    lda animationFrameCounter
+    cmp heroWalk,y              	; we did all frames for that index
+    beq nextFrame
+    cmp #$00                        ; first time we do that animation
+    beq nextFrame
+
+    inc
+    sta animationFrameCounter
+    bra endAnim
+
+nextFrame:
+
+    lda #$01
+    sta animationFrameCounter
+
+    lda animFrameIndex
+    inc
+    inc
+    inc
+    sta animFrameIndex
+    tay
+    lda heroWalk,y
+    cmp #$00
+    bne noLoop
+
+    lda #$00
+    sta animFrameIndex
+
+noLoop:
+
+    lda animFrameIndex
+	tay
+	iny
+	ldx heroWalk,y
+	phx								; contains adress of tiles
+	inx
+	inx								; increment to go to tile definition
+	ldy #$0060
+	jsr setHeroOAM					; todo check why A is modified when returning
+
+	rep #$20
+	.A16
+
+	ldy #$0000
+	lda ($01,s),Y					; fucking load in in bad data bank
+	tax
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	jsr transferHeroSpriteData		; TODO fix X adresses currently bullshit
+
+	plx
+
+endAnim:
+
+	plb
+    plp
+    ply
+    plx
+    pla
+
+    rts
+
+.endproc
+
+.proc animHeroEvent
+	php
+
+	jsr animHero
+
+	lda #$01                        ; continue event value
+	plp
+	rtl
 .endproc
