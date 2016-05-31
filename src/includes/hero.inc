@@ -1,3 +1,11 @@
 .import 	initHeroSprite
 .import 	animHero
-.import 	animHeroEvent
+.import     transferHeroSpriteDataEvent
+
+.importzp 	heroXOffset
+.importzp 	heroYOffset
+.importzp   animAddr
+
+.import     heroWalk
+
+.import     animationFrameCounter

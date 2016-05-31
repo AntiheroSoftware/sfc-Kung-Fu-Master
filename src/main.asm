@@ -203,8 +203,8 @@ titleScreen:
 	ldy #$0000
 	jsr addEvent
 
-	lda #.BANKBYTE(animHeroEvent)
-	ldx #.LOWORD(animHeroEvent)
+	lda #.BANKBYTE(transferHeroSpriteDataEvent)
+	ldx #.LOWORD(transferHeroSpriteDataEvent)
 	ldy #$0001
 	jsr addEvent
 
@@ -223,8 +223,44 @@ waitForVBlank:
 	jmp infiniteMainLoop
 
 infiniteLoop:
+
+checkPadLeft:
+	lda padPushData1
+	bit #PAD_LEFT
+	beq checkPadRight
+	ldx heroXOffset
+	dex
+	stx heroXOffset
+	bra checkPadEnd
+checkPadRight:
+	lda padPushData1
+	bit #PAD_RIGHT
+	beq checkPadEnd
+	ldx heroXOffset
+	inx
+	stx heroXOffset
+checkPadEnd:
+
+;***********************************************
+; TODO remove later, only for debugging purpose
+;***********************************************
+;	lda padReleaseData1
+;	bit #PAD_UP
+;	beq testNext
+;	inc animationFrameCounter
+;testNext:
+;	lda padReleaseData1
+;	bit #PAD_DOWN
+;	beq testEnd
+;	dec animationFrameCounter
+;testEnd:
+
+	ldx #.LOWORD(heroWalk)
+	stx animAddr
+
+	jsr animHero
+
 	wai
-	; jsr animHero
 	bra infiniteLoop
 
 .endproc

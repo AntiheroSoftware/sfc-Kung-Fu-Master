@@ -14,25 +14,19 @@
 
             .export 	setHeroOAM
             .export 	animHero
-            .export 	animHeroEvent
+            .export 	transferHeroSpriteDataEvent
 
-            .export 	animFrameIndex
-            .export		animationFrameCounter
+            .exportzp 	heroXOffset
+            .exportzp 	heroYOffset
+            .exportzp 	animAddr
 
             .export 	heroWalk
-            .export 	heroWalk1
-            .export 	heroWalk2
-            .export 	heroWalk3
-            .export 	heroWalk4
-            .export 	transferHeroSpriteData
-            .export 	KFM_Player_final_Tiles
-            .export 	spriteCounter
 
+            .export 	animationFrameCounter
 
-SPRITE_DATA_BANK = $02
-
-SPRITE_VRAM = $2000
-SPRITE_LINE_SIZE = $0400
+SPRITE_DATA_BANK 	= $02
+SPRITE_VRAM 		= $2000
+SPRITE_LINE_SIZE 	= $0400
 
 .segment "BANK2"
 
@@ -56,44 +50,44 @@ KFM_Player_final_Pal:
 ;*** Tile Number                                                            ***
 ;******************************************************************************
 
-heroStand:							; 7 sprite blocks
+heroStand1:							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles)
-	.byte   $01, $80, $00, $00
-	.byte   $02, $90, $00, $02, $0f, $04
-	.byte   $02, $a0, $00, $06, $0f, $08
-	.byte   $02, $b0, $00, $0a, $0f, $0c
+	.byte   $01, $00, $0c, $00
+	.byte   $02, $10, $0c, $02, $1b, $04
+	.byte   $02, $20, $0c, $06, $1b, $08
+	.byte   $02, $30, $0c, $0a, $1b, $0c
 	.byte	$00
 
 heroWalk1: 							; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*1))
-	.byte   $01, $80, $00, $00
-	.byte   $02, $90, $00, $02, $0f, $04
-	.byte   $01, $a0, $00, $06
-	.byte   $02, $b0, $00, $08, $0f, $0a
+	.byte   $01, $00, $11, $00
+	.byte   $02, $10, $01, $02, $10, $04
+	.byte   $02, $20, $03, $06, $13, $08
+	.byte   $02, $30, $03, $0a, $13, $0c
 	.byte	$00
 
 heroWalk2:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*2))
-	.byte   $01, $80, $00, $00
-	.byte   $01, $90, $00, $02
-	.byte   $01, $a0, $00, $04
-	.byte   $01, $b0, $00, $06
+	.byte   $01, $00, $0a, $00
+	.byte   $01, $10, $09, $02
+	.byte   $01, $20, $09, $04
+	.byte   $01, $30, $09, $06
 	.byte	$00
 
 heroWalk3:							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*3))
-	.byte   $01, $80, $00, $00
-	.byte   $02, $90, $00, $02, $0f, $04
-	.byte   $02, $a0, $00, $06, $0f, $08
-	.byte   $02, $b0, $00, $0a, $0f, $0c
+	.byte   $01, $00, $10, $00
+	.byte   $02, $10, $00, $02, $0f, $04
+	.byte   $02, $20, $00, $06, $0f, $08
+	.byte   $02, $30, $00, $0a, $0f, $0c
 	.byte	$00
 
 heroWalk4:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*4))
-	.byte   $01, $80, $00, $00
-	.byte   $01, $90, $00, $02
-	.byte   $01, $a0, $00, $04
-	.byte   $01, $b0, $00, $06
+	.byte   $01, $00, $0a, $00
+	.byte   $01, $10, $0a, $02
+	.byte   $01, $20, $0a, $04
+	.byte   $01, $30, $0a, $06
 	.byte	$00
 
 ;******************************************************************************
@@ -102,6 +96,10 @@ heroWalk4:							; 4 sprite blocks
 ;*** number of frames                                                       ***
 ;*** metasprite definition address                                          ***
 ;******************************************************************************
+
+heroStand:
+	.byte $00
+	.word .LOWORD(heroStand1)
 
 heroWalk:
 	.byte $08
@@ -125,6 +123,20 @@ animFrameIndex:
 animationFrameCounter:
 	.res 1
 
+heroTransferAddr:
+	.res 2
+
+.segment "ZEROPAGE"
+
+animAddr:
+	.res 2
+
+heroYOffset:
+	.res 1
+
+heroXOffset:
+	.res 2
+
 .segment "CODE"
 
 .A8
@@ -138,12 +150,12 @@ animationFrameCounter:
 	pha
 	plb
 
-	ldx heroStand
+	ldx heroStand1
 	jsr transferHeroSpriteData
 
 	CGRAMLoad KFM_Player_final_Pal, $80, $20
 
-	ldx #.LOWORD(heroStand+2)
+	ldx #.LOWORD(heroStand1+2)
 	ldy #$0040
 	jsr setHeroOAM
 
@@ -155,6 +167,15 @@ animationFrameCounter:
 	lda #$00
 	sta animFrameIndex
 	sta animationFrameCounter
+
+	lda #$78
+	sta heroYOffset
+
+	lda #$70
+	sta heroXOffset
+
+	ldx #$0000
+	stx heroTransferAddr
 
 	plb								; restore data bank
 	plp
@@ -169,6 +190,8 @@ animationFrameCounter:
 
 .proc transferHeroSpriteData
 	php
+
+	ldx heroTransferAddr
 	phx
 
 	rep #$10
@@ -225,6 +248,7 @@ lineLoop:							; loop for each line
 
     iny								; load Y Pos for that line
     lda ($02,s),y					; save it to the stack
+    adc heroYOffset
 	pha
 
 blockLoop:
@@ -336,7 +360,7 @@ endFillLoop:
     lda animFrameIndex
     tay
     lda animationFrameCounter
-    cmp heroWalk,y              	; we did all frames for that index
+    cmp (animAddr),y              	; we did all frames for that index
     beq nextFrame
     cmp #$00                        ; first time we do that animation
     beq nextFrame
@@ -356,7 +380,7 @@ nextFrame:
     inc
     sta animFrameIndex
     tay
-    lda heroWalk,y
+    lda (animAddr),y
     cmp #$00
     bne noLoop
 
@@ -368,18 +392,11 @@ noLoop:
     lda animFrameIndex
 	tay
 	iny
-	ldx heroWalk,y
-	phx								; contains adress of tiles
-	inx
-	inx								; increment to go to tile definition
-	ldy #$0060
-	jsr setHeroOAM					; todo check why A is modified when returning
 
 	rep #$20
 	.A16
 
-	ldy #$0000
-	lda ($01,s),Y					; fucking load in in bad data bank
+	lda (animAddr),y
 	tax
 
 	rep #$10
@@ -387,7 +404,27 @@ noLoop:
 	.A8
 	.I16
 
-	jsr transferHeroSpriteData		; TODO fix X adresses currently bullshit
+	phx								; contains adress of tiles
+	inx
+	inx								; increment to go to tile definition
+	ldy heroXOffset					; x Pos
+	jsr setHeroOAM					; todo check why A is modified when returning
+
+	jsr OAMDataUpdated
+
+	rep #$20
+	.A16
+
+	ldy #$0000
+	lda ($01,s),y
+	tax
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	stx heroTransferAddr			; store address to transfer hero tiles (we do it during VBlank)
 
 	plx
 
@@ -403,10 +440,18 @@ endAnim:
 
 .endproc
 
-.proc animHeroEvent
+.proc transferHeroSpriteDataEvent
 	php
 
-	jsr animHero
+	ldx heroTransferAddr			; check if we have an address
+	beq noTransfer					; if address is #$0000 we skip transfer
+
+	jsr transferHeroSpriteData
+
+	ldx #$0000						; reset address if we transfered something
+	stx heroTransferAddr
+
+noTransfer:
 
 	lda #$01                        ; continue event value
 	plp
