@@ -198,11 +198,13 @@ titleScreen:
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
 
+	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
 	ldx #.LOWORD(copyOAMEvent)
 	ldy #$0000
 	jsr addEvent
 
+	; set the event that trasnfer hero tile data
 	lda #.BANKBYTE(transferHeroSpriteDataEvent)
 	ldx #.LOWORD(transferHeroSpriteDataEvent)
 	ldy #$0001
@@ -224,41 +226,8 @@ waitForVBlank:
 
 infiniteLoop:
 
-checkPadLeft:
-	lda padPushData1
-	bit #PAD_LEFT
-	beq checkPadRight
-	ldx heroXOffset
-	dex
-	stx heroXOffset
-	bra checkPadEnd
-checkPadRight:
-	lda padPushData1
-	bit #PAD_RIGHT
-	beq checkPadEnd
-	ldx heroXOffset
-	inx
-	stx heroXOffset
-checkPadEnd:
-
-;***********************************************
-; TODO remove later, only for debugging purpose
-;***********************************************
-;	lda padReleaseData1
-;	bit #PAD_UP
-;	beq testNext
-;	inc animationFrameCounter
-;testNext:
-;	lda padReleaseData1
-;	bit #PAD_DOWN
-;	beq testEnd
-;	dec animationFrameCounter
-;testEnd:
-
-	ldx #.LOWORD(heroWalk)
-	stx animAddr
-
-	jsr animHero
+	ldx padPushData1
+	jsr reactHero
 
 	wai
 	bra infiniteLoop
