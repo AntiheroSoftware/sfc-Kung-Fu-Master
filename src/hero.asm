@@ -5,6 +5,8 @@
 ;
 
             .setcpu     "65816"
+            .feature	c_comments
+
             .include    "snes.inc"
             .include    "snes-pad.inc"
             .include    "snes-event.inc"
@@ -14,331 +16,42 @@
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
 
+			.export animHero
+			.export animInProgress
+			.export forceRefresh
+
 SPRITE_DATA_BANK 	= $02
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
 
-.segment "BANK2"
-
-KFM_Player_final_Tiles:
-	.incbin "../ressource/KFM_Player_final_sprite.pic"
-
-KFM_Player_final_Pal:
-	.incbin "../ressource/KFM_Player_final_sprite.clr"
-
-;******************************************************************************
-;*** Hero Sprite definition ***************************************************
-;******************************************************************************
-
-;******************************************************************************
-;*** Metasprites **************************************************************
-;******************************************************************************
-;*** Adress in bank for tiles                                               ***
-;*** Number of horizontal tiles                                             ***
-;*** Y offset of the line                                                   ***
-;*** X offset                                                               ***
-;*** X offset Mirror                                                        ***
-;*** Tile Number                                                            ***
-;******************************************************************************
-
-heroStand1:							; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles)
-	.byte   $01, $00, $0c, $1b, $00
-	.byte   $02, $10, $0c, $1b, $02, $1b, $0c, $04
-	.byte   $02, $20, $0c, $1b, $06, $1b, $0c, $08
-	.byte   $02, $30, $0c, $1b, $0a, $1b, $0c, $0c
-	.byte	$00
-
-heroWalk1: 							; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*1))
-	.byte   $01, $00, $11, $05, $00
-	.byte   $02, $10, $01, $15, $02, $10, $05, $04
-	.byte   $02, $20, $03, $13, $06, $13, $03, $08
-	.byte   $02, $30, $03, $13, $0a, $13, $03, $0c
-	.byte	$00
-
-heroWalk2:							; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*2))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroWalk3:							; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*3))
-	.byte   $01, $00, $10, $06, $00
-	.byte   $02, $10, $00, $16, $02, $0f, $06, $04
-	.byte   $02, $20, $00, $16, $06, $0f, $06, $08
-	.byte   $02, $30, $00, $16, $0a, $0f, $06, $0c
-	.byte	$00
-
-heroWalk4:							; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*4))
-	.byte   $01, $00, $0b, $0c, $00
-	.byte   $01, $10, $0b, $0c, $02
-	.byte   $01, $20, $0b, $0c, $04
-	.byte   $01, $30, $0b, $0c, $06
-	.byte	$00
-
-heroDownStand1:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*5))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $01, $20, $00, $00, $02
-	.byte   $02, $30, $00, $0f, $04, $0f, $00, $06
-	.byte	$00
-
-heroDownKick1:						; 5 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*6))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $02, $20, $00, $0f, $02, $0f, $00, $04
-	.byte   $02, $30, $00, $0f, $06, $0f, $00, $08
-	.byte	$00
-
-heroDownKick2:						; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*7))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $02, $20, $00, $0f, $02, $0f, $00, $04
-	.byte   $04, $30, $00, $0f, $06, $0f, $00, $08, $1e, $0f, $0a, $2d, $00, $0c
-	.byte	$00
-
-heroDownPunch1:						; 6 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*8))
-	.byte   $02, $10, $00, $00, $00, $0f, $00, $02
-	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
-	.byte	$00
-
-heroDownPunch2:						; 5 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*9))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
-	.byte	$00
-
-heroDownPunch3:						; 6 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*10))
-	.byte   $02, $10, $00, $00, $00, $0f, $00, $02
-	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
-	.byte	$00
-
-heroStandKick1:						; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*11))
-	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
-	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $20, $00, $0f, $08, $0f, $00, $0a
-	.byte   $01, $30, $00, $0f, $0c
-	.byte	$00
-
-heroStandKick2:						; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*12))
-	.byte   $02, $00, $00, $0f, $00, $1e, $00, $02
-	.byte   $03, $10, $00, $1e, $04, $0f, $0f, $06, $1e, $00, $0a
-	.byte   $01, $20, $00, $0f, $08
-	.byte   $01, $30, $00, $0f, $0c
-	.byte	$00
-
-heroStandPunch1:					; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*13))
-	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
-	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $01, $30, $00, $0f, $08
-	.byte   $02, $20, $00, $0f, $0a, $0f, $00, $0c
-	.byte	$00
-
-heroStandPunch2:					; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*14))
-	.byte   $01, $00, $00, $0f, $00
-	.byte   $01, $10, $00, $0f, $04
-	.byte   $01, $30, $00, $0f, $08
-	.byte   $02, $20, $00, $0f, $0a, $0f, $00, $0c
-	.byte	$00
-
-heroStandPunch3:					; 7 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*15))
-	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
-	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $01, $20, $00, $0f, $08
-	.byte   $02, $30, $00, $0f, $0a, $0f, $00, $0c
-	.byte	$00
-
-heroJump1:							; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*16))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroJump2:							; 5 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*17))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte   $01, $40, $09, $0d, $08
-	.byte	$00
-
-heroJumpKick1:						; 8 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*18))
-	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
-	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $20, $00, $0f, $08, $0f, $00, $0a
-	.byte   $01, $30, $00, $0f, $0c
-	.byte   $01, $40, $00, $0f, $0e
-	.byte	$00
-
-heroJump3:							; 5 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte   $01, $40, $09, $0d, $08
-	.byte	$00
-
-heroJumpRun1:						; 6 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
-	.byte   $01, $00, $00, $00, $00
-	.byte   $02, $10, $00, $0f, $02, $0f, $00, $04
-	.byte   $02, $20, $00, $0f, $06, $0f, $00, $08
-	.byte   $01, $40, $00, $00, $0c
-	.byte	$00
-
-heroJumpRun2:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroHitLow1:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*22))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroHitHigh1:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*23))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroGrabbed1:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*24))
-	.byte   $01, $00, $0a, $0c, $00
-	.byte   $01, $10, $09, $0d, $02
-	.byte   $01, $20, $09, $0d, $04
-	.byte   $01, $30, $09, $0d, $06
-	.byte	$00
-
-heroFall1:							; 8 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*25))
-	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
-	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $02, $20, $00, $0f, $08, $0f, $00, $0a
-	.byte   $02, $30, $00, $0f, $0c, $0f, $00, $0e
-
-heroFall2:							; 8 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*26))
-	.byte   $02, $00, $00, $0f, $00, $1e, $00, $02
-	.byte   $03, $10, $00, $1e, $04, $0f, $0f, $06, $1e, $00, $0a
-	.byte   $03, $20, $00, $1e, $0c, $0f, $0f, $0e, $1e, $00, $10
-	.byte	$00
-
-;******************************************************************************
-;*** Animation frames *********************************************************
-;******************************************************************************
-;*** number of frames                                                       ***
-;*** metasprite definition address                                          ***
-;******************************************************************************
-
-heroStand:
-	.byte $00
-	.word .LOWORD(heroStand1)
-	.byte $00
-
-heroWalk:
-	.byte $08
-	.word .LOWORD(heroWalk1)
-	.byte $08
-	.word .LOWORD(heroWalk2)
-	.byte $08
-	.word .LOWORD(heroWalk3)
-	.byte $08
-	.word .LOWORD(heroWalk4)
-	.byte $00
-
-heroDownStand:
-	.byte $00
-	.word .LOWORD(heroDownStand1)
-
-heroDownKick:
-	.byte $08
-	.word .LOWORD(heroDownKick1)
-	.byte $08
-	.word .LOWORD(heroDownKick2)
-	.byte $08
-	.word .LOWORD(heroDownKick1)
-	.byte $00
-
-heroDownPunch:
-	.byte $08
-	.word .LOWORD(heroDownPunch1)
-	.byte $08
-	.word .LOWORD(heroDownPunch2)
-	.byte $08
-	.word .LOWORD(heroDownPunch3)
-	.byte $08
-	.word .LOWORD(heroDownPunch2)
-	.byte $00
-
-heroStandKick:
-	.byte $08
-	.word .LOWORD(heroStandKick1)
-	.byte $08
-	.word .LOWORD(heroStandKick2)
-	.byte $08
-	.word .LOWORD(heroStandKick1)
-	.byte $00
-
-heroStandPunch:
-	.byte $08
-	.word .LOWORD(heroStandPunch1)
-	.byte $08
-	.word .LOWORD(heroStandPunch2)
-	.byte $08
-	.word .LOWORD(heroStandPunch3)
-	.byte $08
-	.word .LOWORD(heroStandPunch2)
-	.byte $00
+.include "includes/heroData.asm"
 
 .segment "BSS"
 
-spriteCounter:
+spriteCounter:						; Temp Value used to count number of sprite used
 	.res 1
 
-animFrameIndex:
+animFrameIndex:						; Index of the current animation
 	.res 1
 
-animationFrameCounter:
+animationFrameCounter:				; Number of frame in the animation
 	.res 1
 
-heroTransferAddr:
+forceRefresh:
+	.res 1
+
+heroTransferAddr:					; Address of sprite Data to transfer
 	.res 2
 
-heroBlockLoop:
+heroBlockLoop:						; Normal or Mirror block loop
 	.res 2
 
 .segment "ZEROPAGE"
 
-animAddr:
+animInProgress:						; is there an animation in progress
+	.res 1
+
+animAddr:							; address of the animation definition
 	.res 2
 
 heroYOffset:
@@ -370,6 +83,8 @@ heroXOffset:
 	lda #$00
 	sta animFrameIndex
 	sta animationFrameCounter
+	sta animInProgress
+	sta forceRefresh
 
 	lda #$78
 	sta heroYOffset
@@ -546,10 +261,10 @@ endFillLoop:
 .endproc
 
 ;******************************************************************************
-;*** anim hero **************************************************************
+;*** anim hero ****************************************************************
 ;******************************************************************************
-;*** dataAddr   (X register)                                                ***
-;*** xPos       (Y register)                                                ***
+;*** animAddr                                                               ***
+;*** heroXOffset                                                            ***
 ;******************************************************************************
 
 .proc animHero
@@ -585,12 +300,23 @@ endFillLoop:
     lda animationFrameCounter
     cmp (animAddr),y              	; we did all frames for that index
     beq nextFrame
-    cmp #$00                        ; first time we do that animation
-    beq nextFrame
 
-    inc
-    sta animationFrameCounter
+    cmp #$00                        ; first time we do that animation
+    beq firstFrame
+
+    lda forceRefresh
+    cmp #$01
+	beq forceRefreshReset
+
+    inc animationFrameCounter
     bra endAnim
+
+firstFrame:
+	lda #$01
+    sta animationFrameCounter
+	lda #$00
+	sta animFrameIndex
+	bra nextFrameContinue
 
 nextFrame:
 
@@ -602,16 +328,33 @@ nextFrame:
     inc
     inc
     sta animFrameIndex
+
+nextFrameContinue:
     tay
-    lda (animAddr),y
+
+    lda (animAddr),y				; check if we are in a no loop animation
+	cmp #$ff
+	bne :+
+
+	lda #$00
+	sta animFrameIndex
+	sta animInProgress
+	bra endAnim
+
+:   lda (animAddr),y
     cmp #$00
     bne noLoop
 
     lda #$00
     sta animFrameIndex
+    sta animInProgress
+    bra noLoop
+
+forceRefreshReset:
+	lda #$00
+	sta forceRefresh
 
 noLoop:
-
     lda animFrameIndex
 	tay
 	iny
@@ -767,18 +510,187 @@ noTransfer:
 	phb
 
 	txa
-checkPadLeft:
-	lda padPushData1
-	bit #PAD_LEFT
-	beq checkPadRight
+
+	;*** Is there an animation in progress ***
+	;*****************************************
+
+	lda animInProgress
+	bit #$01
+	beq :+
+
+	jsr animHero
+	jmp endHeroPadCheck
+
+:
+
+	;*** Set the good mirror mode for hero sprite ***
+	;************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_LEFT
+	beq :+
 	jsr setMirrorSpriteMode
-	bra checkPadEnd
-checkPadRight:
-	lda padPushData1
-	bit #PAD_RIGHT
-	beq checkPadEnd
+	lda #$01
+	sta forceRefresh
+	bra :++
+
+:	lda padFirstPushDataLow1
+	bit #PAD_LOW_RIGHT
+	beq :+
 	jsr setNormalSpriteMode
-checkPadEnd:
+	lda #$01
+	sta forceRefresh
+:
+
+	;*** Check pad direction ***
+	;***************************
+
+	;*** DOWN ***
+	;************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_DOWN
+	beq :+
+
+	ldx #.LOWORD(heroDownStand)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	jsr animHero
+	jmp endHeroPadCheck
+
+:   lda padPushDataLow1
+	bit #PAD_LOW_DOWN
+	beq :++
+
+	;*** We are still down check for KICK or PUNCH ***
+	;*************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_B
+	beq :+
+
+	ldx #.LOWORD(heroDownKick)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	lda #$01
+	sta animInProgress
+	jsr animHero
+	jmp endHeroPadCheck
+
+:	lda padFirstPushDataLow1
+	bit #PAD_LOW_Y
+	beq :+
+
+	ldx #.LOWORD(heroDownPunch)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	lda #$01
+	sta animInProgress
+	jsr animHero
+	jmp endHeroPadCheck
+
+	;*** DOWN release we stand up ***
+	;********************************
+
+:   lda padReleaseDataLow1
+	bit #PAD_LOW_DOWN
+	beq :+
+
+	ldx #.LOWORD(heroStand)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	jsr animHero
+	jmp endHeroPadCheck
+
+:
+
+	;*** UP ***
+	;**********
+	; TODO
+/*
+	lda padReleaseDataLow1
+	bit #PAD_LOW_UP
+	beq :+
+
+	ldx #.LOWORD(heroJump)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	jsr animHero
+	jmp endHeroPadCheck
+
+:
+*/
+
+	;*** KICK OR PUNCH ***
+	;*********************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_B
+	beq :+
+
+	ldx #.LOWORD(heroStandKick)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	lda #$01
+	sta animInProgress
+	jsr animHero
+	jmp endHeroPadCheck
+
+:	lda padFirstPushDataLow1
+	bit #PAD_LOW_Y
+	beq :+
+
+	ldx #.LOWORD(heroStandPunch)
+	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	lda #$01
+	sta animInProgress
+	jsr animHero
+	jmp endHeroPadCheck
+
+	;*** LEFT or RIGHT ***
+	;*********************
+
+	lda padFirstPushDataLow1		; check it's first time that we push LEFT or RIGHT
+	bit #PAD_LOW_RIGHT
+	bne :+							; if we push RIGHT we set AnimAddr
+	bit #PAD_LOW_LEFT
+	beq :++							; if we don't push LEFT for the first time, we check for next test
+									; if we push LEFT for the first time, execute next line
+:	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
+	stx animAddr
+
+:	lda padPushDataLow1				; check if we push LEFT or RIGHT
+	bit #PAD_LOW_RIGHT
+	bne :+							; if we push RIGHT we call animHero
+	bit #PAD_LOW_LEFT
+	beq endHeroPadCheck				; if we don't push LEFT for the first time, we continue
+									; if we push LEFT, execute next line
+:	jsr animHero					; display next animation frame
+
+endHeroPadCheck:
+
+; check that hero is not catched
+; 	check if UP is pressed and not in a jump
+; 	else check if we are on a jump
+; 	else check if DOWN
+; 		check if B (kick) -> HERO_DOWN_KICK
+; 		else check if X (Punch) -> HERO_DOWN_PUNCH
+;       else HERO_DOWN
+;   else check if B (kick) -> HERO_KICK
+;   else check if X (punch) -> HERO_PUNCH
+;   else check if RIGHT -> HERO_WALK
+;   else check if LEFT -> HERO_LEFT
+
+; if hero is catched
+; finish anim and only handle LEFT/RIGHT to get out
 
 ;***********************************************
 ; TODO remove later, only for debugging purpose
@@ -794,7 +706,7 @@ checkPadEnd:
 ;	dec animationFrameCounter
 ;testEnd:
 
-	jsr animHero
+;	jsr animHero
 
 	plb
 	pla
