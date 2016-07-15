@@ -5,12 +5,16 @@
 ;
 
             .setcpu     "65816"
+            .feature	c_comments
+
             .include    "snes.inc"
             .include    "snes-pad.inc"
             .include    "snes-event.inc"
             .include    "snes-sprite.inc"
 
             .include	"includes/hero.inc"
+            .include	"includes/ennemy.inc"
+            .include	"includes/level.inc"
 
             .forceimport	__STARTUP__
 
@@ -21,8 +25,8 @@
 
             .export 	splashScreen
 
-SPLASH_TILE_ADDR	= $1000
-SPLASH_MAP_ADDR     = $0000
+SPLASH_TILE_ADDR	= $0000
+SPLASH_MAP_ADDR     = $1000
 
 .segment "BANK1"
 
@@ -59,6 +63,7 @@ CONTROL_VALUE_NONE				= $00
 CONTROL_VALUE_ANTIHERO_SPLASH	= $01
 CONTROL_VALUE_IREM_SPLASH 		= $02
 CONTROL_VALUE_TITLE_SCREEN 		= $03
+CONTROL_VALUE_GAME_START 		= $04
 
 controlValue:
 	.res 1
@@ -118,8 +123,8 @@ antiheroSplash:
 	VRAMLoad antiheroSplashMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad antiheroSplashPal, $00, $20
 
-	lda $00
-	sta $2121
+	;lda $00
+	;sta $2121
 
 	lda #$01        ; setBGMODE(0, 0, 1);
 	sta $2105
@@ -194,6 +199,7 @@ titleScreen:
 	CGRAMLoad titleScreenPal, $00, $20
 
 	jsr initHeroSprite
+	jsr initEnnemySprite
 
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
@@ -212,25 +218,92 @@ titleScreen:
 
 	setINIDSP $0f   				; Enable screen full darkness
 
-	bra infiniteLoop
-
 	lda #CONTROL_VALUE_NONE
 	sta controlValue
-	lda #CONTROL_VALUE_NONE
+	lda #CONTROL_VALUE_GAME_START
 	sta controlNextValue
-	jmp waitForVBlank
-
-waitForVBlank:
-	wai
-	jmp infiniteMainLoop
 
 infiniteLoop:
+
+checkForGameStart:
+
+	jsr checkPressStart
+
+	lda controlValue
+	cmp #CONTROL_VALUE_GAME_START
+	beq gameStart
 
 	ldx padPushData1
 	jsr reactHero
 
 	wai
 	bra infiniteLoop
+
+gameStart:
+
+	setINIDSP $80   				; Enable forced VBlank during DMA transfer
+
+	jsr initEvents					; reset events
+
+	jsr initLevel
+
+	jsr initHeroSprite
+
+	; set the event that copy OAM data
+	lda #.BANKBYTE(copyOAMEvent)
+	ldx #.LOWORD(copyOAMEvent)
+	ldy #$0000
+	jsr addEvent
+
+	; set the event that trasnfer hero tile data
+	lda #.BANKBYTE(transferHeroSpriteDataEvent)
+	ldx #.LOWORD(transferHeroSpriteDataEvent)
+	ldy #$0001
+	jsr addEvent
+
+	setINIDSP $0f   				; Enable screen full brightness
+
+	lda #$81        				; Enable NMI + pad reading
+	sta CPU_NMITIMEN
+
+	lda #CONTROL_VALUE_NONE
+	sta controlValue
+	lda #CONTROL_VALUE_NONE
+	sta controlNextValue
+
+gameStartInfiniteLoop:
+
+	jsr scrollLevel
+
+	ldx padPushData1
+	jsr reactHero
+
+	wai
+	bra gameStartInfiniteLoop
+
+waitForVBlank:
+	wai
+	jmp infiniteMainLoop
+
+.endproc
+
+.proc checkPressStart
+
+	pha
+	php
+
+	lda padPushData1
+	bit #PAD_START
+	beq exit
+
+	lda controlNextValue
+	sta controlValue
+
+exit:
+
+	plp
+	pla
+	rts
 
 .endproc
 

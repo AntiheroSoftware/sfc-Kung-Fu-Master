@@ -1,5 +1,5 @@
 ;
-; Kung Fu Master her control
+; Kung Fu Master hero control
 ;
 ; by lintbe/AntiheroSoftware <jfdusar@gmail.com>
 ;
@@ -15,10 +15,10 @@
             .export 	initHeroSprite
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
+			.export		spriteCounter
 
-			.export animHero
-			.export animInProgress
-			.export forceRefresh
+			.export animationJumpFrameCounter
+			.export heroYOffset
 
 SPRITE_DATA_BANK 	= $02
 SPRITE_VRAM 		= $2000
@@ -34,7 +34,10 @@ spriteCounter:						; Temp Value used to count number of sprite used
 animFrameIndex:						; Index of the current animation
 	.res 1
 
-animationFrameCounter:				; Number of frame in the animation
+animationFrameCounter:				; Number of frame in animation
+	.res 1
+
+animationJumpFrameCounter:			; Number of total frame in jump animation
 	.res 1
 
 forceRefresh:
@@ -83,6 +86,7 @@ heroXOffset:
 	lda #$00
 	sta animFrameIndex
 	sta animationFrameCounter
+	sta animationJumpFrameCounter
 	sta animInProgress
 	sta forceRefresh
 
@@ -102,10 +106,6 @@ heroXOffset:
 	CGRAMLoad KFM_Player_final_Pal, $80, $20
 
 	jsr setNormalSpriteMode
-
-	;ldx #.LOWORD(heroStand1+2)
-	;ldy #$0040
-	;jsr setHeroOAM
 
 	lda #$01
 	sta $2101                       ; set sprite address
@@ -150,6 +150,7 @@ continueLineLoop:
 
     iny								; load Y Pos for that line
     lda ($02,s),y					; save it to the stack
+    clc
     adc heroYOffset
 	pha
 
@@ -304,11 +305,12 @@ endFillLoop:
     cmp #$00                        ; first time we do that animation
     beq firstFrame
 
+	inc animationFrameCounter
+
     lda forceRefresh
     cmp #$01
 	beq forceRefreshReset
 
-    inc animationFrameCounter
     bra endAnim
 
 firstFrame:
@@ -509,18 +511,38 @@ noTransfer:
 	pha
 	phb
 
+	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
+	pha
+	plb
+
 	txa
 
 	;*** Is there an animation in progress ***
 	;*****************************************
 
 	lda animInProgress
-	bit #$01
+	bit #$01						; simple animation in progress
 	beq :+
 
 	jsr animHero
 	jmp endHeroPadCheck
 
+:	bit #$02						; jump animation in progress
+	beq :+
+
+	ldx animationJumpFrameCounter	; set y offset for the jump
+	inx
+	stx animationJumpFrameCounter
+	lda heroYOffset
+	sec
+	sbc heroJumpOffsetTable,x
+	sta heroYOffset
+
+	lda #$01
+	sta forceRefresh
+
+	jsr animHero
+	jmp endHeroPadCheck
 :
 
 	;*** Set the good mirror mode for hero sprite ***
@@ -544,6 +566,34 @@ noTransfer:
 
 	;*** Check pad direction ***
 	;***************************
+
+	;*** UP ***
+	;**********
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_UP
+	beq :++++
+
+	lda padPushDataLow1				; check if it's a jum run
+	bit #PAD_LOW_RIGHT				; TODO check why jump table isn't good
+	bne :+							; TODO check for timings
+	bit #PAD_LOW_LEFT
+	beq :++
+
+:	ldx #.LOWORD(heroJumpRun)
+	bra :++
+
+:	ldx #.LOWORD(heroJump)
+:	stx animAddr
+	stz animFrameIndex
+	stz animationFrameCounter
+	stz animationJumpFrameCounter
+	lda #$02						; jump animation in progress
+	sta animInProgress
+	jsr animHero
+	jmp endHeroPadCheck
+
+:
 
 	;*** DOWN ***
 	;************
@@ -607,24 +657,6 @@ noTransfer:
 	jmp endHeroPadCheck
 
 :
-
-	;*** UP ***
-	;**********
-	; TODO
-/*
-	lda padReleaseDataLow1
-	bit #PAD_LOW_UP
-	beq :+
-
-	ldx #.LOWORD(heroJump)
-	stx animAddr
-	stz animFrameIndex
-	stz animationFrameCounter
-	jsr animHero
-	jmp endHeroPadCheck
-
-:
-*/
 
 	;*** KICK OR PUNCH ***
 	;*********************

@@ -84,21 +84,21 @@ heroDownKick2:						; 7 sprite blocks
 
 heroDownPunch1:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*8))
-	.byte   $02, $10, $00, $00, $00, $0f, $00, $02
+	.byte   $02, $10, $00, $0f, $00, $0f, $00, $02
 	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
 	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
 	.byte	$00
 
 heroDownPunch2:						; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*9))
-	.byte   $01, $10, $00, $00, $00
+	.byte   $01, $10, $00, $0f, $00
 	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
 	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
 	.byte	$00
 
 heroDownPunch3:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*10))
-	.byte   $02, $10, $00, $00, $00, $0f, $00, $02
+	.byte   $02, $10, $00, $0f, $00, $0f, $00, $02
 	.byte   $02, $20, $00, $0f, $04, $0f, $00, $06
 	.byte   $02, $30, $00, $0f, $08, $0f, $00, $0a
 	.byte	$00
@@ -285,7 +285,18 @@ heroDownPunch:
 	.word .LOWORD(heroDownPunch3)
 	.byte $08
 	.word .LOWORD(heroDownPunch2)
-	.byte $00
+	.byte $ff
+
+heroDownPunchAgain:
+	.byte $08
+	.word .LOWORD(heroDownPunch1)
+	.byte $08
+	.word .LOWORD(heroDownPunch2)
+	.byte $08
+	.word .LOWORD(heroDownPunch3)
+	.byte $08
+	.word .LOWORD(heroDownPunch2)
+	.byte $ff
 
 heroStandKick:
 	.byte $04
@@ -307,4 +318,52 @@ heroStandPunch:
 	.word .LOWORD(heroStandPunch3)
 	.byte $08
 	.word .LOWORD(heroStandPunch2)
+	.byte $ff
+
+heroStandPunchAgain:
+	.byte $08
+	.word .LOWORD(heroStandPunch1)
+	.byte $08
+	.word .LOWORD(heroStandPunch2)
+	.byte $08
+	.word .LOWORD(heroStandPunch3)
+	.byte $08
+	.word .LOWORD(heroStandPunch2)
+	.byte $ff
+
+heroJump:
+	.byte $07
+	.word .LOWORD(heroJump1)
+	.byte $07
+	.word .LOWORD(heroJump2)
+	.byte $07
+	.word .LOWORD(heroJump3)
+	.byte $07
+	.word .LOWORD(heroJump1)
+	.byte $01
+	.word .LOWORD(heroStand1)
+	.byte $ff
+
+heroJumpRun:
+	.byte $06
+	.word .LOWORD(heroJumpRun1)
+	.byte $06
+	.word .LOWORD(heroJump2)
+	.byte $06
+	.word .LOWORD(heroJumpRun2)
+	.byte $06
+	.word .LOWORD(heroJump3)
+	.byte $06
+	.word .LOWORD(heroJump1)
+	.byte $03
+	.word .LOWORD(heroStand1)
+	.byte $ff
+
+heroJumpOffsetTable:
+	; old values
+	;.byte  0,  0,  5, 12, 14, 16, 18, 20, 22, 31, 32, 34, 35, 36	; 14 values
+	;.byte 35, 34, 32, 31, 29, 27, 18, 14, 12,  6,  0,  0,  0,  0	; 14 values -> 28 values
+
+	.byte $00, $00, $05, $07, $02, $02, $02, $02, $02, $09, $01, $02, $01, $01	; 14 values
+	.byte $ff, $ff, $fe, $ff, $fe, $fe, $f7, $fb, $fe, $fa, $fa, $00, $00, $00	; 14 values -> 28 values
 	.byte $00
