@@ -273,8 +273,6 @@ gameStart:
 
 gameStartInfiniteLoop:
 
-	jsr scrollLevel
-
 	ldx padPushData1
 	jsr reactHero
 

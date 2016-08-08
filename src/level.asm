@@ -11,8 +11,12 @@
             .include    "snes-pad.inc"
             .include    "snes-event.inc"
 
+            .include	"includes/base.inc"
+
             .export		initLevel
             .export		scrollLevel
+            .export 	scrollValue
+            .export		scrollDirection
 
             .export displayLevelLine
 
@@ -111,7 +115,7 @@ stopLoop:
 
 	ldx scrollValue
 	lda scrollDirection
-	cmp #$01
+	cmp #LEVEL_SCROLL_RIGHT
 	beq scrollRight
 
 scrollLeft:

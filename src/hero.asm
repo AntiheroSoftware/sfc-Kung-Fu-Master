@@ -12,6 +12,9 @@
             .include    "snes-event.inc"
             .include    "snes-sprite.inc"
 
+            .include    "includes/base.inc"
+            .include    "includes/level.inc"
+
             .export 	initHeroSprite
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
@@ -508,6 +511,7 @@ noTransfer:
 
 .proc reactHero
 	phy
+	phx
 	pha
 	phb
 
@@ -705,6 +709,17 @@ noTransfer:
 	bit #PAD_LOW_LEFT
 	beq endHeroPadCheck				; if we don't push LEFT for the first time, we continue
 									; if we push LEFT, execute next line
+
+	; TODO need to check boundaries of hero and level
+	lda #LEVEL_SCROLL_LEFT
+	sta scrollDirection
+	jsr scrollLevel
+	bra :++
+
+:	lda #LEVEL_SCROLL_RIGHT
+	sta scrollDirection
+	jsr scrollLevel
+
 :	jsr animHero					; display next animation frame
 
 endHeroPadCheck:
@@ -742,6 +757,7 @@ endHeroPadCheck:
 
 	plb
 	pla
+	plx
 	ply
 	rts
 .endproc

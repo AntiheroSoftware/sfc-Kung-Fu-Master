@@ -1,7 +1,7 @@
 Modules list:
 -------------
 main.o:
-    CODE              Offs=000000  Size=0003AC  Align=00001  Fill=0000
+    CODE              Offs=000000  Size=0003A9  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000000  Size=000005  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -9,7 +9,7 @@ main.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=000000  Size=003FC0  Align=00001  Fill=0000
 level.o:
-    CODE              Offs=0003AC  Size=0002BF  Align=00001  Fill=0000
+    CODE              Offs=0003A9  Size=0002BF  Align=00001  Fill=0000
     RODATA            Offs=000000  Size=000082  Align=00001  Fill=0000
     BSS               Offs=000005  Size=000008  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -17,7 +17,7 @@ level.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK4             Offs=000000  Size=006180  Align=00001  Fill=0000
 hero.o:
-    CODE              Offs=00066B  Size=000358  Align=00001  Fill=0000
+    CODE              Offs=000668  Size=00036C  Align=00001  Fill=0000
     RODATA            Offs=000082  Size=000000  Align=00001  Fill=0000
     BSS               Offs=00000D  Size=000009  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -25,7 +25,7 @@ hero.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK2             Offs=000000  Size=006FB4  Align=00001  Fill=0000
 ennemy.o:
-    CODE              Offs=0009C3  Size=000208  Align=00001  Fill=0000
+    CODE              Offs=0009D4  Size=000208  Align=00001  Fill=0000
     RODATA            Offs=000082  Size=000067  Align=00001  Fill=0000
     BSS               Offs=000016  Size=00005A  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -34,7 +34,7 @@ ennemy.o:
     BANK1             Offs=003FC0  Size=000020  Align=00001  Fill=0000
     BANK3             Offs=000000  Size=008000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
-    CODE              Offs=000BCB  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=000BDC  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=0000E9  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000070  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -44,28 +44,28 @@ ennemy.o:
     ROMINFO           Offs=000000  Size=000030  Align=00001  Fill=0000
     VECTORS           Offs=000000  Size=00001C  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(init.o):
-    CODE              Offs=000BCB  Size=0000F3  Align=00001  Fill=0000
+    CODE              Offs=000BDC  Size=0000F3  Align=00001  Fill=0000
     RODATA            Offs=0000E9  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000070  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000006  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(event.o):
-    CODE              Offs=000CBE  Size=0000C2  Align=00001  Fill=0000
+    CODE              Offs=000CCF  Size=0000C2  Align=00001  Fill=0000
     RODATA            Offs=0000E9  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000070  Size=000083  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000006  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(pad.o):
-    CODE              Offs=000D80  Size=000136  Align=00001  Fill=0000
+    CODE              Offs=000D91  Size=000136  Align=00001  Fill=0000
     RODATA            Offs=0000E9  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0000F3  Size=000012  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000006  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(sprite.o):
-    CODE              Offs=000EB6  Size=000074  Align=00001  Fill=0000
+    CODE              Offs=000EC7  Size=000074  Align=00001  Fill=0000
     RODATA            Offs=0000E9  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000105  Size=000221  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -82,8 +82,8 @@ NULL                  000000  000000  000000  00001
 ZEROPAGE              000000  000005  000006  00001
 BSS                   000200  000525  000326  00001
 STARTUP               008000  008038  000039  00001
-CODE                  008039  008F62  000F2A  00001
-RODATA                008F63  00904B  0000E9  00001
+CODE                  008039  008F73  000F3B  00001
+RODATA                008F74  00905C  0000E9  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 BANK1                 018000  01BFDF  003FE0  00001
@@ -94,20 +94,20 @@ BANK4                 048000  04E17F  006180  00001
 
 Exports list by name:
 ---------------------
-OAMDataUpdated            008F55 RLA    _IRQHandler               008360 RLA    
-_NMIHandler               008361 RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
+OAMDataUpdated            008F66 RLA    _IRQHandler               00835D RLA    
+_NMIHandler               00835E RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
 __ROMINFO_LAST__          00FFE0  LA    __ROMINFO_SIZE__          000034  EA    
 __ROMINFO_START__         00FFB0  LA    __STARTUP__               000001 REA    
 __VECTORS_FILEOFFS__      007FE4  EA    __VECTORS_LAST__          010000  LA    
 __VECTORS_SIZE__          00001C  EA    __VECTORS_START__         00FFE4  LA    
-_main                     008039 RLA    _preInit                  008368 RLA    
-addEvent                  008D23 RLA    animationJumpFrameCounter 000210  LA    
-clearOAM                  008EEF  LA    copyOAM                   008F1E RLA    
-displayLevelLine          008666  LA    eventsTable               000270  LA    
-heroYOffset               000003  LZ    initEnnemySprite          0089FC RLA    
-initEvents                008CF7 RLA    initHeroSprite            0086A4 RLA    
-initLevel                 0083E5 RLA    initPad                   008DB9 RLA    
-initSnes                  008C04 RLA    oamData                   000305 RLA    
+_main                     008039 RLA    _preInit                  008365 RLA    
+addEvent                  008D34 RLA    animationJumpFrameCounter 000210  LA    
+clearOAM                  008F00  LA    copyOAM                   008F2F RLA    
+displayLevelLine          008663  LA    eventsTable               000270  LA    
+heroYOffset               000003  LZ    initEnnemySprite          008A0D RLA    
+initEvents                008D08 RLA    initHeroSprite            0086A1 RLA    
+initLevel                 0083E2 RLA    initPad                   008DCA RLA    
+initSnes                  008C15 RLA    oamData                   000305 RLA    
 padFirstPushData1         0002F5  LA    padFirstPushDataHigh1     0002F6  LA    
 padFirstPushDataLow1      0002F5 RLA    padPushData1              0002F3 RLA    
 padPushData2              0002F9  LA    padPushData3              0002FD  LA    
@@ -121,49 +121,51 @@ padReleaseData4           000303  LA    padReleaseDataHigh1       0002F8  LA
 padReleaseDataHigh2       0002FC  LA    padReleaseDataHigh3       0002FF  LA    
 padReleaseDataHigh4       000303  LA    padReleaseDataLow1        0002F7 RLA    
 padReleaseDataLow2        0002FB  LA    padReleaseDataLow3        000300  LA    
-padReleaseDataLow4        000304  LA    processEvents             008D52 RLA    
-reactHero                 0088B2 RLA    readPad1                  008DF7 RLA    
-readPad2                  008E35  LA    readPad3                  008E73  LA    
-readPad4                  008EB1  LA    removeEvent               008DA2  LA    
-scrollLevel               008577 RLA    setEnemyOAM               008B4F  LA    
-splashScreen              00837F  LA    spriteCounter             00020D RLA    
-transferHeroSpriteDataEvent 00884D RLA    
+padReleaseDataLow4        000304  LA    processEvents             008D63 RLA    
+reactHero                 0088AF RLA    readPad1                  008E08 RLA    
+readPad2                  008E46  LA    readPad3                  008E84  LA    
+readPad4                  008EC2  LA    removeEvent               008DB3  LA    
+scrollDirection           00020B RLA    scrollLevel               008574 RLA    
+scrollValue               000209  LA    setEnemyOAM               008B60  LA    
+splashScreen              00837C  LA    spriteCounter             00020D RLA    
+transferHeroSpriteDataEvent 00884A RLA    
 
 
 Exports list by value:
 ----------------------
 __STARTUP__               000001 REA    heroYOffset               000003  LZ    
 __VECTORS_SIZE__          00001C  EA    __ROMINFO_SIZE__          000034  EA    
+scrollValue               000209  LA    scrollDirection           00020B RLA    
 spriteCounter             00020D RLA    animationJumpFrameCounter 000210  LA    
-eventsTable               000270  LA    padPushData1              0002F3 RLA    
-padPushDataLow1           0002F3 RLA    padPushDataHigh1          0002F4  LA    
-padFirstPushDataLow1      0002F5 RLA    padFirstPushData1         0002F5  LA    
-padFirstPushDataHigh1     0002F6  LA    padReleaseDataLow1        0002F7 RLA    
-padReleaseData1           0002F7  LA    padReleaseDataHigh1       0002F8  LA    
-padPushDataLow2           0002F9  LA    padPushData2              0002F9  LA    
-padPushDataHigh2          0002FA  LA    padReleaseData2           0002FB  LA    
-padReleaseDataLow2        0002FB  LA    padReleaseDataHigh2       0002FC  LA    
-padPushData3              0002FD  LA    padPushDataHigh3          0002FD  LA    
-padPushDataLow3           0002FE  LA    padReleaseData3           0002FF  LA    
-padReleaseDataHigh3       0002FF  LA    padReleaseDataLow3        000300  LA    
+eventsTable               000270  LA    padPushDataLow1           0002F3 RLA    
+padPushData1              0002F3 RLA    padPushDataHigh1          0002F4  LA    
+padFirstPushData1         0002F5  LA    padFirstPushDataLow1      0002F5 RLA    
+padFirstPushDataHigh1     0002F6  LA    padReleaseData1           0002F7  LA    
+padReleaseDataLow1        0002F7 RLA    padReleaseDataHigh1       0002F8  LA    
+padPushData2              0002F9  LA    padPushDataLow2           0002F9  LA    
+padPushDataHigh2          0002FA  LA    padReleaseDataLow2        0002FB  LA    
+padReleaseData2           0002FB  LA    padReleaseDataHigh2       0002FC  LA    
+padPushDataHigh3          0002FD  LA    padPushData3              0002FD  LA    
+padPushDataLow3           0002FE  LA    padReleaseDataHigh3       0002FF  LA    
+padReleaseData3           0002FF  LA    padReleaseDataLow3        000300  LA    
 padPushData4              000301  LA    padPushDataHigh4          000301  LA    
 padPushDataLow4           000302  LA    padReleaseDataHigh4       000303  LA    
 padReleaseData4           000303  LA    padReleaseDataLow4        000304  LA    
 oamData                   000305 RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
 __VECTORS_FILEOFFS__      007FE4  EA    _main                     008039 RLA    
-_IRQHandler               008360 RLA    _NMIHandler               008361 RLA    
-_preInit                  008368 RLA    splashScreen              00837F  LA    
-initLevel                 0083E5 RLA    scrollLevel               008577 RLA    
-displayLevelLine          008666  LA    initHeroSprite            0086A4 RLA    
-transferHeroSpriteDataEvent 00884D RLA    reactHero                 0088B2 RLA    
-initEnnemySprite          0089FC RLA    setEnemyOAM               008B4F  LA    
-initSnes                  008C04 RLA    initEvents                008CF7 RLA    
-addEvent                  008D23 RLA    processEvents             008D52 RLA    
-removeEvent               008DA2  LA    initPad                   008DB9 RLA    
-readPad1                  008DF7 RLA    readPad2                  008E35  LA    
-readPad3                  008E73  LA    readPad4                  008EB1  LA    
-clearOAM                  008EEF  LA    copyOAM                   008F1E RLA    
-OAMDataUpdated            008F55 RLA    __ROMINFO_START__         00FFB0  LA    
+_IRQHandler               00835D RLA    _NMIHandler               00835E RLA    
+_preInit                  008365 RLA    splashScreen              00837C  LA    
+initLevel                 0083E2 RLA    scrollLevel               008574 RLA    
+displayLevelLine          008663  LA    initHeroSprite            0086A1 RLA    
+transferHeroSpriteDataEvent 00884A RLA    reactHero                 0088AF RLA    
+initEnnemySprite          008A0D RLA    setEnemyOAM               008B60  LA    
+initSnes                  008C15 RLA    initEvents                008D08 RLA    
+addEvent                  008D34 RLA    processEvents             008D63 RLA    
+removeEvent               008DB3  LA    initPad                   008DCA RLA    
+readPad1                  008E08 RLA    readPad2                  008E46  LA    
+readPad3                  008E84  LA    readPad4                  008EC2  LA    
+clearOAM                  008F00  LA    copyOAM                   008F2F RLA    
+OAMDataUpdated            008F66 RLA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
 __VECTORS_LAST__          010000  LA    
 
@@ -256,8 +258,11 @@ readPad2 (pad.o):
 readPad3 (pad.o):
 readPad4 (pad.o):
 removeEvent (event.o):
+scrollDirection (level.o):
+    hero.o                    includes/level.inc(5)
 scrollLevel (level.o):
-    main.o                    includes/level.inc(2)
+    hero.o                    includes/level.inc(2)
+scrollValue (level.o):
 setEnemyOAM (ennemy.o):
 splashScreen (main.o):
 spriteCounter (hero.o):
