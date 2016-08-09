@@ -106,6 +106,12 @@ stopLoop:
 
 .endproc
 
+;*******************************************************************************
+;*** scrollLevel ***************************************************************
+;*******************************************************************************
+;*** Scroll level plane 1 pixel left or right                                ***
+;*******************************************************************************
+
 .proc scrollLevel
 
 	pha
@@ -119,6 +125,11 @@ stopLoop:
 	beq scrollRight
 
 scrollLeft:
+
+									; check scroll left boundaries
+	cpx #$fb00
+	beq :+							; exit scroll level routine
+
 	dex 			                ; decrement scrollValue
 	stx scrollValue
 	txa
@@ -158,9 +169,14 @@ scrollLeft:
 	ldx #.LOWORD(levelMapRestart)
 	stx MAPOffset
 
-	bra scrollValueSet
+:	bra scrollValueSet
 
 scrollRight:
+
+									; check scroll right boundaries
+	cpx #$00ff
+	beq scrollValueSet
+
 	inx  			                ; increment scrollValue
 	stx scrollValue
 	txa
@@ -237,6 +253,9 @@ scrollValue:
 scrollDirection:
     .res    1
 
+scrollPreviousDirection:
+	.res 	1
+
 doUpdate:
 	.res 1
 
@@ -272,8 +291,9 @@ VRAMOffset:
 	ldx #.LOWORD(levelMapInitial)
 	stx MAPOffset
 
-    lda #00                         ; init scrollDirection
+    lda #$00                        ; init scrollDirection
     sta scrollDirection             ; 0 -> left ; 1 -> right
+    sta scrollPreviousDirection
     sta doUpdate
 
     ldx #$0100                      ; init scrollValue
@@ -284,6 +304,12 @@ VRAMOffset:
     pla
     rts
 .endproc
+
+;*******************************************************************************
+;*** scrollEvent ***************************************************************
+;*******************************************************************************
+;*** Set scroll offset and DMA new data if needed                           ***
+;*******************************************************************************
 
 .proc scrollEvent
 
@@ -323,6 +349,13 @@ noDMA:
 
     rtl
 .endproc
+
+;*******************************************************************************
+;*** displayLevelLine **********************************************************
+;*******************************************************************************
+;*** X contains VRAM adress to update                                        ***
+;*** Y contains MAP offset                                                   ***
+;*******************************************************************************
 
 .proc displayLevelLine
 	pha
