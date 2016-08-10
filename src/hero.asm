@@ -76,10 +76,14 @@ heroXOffset:
 ;******************************************************************************
 ;*** init various stuff                                                     ***
 ;******************************************************************************
+;*** A register contains heroYOffset                                        ***
+;******************************************************************************
 
 .proc initHeroSprite
+
 	php
 	phb
+	pha
 
 	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
 	pha
@@ -93,7 +97,7 @@ heroXOffset:
 	sta animInProgress
 	sta forceRefresh
 
-	lda #$78
+	pla
 	sta heroYOffset
 
 	lda #$70
@@ -113,8 +117,6 @@ heroXOffset:
 	lda #$01
 	sta $2101                       ; set sprite address
 
-	;jsr copyOAM
-
 	ldx #.LOWORD(heroStand)
 	stx animAddr
 
@@ -123,6 +125,7 @@ heroXOffset:
 	plb								; restore data bank
 	plp
 	rts
+
 .endproc
 
 ;******************************************************************************

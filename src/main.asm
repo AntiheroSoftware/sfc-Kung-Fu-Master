@@ -12,6 +12,7 @@
             .include    "snes-event.inc"
             .include    "snes-sprite.inc"
 
+            .include	"includes/base.inc"
             .include	"includes/hero.inc"
             .include	"includes/ennemy.inc"
             .include	"includes/level.inc"
@@ -198,6 +199,7 @@ titleScreen:
 	VRAMLoad titleScreenMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad titleScreenPal, $00, $20
 
+	lda #HERO_TITLE_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnnemySprite
 
@@ -247,6 +249,7 @@ gameStart:
 
 	jsr initLevel
 
+	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 
 	; set the event that copy OAM data
