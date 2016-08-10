@@ -18,8 +18,6 @@
             .export 	scrollValue
             .export		scrollDirection
 
-            .export displayLevelLine
-
 .include "includes/levelData.asm"
 
 .segment "CODE"
@@ -119,6 +117,22 @@ stopLoop:
 	phy
 	php
 
+	lda scrollDirection
+	cmp scrollPreviousDirection
+	beq :++
+
+	cmp #LEVEL_SCROLL_RIGHT
+	beq :+ 							; Change direction for right
+
+	jsr scrollLevelDirectionLeft
+	sta scrollPreviousDirection
+	bra :++
+
+:	jsr scrollLevelDirectionRight
+	sta scrollPreviousDirection
+
+:
+
 	ldx scrollValue
 	lda scrollDirection
 	cmp #LEVEL_SCROLL_RIGHT
@@ -126,8 +140,7 @@ stopLoop:
 
 scrollLeft:
 
-									; check scroll left boundaries
-	cpx #$fb00
+	cpx #$fb00						; check scroll left boundaries
 	beq :+							; exit scroll level routine
 
 	dex 			                ; decrement scrollValue
@@ -152,29 +165,17 @@ scrollLeft:
 	sbc #$38
 	sta MAPOffset
 
-	cmp #.LOWORD(levelMapStart)
-	bpl scrollValueSet
+	bra scrollValueSet
 
-	sep #$20						; change direction (going right)
+	sep #$20
 	.A8
-
-	lda #$01
-	sta scrollDirection
-
-	lda VRAMLine
-	clc
-	adc #$21
-	sta VRAMLine
-
-	ldx #.LOWORD(levelMapRestart)
-	stx MAPOffset
 
 :	bra scrollValueSet
 
 scrollRight:
 
-									; check scroll right boundaries
-	cpx #$00ff
+
+	cpx #$00ff						; check scroll right boundaries
 	beq scrollValueSet
 
 	inx  			                ; increment scrollValue
@@ -199,22 +200,10 @@ scrollRight:
 	adc #$38
 	sta MAPOffset
 
-	cmp #.LOWORD(levelMapEnd)
-	bcc scrollValueSet
+	bra scrollValueSet
 
 	sep #$20
 	.A8
-
-	lda #$00
-	sta scrollDirection
-
-	lda VRAMLine
-	sec
-	sbc #$21
-	sta VRAMLine
-
-	ldx #.LOWORD(levelMapInitial)
-	stx MAPOffset
 
 scrollValueSet:
 
@@ -224,6 +213,71 @@ scrollValueSet:
 	plp
 	ply
 	plx
+	pla
+	rts
+
+.endproc
+
+;******************************************************************************
+;*** scrollLevelDirectionLeft ************************************************
+;******************************************************************************
+
+.proc scrollLevelDirectionLeft
+
+	pha
+	php
+
+	rep #$20
+	.A16
+
+	lda VRAMLine
+	sec
+	sbc #$21
+	and #$003f
+	sta VRAMLine
+
+	lda MAPOffset
+	sec
+	sbc #$0738
+	sta MAPOffset
+
+	sep #$20
+	.A8
+
+	plp
+	pla
+
+	rts
+
+.endproc
+
+;******************************************************************************
+;*** scrollLevelDirectionRight *************************************************
+;******************************************************************************
+
+.proc scrollLevelDirectionRight
+
+	pha
+	php
+
+	rep #$20
+	.A16
+
+	lda VRAMLine
+	clc
+	adc #$21
+	and #$003f
+	sta VRAMLine
+
+	lda MAPOffset
+	clc
+	adc #$0738
+	sta MAPOffset
+
+	sep #$20
+	.A8
+
+	plp
 	pla
 	rts
 
