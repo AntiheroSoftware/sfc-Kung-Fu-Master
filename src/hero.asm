@@ -714,6 +714,7 @@ noTransfer:
 									; if we push LEFT, execute next line
 
 	; TODO need to check boundaries of hero and level
+	; check heroXOffset
 	lda #LEVEL_SCROLL_LEFT
 	sta scrollDirection
 	jsr scrollLevel

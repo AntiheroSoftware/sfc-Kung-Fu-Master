@@ -12,6 +12,8 @@
             .include    "snes-event.inc"
 
             .include	"includes/base.inc"
+            .include	"includes/score.inc"
+            .include	"includes/scoreDefine.inc"
 
             .export		initLevel
             .export		scrollLevel
@@ -42,10 +44,6 @@
     VRAMLoad levelTiles, LEVEL_TILE_ADDR, $22E0                 ; load tiles
     VRAMLoad levelTiles, LEVEL_TILE_ADDR, $0027                 ; load tiles
     CGRAMLoad levelPal, $00, $C0                                ; load 5 palettes
-
-    VRAMLoad scoreTiles, SCORE_TILE_ADDR, $0c00
-	VRAMLoad scoreMap, SCORE_MAP_ADDR, $c0
-	CGRAMLoad scorePal, $60, $20
 
 	ldx #$001f
 	ldy #.LOWORD(levelMapInitial)
@@ -93,7 +91,7 @@ stopLoop:
 
     lda #.BANKBYTE(scrollEvent)
     ldx #.LOWORD(scrollEvent)
-    ldy #$0002
+    ldy #EVENT_GAME_SCREEN_LEVEL
     jsr addEvent
 
     plp

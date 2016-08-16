@@ -17,6 +17,7 @@
             .export 	initEnnemySprite
 
             .export setEnemyOAM
+            .export ennemySprites
 
 .include "includes/ennemyData.asm"
 

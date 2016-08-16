@@ -16,6 +16,7 @@
             .include	"includes/hero.inc"
             .include	"includes/ennemy.inc"
             .include	"includes/level.inc"
+            .include	"includes/score.inc"
 
             .forceimport	__STARTUP__
 
@@ -248,6 +249,7 @@ gameStart:
 	jsr initEvents					; reset events
 
 	jsr initLevel
+	jsr initScore
 
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
@@ -255,13 +257,13 @@ gameStart:
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
 	ldx #.LOWORD(copyOAMEvent)
-	ldy #$0000
+	ldy #EVENT_GAME_SCREEN_COPY_OAM
 	jsr addEvent
 
 	; set the event that trasnfer hero tile data
 	lda #.BANKBYTE(transferHeroSpriteDataEvent)
 	ldx #.LOWORD(transferHeroSpriteDataEvent)
-	ldy #$0001
+	ldy #EVENT_GAME_SCREEN_TRANSFER_HERO_SPRITE_DATA
 	jsr addEvent
 
 	setINIDSP $0f   				; Enable screen full brightness
@@ -278,6 +280,8 @@ gameStartInfiniteLoop:
 
 	ldx padPushData1
 	jsr reactHero
+
+	jsr updateTime
 
 	wai
 	bra gameStartInfiniteLoop

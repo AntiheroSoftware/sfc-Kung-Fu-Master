@@ -2,11 +2,6 @@ LEVEL_TILE_ADDR	    = $0000
 LEVEL_MAP_ADDR      = $1800
 LEVEL_BANK			= $04
 
-SCORE_TILE_ADDR		= $7000
-SCORE_MAP_ADDR		= $7800
-
-SCORE_MAP_SIZE	    = $20*3*2
-
 .segment "BANK4"
 
 levelTiles:
@@ -27,12 +22,3 @@ levelPal:
     .incbin "../ressource/level3.pal"
     .incbin "../ressource/level4.pal"
     .incbin "../ressource/level5.pal"
-
-scoreTiles:
-	.incbin "../ressource/score.pic"
-
-scoreMap:
-	.incbin "../ressource/score.map"
-
-scorePal:
-	.incbin "../ressource/score.pal"
