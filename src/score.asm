@@ -23,6 +23,7 @@
             .export timeCounter
             .export scorePlayer1
             .export updateScorePlayer1
+            .export updateScoreTop
             .export setEnergyPlayer
             .export writeNumberToScoreMap
 
@@ -88,11 +89,6 @@ dragonCounter:
 	stx scorePlayer2
 	sta scorePlayer2+2
 
-	ldx #$8520
-	stx scoreTop
-	lda #$04
-	sta scoreTop+2
-
 	lda #$40
 	sta energyPlayer
 	sta energyEnnemy
@@ -129,10 +125,18 @@ loopCopyScoreMap:
 	lda #$00
 	sta doUpdateScore
 
+	ldx #$8520
+	lda #$04
+	jsr updateScoreTop
+
 	lda #.BANKBYTE(scoreEvent)		; start score event
 	ldx #.LOWORD(scoreEvent)
 	ldy #EVENT_GAME_SCREEN_SCORE
 	jsr addEvent
+
+	ldx #$1200
+	jsr updateScorePlayer1
+	jsr updateScorePlayer2
 
 	plp
 	plx
@@ -175,9 +179,11 @@ loopCopyScoreMap:
 	adc #$00
 	sta scorePlayer1+2
 
+	cld								; Back to binary mode
+
 	lda #$06
 	ldx #.LOWORD(scorePlayer1+2)
-	ldy #$1004						; offset /position
+	ldy #$0b08						; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
@@ -221,9 +227,11 @@ loopCopyScoreMap:
 	adc #$00
 	sta scorePlayer2+2
 
+	cld								; Back to binary mode
+
 	lda #$06
 	ldx #.LOWORD(scorePlayer2+2)
-	ldy #$1019						; offset /position
+	ldy #$0b32						; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
@@ -254,9 +262,9 @@ loopCopyScoreMap:
 	stx scoreTop
 	sta scoreTop+2
 
-	lda #$04						; number of digits to write
+	lda #$06						; number of digits to write
 	ldx #.LOWORD(scoreTop+2)		; where value is stored
-	ldy #$100f						; offset /position
+	ldy #$151e						; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
@@ -460,7 +468,7 @@ end:
 
 	lda #$04
 	ldx #.LOWORD(timeCounter+1)
-	ldy #$30b6
+	ldy #SCORE_TIME_OFFSET_POSITION
 	jsr writeNumberToScoreMap
 
 	lda #$01
