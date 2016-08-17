@@ -183,7 +183,7 @@ loopCopyScoreMap:
 
 	lda #$06
 	ldx #.LOWORD(scorePlayer1+2)
-	ldy #$0b08						; offset /position
+	ldy #SCORE_PLAYER1_OFFSET_POSITION						; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
@@ -231,7 +231,7 @@ loopCopyScoreMap:
 
 	lda #$06
 	ldx #.LOWORD(scorePlayer2+2)
-	ldy #$0b32						; offset /position
+	ldy #SCORE_PLAYER2_OFFSET_POSITION						; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
@@ -264,7 +264,7 @@ loopCopyScoreMap:
 
 	lda #$06						; number of digits to write
 	ldx #.LOWORD(scoreTop+2)		; where value is stored
-	ldy #$151e						; offset /position
+	ldy #SCORE_TOP_OFFSET_POSITION	; offset /position
 	jsr writeNumberToScoreMap
 
 	lda #$01
