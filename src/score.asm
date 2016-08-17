@@ -445,11 +445,12 @@ end:
 	pha
 	php
 
-	lda #$00
+	lda #EVENT_GAME_SCREEN_SCORE
 	jsr getEventCounter
 
 	txa
 	and #%00000111
+	cmp #$07
 	bne end
 
 	rep #$20
