@@ -19,7 +19,14 @@
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
 			.export		spriteCounter
+			.export		setHeroOAM
 
+			.export animationList
+			.export animationListIndex
+			.export heroStand1
+			.export KFM_Player_final_Tiles
+
+			.export reactHeroAnimation
 			.export animationJumpFrameCounter
 			.export heroYOffset
 
@@ -66,6 +73,9 @@ heroYOffset:
 heroXOffset:
 	.res 2
 
+animationListIndex:
+	.res 2
+
 .segment "CODE"
 
 .A8
@@ -96,6 +106,11 @@ heroXOffset:
 	sta animationJumpFrameCounter
 	sta animInProgress
 	sta forceRefresh
+
+	; animation init
+	lda #$00
+	sta animationListIndex
+	sta animationListIndex+1
 
 	pla
 	sta heroYOffset
@@ -758,6 +773,105 @@ endHeroPadCheck:
 ;testEnd:
 
 ;	jsr animHero
+
+	plb
+	pla
+	plx
+	ply
+	rts
+.endproc
+
+;*******************************************************************************
+;*** reactHeroAnimation ********************************************************
+;*******************************************************************************
+;*** X contains pad like data                                                ***
+;*******************************************************************************
+
+.proc reactHeroAnimation
+	phy
+	phx
+	pha
+	phb
+
+	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
+	pha
+	plb
+
+	txa
+
+	;*** Set the good mirror mode for hero sprite ***
+	;************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_LEFT
+	beq :+
+	jsr setMirrorSpriteMode
+	lda #$01
+	sta forceRefresh
+	bra :++
+
+:	lda padFirstPushDataLow1
+	bit #PAD_LOW_RIGHT
+	beq :+
+	jsr setNormalSpriteMode
+	lda #$01
+	sta forceRefresh
+:
+
+	;*** check for L and R for animation change ***
+	;**********************************************
+
+	lda padFirstPushDataHigh1
+	bit #PAD_HIGH_L
+	beq :+
+
+	lda animationListIndex
+	dec
+	dec
+	sta animationListIndex
+	cmp #$fe
+	bne endHeroPadCheck
+
+	lda #$32
+	sta animationListIndex
+
+	lda #$01
+	sta forceRefresh
+	bra :++
+
+:	lda padFirstPushDataHigh1
+	bit #PAD_HIGH_R
+	beq :+
+
+	lda animationListIndex
+	inc
+	inc
+	sta animationListIndex
+	cmp #$34
+	bne endHeroPadCheck
+
+	lda #$00
+	sta animationListIndex
+
+	lda #$01
+	sta forceRefresh
+:
+
+endHeroPadCheck:
+
+	ldy animationListIndex
+	ldx animationList,Y
+	inx
+	inx								; data Addr
+	ldy #$70						; x Pos
+	jsr setHeroOAM					; todo check why A is modified when returning
+
+	jsr OAMDataUpdated
+
+	ldx animationListIndex
+	ldy animationList,X
+	ldx $020000,Y
+	stx heroTransferAddr			; store address to transfer hero tiles (we do it during VBlank)
 
 	plb
 	pla
