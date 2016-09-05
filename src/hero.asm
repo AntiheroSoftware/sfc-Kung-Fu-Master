@@ -229,7 +229,8 @@ blockLoopMirror:
 	lda ($03,s),y					; load X pos for that
 	clc
 	adc $05,s                		; add saved Global X Pos
-									; TODO add/remove mirror offset
+	sec
+	sbc #$1e						; remove mirror offset
 	sta oamData,x                   ; H (X) pos of the sprite
 
 	lda $01,s
