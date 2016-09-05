@@ -23,6 +23,8 @@
 
 			.export animationList
 			.export animationListIndex
+			.export animationFramesList
+			.export animationFramesListIndex
 			.export heroStand1
 			.export KFM_Player_final_Tiles
 
@@ -74,6 +76,9 @@ heroXOffset:
 	.res 2
 
 animationListIndex:
+	.res 2
+
+animationFramesListIndex:
 	.res 2
 
 .segment "CODE"
@@ -224,6 +229,7 @@ blockLoopMirror:
 	lda ($03,s),y					; load X pos for that
 	clc
 	adc $05,s                		; add saved Global X Pos
+									; TODO add/remove mirror offset
 	sta oamData,x                   ; H (X) pos of the sprite
 
 	lda $01,s
