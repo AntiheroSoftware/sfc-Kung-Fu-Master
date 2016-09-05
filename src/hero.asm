@@ -832,7 +832,7 @@ endHeroPadCheck:
 	cmp #$fe
 	bne endHeroPadCheck
 
-	lda #$32
+	lda #$34
 	sta animationListIndex
 
 	lda #$01
@@ -847,7 +847,7 @@ endHeroPadCheck:
 	inc
 	inc
 	sta animationListIndex
-	cmp #$34
+	cmp #$36
 	bne endHeroPadCheck
 
 	lda #$00

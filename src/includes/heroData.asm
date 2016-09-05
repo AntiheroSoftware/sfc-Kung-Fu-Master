@@ -63,23 +63,23 @@ heroWalk4:							; 4 sprite blocks
 
 heroDownStand1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*5))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $01, $20, $00, $00, $02
+	.byte   $01, $10, $09, $06, $00
+	.byte   $01, $20, $06, $09, $02
 	.byte   $02, $30, $00, $0f, $04, $0f, $00, $06
 	.byte	$00
 
 heroDownKick1:						; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*6))
-	.byte   $01, $10, $00, $00, $00
+	.byte   $01, $10, $08, $07, $00
 	.byte   $02, $20, $00, $0f, $02, $0f, $00, $04
 	.byte   $02, $30, $00, $0f, $06, $0f, $00, $08
 	.byte	$00
 
 heroDownKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*7))
-	.byte   $01, $10, $00, $00, $00
-	.byte   $02, $20, $00, $0f, $02, $0f, $00, $04
-	.byte   $04, $30, $00, $0f, $06, $0f, $00, $08, $1e, $0f, $0a, $2d, $00, $0c
+	.byte   $01, $10, $08, $25, $00
+	.byte   $02, $20, $02, $2b, $02, $11, $1c, $04
+	.byte   $04, $30, $00, $2d, $06, $0f, $1e, $08, $1e, $0f, $0a, $2d, $00, $0c
 	.byte	$00
 
 heroDownPunch1:						; 6 sprite blocks
@@ -113,34 +113,34 @@ heroStandKick1:						; 7 sprite blocks
 
 heroStandKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*12))
-	.byte   $02, $00, $00, $0f, $00, $1e, $00, $02
+	.byte   $02, $00, $00, $1e, $00, $1b, $03, $02
 	.byte   $03, $10, $00, $1e, $04, $0f, $0f, $06, $1e, $00, $08
-	.byte   $01, $20, $00, $0f, $0a
-	.byte   $01, $30, $00, $0f, $0c
+	.byte   $01, $20, $06, $18, $0a
+	.byte   $01, $30, $00, $1e, $0c
 	.byte	$00
 
 heroStandPunch1:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*13))
 	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
 	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $01, $20, $00, $0f, $08
-	.byte   $02, $30, $00, $0f, $0a, $0f, $00, $0c
+	.byte   $01, $20, $05, $0a, $08
+	.byte   $02, $30, $01, $0f, $0a, $10, $00, $0c
 	.byte	$00
 
 heroStandPunch2:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*14))
-	.byte   $01, $00, $00, $0f, $00
-	.byte   $01, $10, $00, $0f, $04
-	.byte   $01, $20, $00, $0f, $08
-	.byte   $02, $30, $00, $0f, $0a, $0f, $00, $0c
+	.byte   $01, $00, $02, $0f, $00
+	.byte   $01, $10, $02, $0f, $04
+	.byte   $01, $20, $05, $0b, $08
+	.byte   $02, $30, $01, $0f, $0a, $10, $00, $0c
 	.byte	$00
 
 heroStandPunch3:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*15))
 	.byte   $02, $00, $00, $0f, $00, $0f, $00, $02
 	.byte   $02, $10, $00, $0f, $04, $0f, $00, $06
-	.byte   $01, $20, $00, $0f, $08
-	.byte   $02, $30, $00, $0f, $0a, $0f, $00, $0c
+	.byte   $01, $20, $05, $0a, $08
+	.byte   $02, $30, $01, $0f, $0a, $10, $00, $0c
 	.byte	$00
 
 heroJump1:							; 4 sprite blocks
@@ -171,7 +171,7 @@ heroJumpKick1:						; 8 sprite blocks
 
 heroJump3:							; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
-	.byte   $01, $00, $0a, $0c, $00
+	.byte   $01, $00, $0e, $08, $00
 	.byte   $01, $10, $09, $0d, $02
 	.byte   $01, $20, $09, $0d, $04
 	.byte   $01, $30, $09, $0d, $06
@@ -180,15 +180,15 @@ heroJump3:							; 5 sprite blocks
 
 heroJumpRun1:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
-	.byte   $01, $00, $00, $00, $00
+	.byte   $01, $00, $0f, $00, $00
 	.byte   $02, $10, $00, $0f, $02, $0f, $00, $04
 	.byte   $02, $20, $00, $0f, $06, $0f, $00, $08
-	.byte   $01, $40, $00, $00, $0c
+	.byte   $01, $30, $00, $0f, $0a
 	.byte	$00
 
 heroJumpRun2:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
-	.byte   $01, $00, $0a, $0c, $00
+	.byte   $01, $00, $0d, $09, $00
 	.byte   $01, $10, $09, $0d, $02
 	.byte   $01, $20, $09, $0d, $04
 	.byte   $01, $30, $09, $0d, $06
@@ -196,7 +196,7 @@ heroJumpRun2:						; 4 sprite blocks
 
 heroHitLow1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*22))
-	.byte   $01, $00, $0a, $0c, $00
+	.byte   $01, $00, $0f, $07, $00
 	.byte   $01, $10, $09, $0d, $02
 	.byte   $01, $20, $09, $0d, $04
 	.byte   $01, $30, $09, $0d, $06
@@ -227,9 +227,9 @@ heroFall1:							; 8 sprite blocks
 
 heroFall2:							; 8 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*26))
-	.byte   $02, $00, $00, $0f, $00, $1e, $00, $02
-	.byte   $03, $10, $00, $1e, $04, $0f, $0f, $06, $1e, $00, $0a
-	.byte   $03, $20, $00, $1e, $0c, $0f, $0f, $0e, $1e, $00, $10
+	.byte   $02, $00, $00, $1e, $00, $0f, $0f, $02
+	.byte   $03, $10, $00, $1e, $04, $0f, $0f, $06, $1e, $00, $08
+	.byte   $03, $20, $00, $1e, $0a, $0f, $0f, $0c, $1e, $00, $e0
 	.byte	$00
 
 animationList:
@@ -251,6 +251,7 @@ animationList:
 	.word	.LOWORD(heroStandPunch3)
 	.word	.LOWORD(heroJump1)
 	.word	.LOWORD(heroJump2)
+	.word	.LOWORD(heroJumpKick1)
 	.word	.LOWORD(heroJump3)
 	.word	.LOWORD(heroJumpRun1)
 	.word	.LOWORD(heroJumpRun2)
