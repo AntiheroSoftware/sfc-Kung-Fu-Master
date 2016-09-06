@@ -352,7 +352,7 @@ heroDownKick:
 	.word .LOWORD(heroDownKick2)
 	.byte $04
 	.word .LOWORD(heroDownKick1)
-	.byte $04
+	.byte $01
 	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
@@ -365,6 +365,8 @@ heroDownPunch:
 	.word .LOWORD(heroDownPunch3)
 	.byte $08
 	.word .LOWORD(heroDownPunch2)
+	.byte $01
+	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
 heroDownPunchAgain:
@@ -376,6 +378,8 @@ heroDownPunchAgain:
 	.word .LOWORD(heroDownPunch3)
 	.byte $08
 	.word .LOWORD(heroDownPunch2)
+	.byte $01
+	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
 heroStandKick:
@@ -398,6 +402,8 @@ heroStandPunch:
 	.word .LOWORD(heroStandPunch3)
 	.byte $08
 	.word .LOWORD(heroStandPunch2)
+	.byte $01
+	.word .LOWORD(heroStand1)
 	.byte $ff
 
 heroStandPunchAgain:
@@ -409,6 +415,8 @@ heroStandPunchAgain:
 	.word .LOWORD(heroStandPunch3)
 	.byte $08
 	.word .LOWORD(heroStandPunch2)
+	.byte $01
+	.word .LOWORD(heroStand1)
 	.byte $ff
 
 heroJump:

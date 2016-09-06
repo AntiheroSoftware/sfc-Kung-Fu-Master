@@ -26,9 +26,17 @@
 			.export animationFramesList
 			.export animationFramesListIndex
 			.export heroStand1
+			.export heroStand
+			.export animHero
+			.export animAddr
 			.export KFM_Player_final_Tiles
+			.export heroTransferAddr
+
+			.export animFrameIndex
+            .export animationFrameCounter
 
 			.export reactHeroAnimation
+			.export reactHeroAnimationFrames
 			.export animationJumpFrameCounter
 			.export heroYOffset
 
@@ -116,6 +124,8 @@ animationFramesListIndex:
 	lda #$00
 	sta animationListIndex
 	sta animationListIndex+1
+	sta animationFramesListIndex
+	sta animationFramesListIndex+1
 
 	pla
 	sta heroYOffset
@@ -327,13 +337,15 @@ endFillLoop:
     lda animFrameIndex
     tay
     lda animationFrameCounter
+    cmp #$00                        ; first time we do that animation
+	beq firstFrame
+
+    dec								; decrement to match count
     cmp (animAddr),y              	; we did all frames for that index
     beq nextFrame
 
-    cmp #$00                        ; first time we do that animation
-    beq firstFrame
-
-	inc animationFrameCounter
+									; TODO remove instruction comments
+;	inc animationFrameCounter		; disable this to make it manual on testing
 
     lda forceRefresh
     cmp #$01
@@ -879,6 +891,139 @@ endHeroPadCheck:
 	ldy animationList,X
 	ldx $020000,Y
 	stx heroTransferAddr			; store address to transfer hero tiles (we do it during VBlank)
+
+	plb
+	pla
+	plx
+	ply
+	rts
+.endproc
+
+;*******************************************************************************
+;*** reactHeroAnimationFrames **************************************************
+;*******************************************************************************
+;*** X contains pad like data                                                ***
+;*******************************************************************************
+
+.proc reactHeroAnimationFrames
+	phy
+	phx
+	pha
+	phb
+
+	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
+	pha
+	plb
+
+	txa
+
+	;*** Set the good mirror mode for hero sprite ***
+	;************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_LEFT
+	beq :+
+	jsr setMirrorSpriteMode
+	lda #$01
+	sta forceRefresh
+	bra :++
+
+:	lda padFirstPushDataLow1
+	bit #PAD_LOW_RIGHT
+	beq :+
+	jsr setNormalSpriteMode
+	lda #$01
+	sta forceRefresh
+:
+
+	;*** check for L and R for animation change ***
+	;**********************************************
+
+	lda padFirstPushDataHigh1
+	bit #PAD_HIGH_L
+	beq :+
+
+	stz animFrameIndex
+	ldx #$0000
+	stx animationFrameCounter
+
+	lda #$01
+	sta animInProgress
+
+	lda animationFramesListIndex
+	dec
+	dec
+	sta animationFramesListIndex
+	cmp #$fe
+	bne endHeroPadCheck
+
+	lda #$14
+	sta animationFramesListIndex
+
+	lda #$01
+	sta forceRefresh
+
+	bra :++
+
+:	lda padFirstPushDataHigh1
+	bit #PAD_HIGH_R
+	beq :+
+
+	stz animFrameIndex
+	ldx #$0000
+	stx animationFrameCounter
+
+	lda #$01
+	sta animInProgress
+
+	lda animationFramesListIndex
+	inc
+	inc
+	sta animationFramesListIndex
+	cmp #$16
+	bne endHeroPadCheck
+
+	lda #$00
+	sta animationFramesListIndex
+
+	lda #$01
+	sta forceRefresh
+
+:
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_DOWN
+	beq :+
+
+	inc animationFrameCounter
+
+:
+
+endHeroPadCheck:
+
+	; TODO put call to animHero
+	ldy animationFramesListIndex
+	ldx animationFramesList,Y
+	stx animAddr
+
+	; Always force refresh
+	;lda #$01
+	;sta forceRefresh
+
+	jsr animHero
+
+	lda animInProgress
+	cmp #$00						; are we at the end of no loop animation
+	bne :+
+
+	; reset the animation anyway
+	stz animFrameIndex
+	ldx #$0000
+	stx animationFrameCounter
+	lda #$01
+	sta animInProgress
+
+:
 
 	plb
 	pla
