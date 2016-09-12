@@ -237,7 +237,9 @@ checkForGameStart:
 	beq gameStart
 
 	ldx padPushData1
-	jsr reactHero
+	jsr reactHeroAnimationFrames
+	;jsr reactHeroAnimation
+	;jsr reactHero
 
 	wai
 	bra infiniteLoop
