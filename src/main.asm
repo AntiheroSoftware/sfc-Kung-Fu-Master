@@ -14,7 +14,7 @@
 
             .include	"includes/base.inc"
             .include	"includes/hero.inc"
-            .include	"includes/ennemy.inc"
+            .include	"includes/enemy.inc"
             .include	"includes/level.inc"
             .include	"includes/score.inc"
 
@@ -202,7 +202,8 @@ titleScreen:
 
 	lda #HERO_TITLE_SCREEN_Y_OFFSET
 	jsr initHeroSprite
-	jsr initEnnemySprite
+	jsr initEnemySprite
+	jsr hdmaInitTitle
 
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
@@ -237,9 +238,9 @@ checkForGameStart:
 	beq gameStart
 
 	ldx padPushData1
-	jsr reactHeroAnimationFrames
-	;jsr reactHeroAnimation
-	;jsr reactHero
+	jsr reactHero
+
+	jsr reactEnemy
 
 	wai
 	bra infiniteLoop
@@ -255,6 +256,8 @@ gameStart:
 
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
+	jsr initEnemySprite
+	jsr hdmaInitGame
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -282,6 +285,8 @@ gameStartInfiniteLoop:
 
 	ldx padPushData1
 	jsr reactHero
+
+	jsr reactEnemy
 
 	jsr updateTime
 

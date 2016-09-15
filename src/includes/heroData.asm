@@ -283,35 +283,6 @@ heroFall2:							; 8 sprite blocks
 	.byte             $1e, $0f, $e0
 	.byte	$00
 
-animationList:
-	.word	.LOWORD(heroStand1)
-	.word	.LOWORD(heroWalk1)
-	.word	.LOWORD(heroWalk2)
-	.word	.LOWORD(heroWalk3)
-	.word	.LOWORD(heroWalk4)
-	.word	.LOWORD(heroDownStand1)
-	.word	.LOWORD(heroDownKick1)
-	.word	.LOWORD(heroDownKick2)
-	.word	.LOWORD(heroDownPunch1)
-	.word	.LOWORD(heroDownPunch2)
-	.word	.LOWORD(heroDownPunch3)
-	.word	.LOWORD(heroStandKick1)
-	.word	.LOWORD(heroStandKick2)
-	.word	.LOWORD(heroStandPunch1)
-	.word	.LOWORD(heroStandPunch2)
-	.word	.LOWORD(heroStandPunch3)
-	.word	.LOWORD(heroJump1)
-	.word	.LOWORD(heroJump2)
-	.word	.LOWORD(heroJumpKick1)
-	.word	.LOWORD(heroJump3)
-	.word	.LOWORD(heroJumpRun1)
-	.word	.LOWORD(heroJumpRun2)
-	.word	.LOWORD(heroHitLow1)
-	.word	.LOWORD(heroHitHigh1)
-	.word	.LOWORD(heroGrabbed1)
-	.word	.LOWORD(heroFall1)
-	.word	.LOWORD(heroFall2)
-
 ;******************************************************************************
 ;*** Animation frames *********************************************************
 ;******************************************************************************
@@ -446,19 +417,6 @@ heroJumpRun:
 	.byte $03
 	.word .LOWORD(heroStand1)
 	.byte $ff
-
-animationFramesList:
-	.word	.LOWORD(heroStand)
-	.word	.LOWORD(heroWalk)
-	.word	.LOWORD(heroDownStand)
-	.word	.LOWORD(heroDownKick)
-	.word	.LOWORD(heroDownPunch)
-	.word	.LOWORD(heroDownPunchAgain)
-	.word	.LOWORD(heroStandKick)
-	.word	.LOWORD(heroStandPunch)
-	.word	.LOWORD(heroStandPunchAgain)
-	.word	.LOWORD(heroJump)
-	.word	.LOWORD(heroJumpRun)
 
 heroJumpOffsetTable:
 	; old values

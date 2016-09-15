@@ -1,29 +1,39 @@
+ENEMY_DATA_BANK = $01
+
+ENEMY_STATUS_ACTIVE_FLAG 	= %00000001
+ENEMY_STATUS_MIROR_FLAG 	= %00000010
+
 .segment "BANK1"
 
-ennemySpritePal:
+enemySpritePal:
     .incbin "../ressource/ennemies.clr"
 
 .segment "BANK3"
 
-ennemySpriteBank1Tiles:
+enemySpriteBank1Tiles:
     .incbin "../ressource/ennemies1.pic"
 
-ennemySpriteBank2Tiles:
+enemySpriteBank2Tiles:
     .incbin "../ressource/ennemies2.pic"
 
-ennemySpriteBank3Tiles:
+enemySpriteBank3Tiles:
     .incbin "../ressource/ennemies3.pic"
 
-ennemySpriteBank4Tiles:
+enemySpriteBank4Tiles:
     .incbin "../ressource/ennemies4.pic"
 
 .segment "RODATA"
 
-hdmaMem:
+hdmaMemTitle:
+	.byte $68,%00000001,$20,%00000001,$10,%00001001,$10,%00010001,$10,%00011001,$00
+
+hdmaMemGame:
 	.byte $68,%00000001,$20,%00000001,$10,%00001001,$10,%00010001,$10,%00011001,$00
 
 verticalOffsetTable:
 	.byte $80, $90, $a0, $b0
+
+.segment "BANK1"
 
 ;******************************************************************************
 ;*** Sprite definition ********************************************************
@@ -69,11 +79,11 @@ grabbingWalk3:						; 6 sprite blocks
 
 grabbingWalk:
 	.byte $08
-	.word grabbingWalk1
+	.word .LOWORD(grabbingWalk1)
 	.byte $08
-	.word grabbingWalk2
+	.word .LOWORD(grabbingWalk2)
 	.byte $08
-	.word grabbingWalk1
+	.word .LOWORD(grabbingWalk1)
 	.byte $08
-	.word grabbingWalk3
+	.word .LOWORD(grabbingWalk3)
 	.byte $00
