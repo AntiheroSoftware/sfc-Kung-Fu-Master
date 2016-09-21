@@ -78,6 +78,9 @@ EnemyArrayFlag:
 .A8
 .I16
 
+; TODO test with 14 enemies walking
+; TODO implement mirroring of enemies depending on direction
+
 ;******************************************************************************
 ;*** initEnemySprite **********************************************************
 ;******************************************************************************
@@ -125,22 +128,7 @@ initArrayLoop:
 
 endInitArrayLoop:
 
-;	lda #$08
-;	ldx #grabbingWalk1
-;	ldy #$0050
-;	jsr setEnemyOAM
-
-;	lda #$10
-;	ldx #grabbingWalk1
-;	ldy #$0030
-;	jsr setEnemyOAM
-
-;	lda #$18
-;	ldx #grabbingWalk1
-;	ldy #$0010
-;	jsr setEnemyOAM
-
-	lda #$01
+	lda #$00
 	ldx #.LOWORD(grabbingWalk)
 	jsr addEnemy
 
@@ -257,7 +245,7 @@ endInitArrayLoop:
 .endproc
 
 ;******************************************************************************
-;*** setOam ennemies with hdma trick ******************************************
+;*** setEnemyOAM ennemies with hdma trick *************************************
 ;******************************************************************************
 ;*** offsetOAM  (A register)                                                ***
 ;*** dataAddr   (X register)                                                ***
@@ -275,7 +263,7 @@ endInitArrayLoop:
 	.A16
 
 	and #$00ff
-	asl
+	asl								; TODO why do we need to * 4 ???
 	asl
 	tax								; set OAM offset table
 
@@ -501,6 +489,8 @@ noLoop:
 	asl
 	asl
 	asl								; index slot * 8
+	clc
+	adc #$08						; computed index slot + 8
 	pha
 
     lda EnemyArrayAnimFrameIndex,X
@@ -545,6 +535,11 @@ endAnim:
 ;*** index of slot  (A register)                                            ***
 ;******************************************************************************
 
+; loop on "active" enemies
+; check for collision ???
+; update X offset
+; stategy to make enemy appear (need reverse engenering of the arcade ???)
+
 .proc reactEnemy
 	pha
 	phx
@@ -554,8 +549,8 @@ endAnim:
 	rep #$20
 	.A16
 
-	ldy #$0002
-	lda EnemyArrayXOffset,Y			; TODO not the right place to do it
+	ldy #$0000
+	lda EnemyArrayXOffset,Y			; TODO do it wisely
 	inc								; increment xPos
 	sta EnemyArrayXOffset,Y
 
@@ -564,7 +559,7 @@ endAnim:
 	.A8
 	.I16
 
-	lda #$01						; slot to anim
+	lda #$00						; slot to anim
 	jsr animEnemy
 
 	plp
