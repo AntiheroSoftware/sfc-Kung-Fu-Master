@@ -178,6 +178,9 @@ endInitArrayLoop:
 	stz EnemyArrayAnimFrameIndex,X
 	stz EnemyArrayAnimFrameCounter,X
 
+	lda #$00
+	ora #ENEMY_STATUS_ACTIVE_FLAG
+	sta EnemyArrayFlag,X
 
 	plp
 	ply
@@ -535,7 +538,6 @@ endAnim:
 ;*** index of slot  (A register)                                            ***
 ;******************************************************************************
 
-; loop on "active" enemies
 ; check for collision ???
 ; update X offset
 ; stategy to make enemy appear (need reverse engenering of the arcade ???)
@@ -545,6 +547,17 @@ endAnim:
 	phx
 	phy
 	php
+
+	ldx #$0000
+	ldy #$0000
+
+reactLoop:
+	cpx #ENEMY_SPRITE_NUMBER
+	beq endReactLoop
+
+	lda EnemyArrayFlag,X
+	and ENEMY_STATUS_ACTIVE_FLAG
+	beq skipReact
 
 	rep #$20
 	.A16
@@ -559,8 +572,16 @@ endAnim:
 	.A8
 	.I16
 
-	lda #$00						; slot to anim
+	txa								; slot to anim
 	jsr animEnemy
+
+skipReact:
+	inx								; update indexes
+	iny
+	iny
+	bra reactLoop
+
+endReactLoop:
 
 	plp
 	ply
