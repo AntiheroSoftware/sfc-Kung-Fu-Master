@@ -40,7 +40,7 @@ SPRITE_TILE_ZONE2_ADDR	= $4000
 SPRITE_TILE_ZONE3_ADDR	= $5000
 SPRITE_TILE_ZONE4_ADDR	= $6000
 
-ENEMY_SPRITE_NUMBER = 14
+ENEMY_SPRITE_NUMBER = 13
 
 .segment "ZEROPAGE"
 
@@ -128,7 +128,31 @@ initArrayLoop:
 
 endInitArrayLoop:
 
-	lda #$00
+	lda #$00						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$01						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$02						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$03						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$04						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$05						; enemy slot ( 0 - 13 )
+	ldx #.LOWORD(grabbingWalk)
+	jsr addEnemy
+
+	lda #$06						; enemy slot ( 0 - 13 )
 	ldx #.LOWORD(grabbingWalk)
 	jsr addEnemy
 
@@ -166,7 +190,14 @@ endInitArrayLoop:
 	tya								; transfer saved anim adress in a
 
 	sta EnemyArrayAnimAddress,X		; store anim address
-	stz EnemyArrayXOffset,X			; reset X Offset
+
+	txa
+	asl
+	asl
+	asl
+	asl
+	sta EnemyArrayXOffset,X			; reset X Offset
+	;stz EnemyArrayXOffset,X			; reset X Offset
 
 	plx								; get back index slot
 
@@ -399,6 +430,28 @@ endFillLoop:
 	sta oamData + $205
 	sta oamData + $206
 	sta oamData + $207
+	sta oamData + $208
+	sta oamData + $209
+	sta oamData + $20A
+	sta oamData + $20B
+	sta oamData + $20C
+	sta oamData + $20D
+	sta oamData + $20E
+	sta oamData + $20F
+	sta oamData + $210
+	sta oamData + $211
+	sta oamData + $212
+	sta oamData + $213
+	sta oamData + $214
+	sta oamData + $215
+	sta oamData + $216
+	sta oamData + $217
+	sta oamData + $218
+	sta oamData + $219
+	sta oamData + $21A
+	sta oamData + $21B
+	sta oamData + $21C
+	sta oamData + $21D
 
     plx
 	ply
@@ -562,9 +615,8 @@ reactLoop:
 	rep #$20
 	.A16
 
-	ldy #$0000
-	lda EnemyArrayXOffset,Y			; TODO do it wisely
-	inc								; increment xPos
+	lda EnemyArrayXOffset,Y			; increment xPos
+	inc
 	sta EnemyArrayXOffset,Y
 
 	rep #$10

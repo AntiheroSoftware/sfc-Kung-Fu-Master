@@ -196,14 +196,12 @@ titleScreen:
 	setBG1SC SPLASH_MAP_ADDR, $00
 	setBG12NBA SPLASH_TILE_ADDR, $0000
 
-	VRAMLoad titleScreenTiles, SPLASH_TILE_ADDR, $14C0
+	VRAMLoad titleScreenTiles, SPLASH_TILE_ADDR, $16A0
 	VRAMLoad titleScreenMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad titleScreenPal, $00, $20
 
 	lda #HERO_TITLE_SCREEN_Y_OFFSET
 	jsr initHeroSprite
-	jsr initEnemySprite
-	jsr hdmaInitTitle
 
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
@@ -239,8 +237,6 @@ checkForGameStart:
 
 	ldx padPushData1
 	jsr reactHero
-
-	jsr reactEnemy
 
 	wai
 	bra infiniteLoop
