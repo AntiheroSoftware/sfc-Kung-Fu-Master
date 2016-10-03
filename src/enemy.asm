@@ -19,6 +19,7 @@
             .export 	hdmaInitTitle
             .export 	hdmaInitGame
 
+			.export EnemyTempXOffsetHigh
             .export setEnemyOAM
             .export EnemyArrayAnimAddress
             .export EnemyArrayAnimFrameIndex
@@ -32,6 +33,7 @@
             .export grabbingWalk
             .export grabbingWalk1
             .export grabbingWalk2
+            .export highByte
 
 .include "includes/enemyData.asm"
 
@@ -51,6 +53,9 @@ EnemyCurrentXOffset:
 	.res 2
 
 .segment "BSS"
+
+EnemyTempXOffsetHigh:
+	.res 1
 
 EnemyArrayAnimAddress:
  	.res 2 * ENEMY_SPRITE_NUMBER
@@ -132,29 +137,29 @@ endInitArrayLoop:
 	ldx #.LOWORD(grabbingWalk)
 	jsr addEnemy
 
-	lda #$01						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$01						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
-	lda #$02						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$02						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
-	lda #$03						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$03						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
-	lda #$04						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$04						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
-	lda #$05						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$05						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
-	lda #$06						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
-	jsr addEnemy
+	;lda #$06						; enemy slot ( 0 - 13 )
+	;ldx #.LOWORD(grabbingWalk)
+	;jsr addEnemy
 
 	plb
 	plp
@@ -187,7 +192,7 @@ endInitArrayLoop:
 	phx								; save X (index slot)
 	asl								; index slot * 2
 	tax
-	tya								; transfer saved anim adress in a
+	tya								; transfer saved anim address in a
 
 	sta EnemyArrayAnimAddress,X		; store anim address
 
@@ -197,7 +202,7 @@ endInitArrayLoop:
 	asl
 	asl
 	sta EnemyArrayXOffset,X			; reset X Offset
-	;stz EnemyArrayXOffset,X			; reset X Offset
+	;stz EnemyArrayXOffset,X		; reset X Offset
 
 	plx								; get back index slot
 
@@ -297,7 +302,7 @@ endInitArrayLoop:
 	.A16
 
 	and #$00ff
-	asl								; TODO why do we need to * 4 ???
+	asl								; OAMSlot * 4 cause each slot is taking 4 bytes
 	asl
 	tax								; set OAM offset table
 
@@ -307,7 +312,8 @@ endInitArrayLoop:
 	.I16
 
     lda #$00
-	sta spriteCounter
+	sta spriteCounter				; reset spriteCounter
+	sta EnemyTempXOffsetHigh		; reset EnemyTempXOffsetHigh
 
 lineLoop:							; loop for each line
     lda ($01,s),y					; load number block for this line
@@ -321,28 +327,57 @@ continueLineLoop:
     lda ($02,s),y					; save it to the stack
     clc
     ;adc heroYOffset				; TODO make a global for enemy Y offset
-    adc #$78
+    adc #$80
 	pha
 
 	; TODO check direction of enemy
-	jmp blockLoop					; jmp to correct blockLoop code (mirror/normal)
+	;jmp blockLoop					; jmp to correct blockLoop code (mirror/normal)
+	jmp blockLoopMirror					; jmp to correct blockLoop code (mirror/normal)
 
 blockLoop:
 	lda $02,s						; load blockNumber
 	cmp #$00
-	beq endBlockLoop				; check all block are done
-	dec
+	bne :+
+	jmp endBlockLoop				; check all block are done
+:	dec
 	sta $02,s						; update counter
 
-	inc	spriteCounter
-
 	iny
+
+	lda $06,s						; check if high byte of X pos is greater than $00
+	cmp #$00
+	beq :+
+
 	lda ($03,s),y					; load X pos for that
 	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
 
-	lda $01,s
+	bcs :++							; check and branch if carry is set
+
+	lda EnemyTempXOffsetHigh
+	lsr
+	ora #%10000000
+	sta EnemyTempXOffsetHigh		; set high byte on for the sprite
+
+	bra :+++
+
+:	lda ($03,s),y					; load X pos for that
+	clc
+	adc $05,s                		; add saved Global X Pos
+	sta oamData,x                   ; H (X) pos of the sprite
+
+	bcc :+							; check and branch if carry is clear
+
+	iny								; skip this sprite cause of overflow
+	iny
+	bra blockLoop
+
+:	lda EnemyTempXOffsetHigh
+	lsr
+	sta EnemyTempXOffsetHigh
+
+:	lda $01,s
 	sta oamData+1,x                 ; V (Y) pos of the sprite
 
 	iny								; skip mirror xOffset
@@ -350,7 +385,7 @@ blockLoop:
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%00110011					; TODO rectify this
+	lda #%00110011					; TODO comment this
 	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
 
 	inx
@@ -358,25 +393,53 @@ blockLoop:
 	inx
 	inx
 
+	inc	spriteCounter
+
 	bra blockLoop
 
-blockLoopMirror:
+blockLoopMirror:					; lda #%01110011					; TODO rectify this
 	lda $02,s						; load blockNumber
 	cmp #$00
 	beq endBlockLoop				; check all block are done
 	dec
 	sta $02,s						; update counter
 
-	inc	spriteCounter
-
-	iny								; skip non mirror xOffset
 	iny
+	iny								; skip normal xOffset
+
+	lda $06,s						; check if high byte of X pos is greater than $00
+	cmp #$00
+	beq :+
+
 	lda ($03,s),y					; load X pos for that
 	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
 
-	lda $01,s
+	bcs :++							; check and branch if carry is set
+
+	lda EnemyTempXOffsetHigh
+	lsr
+	ora #%10000000
+	sta EnemyTempXOffsetHigh		; set high byte on for the sprite
+
+	bra :+++
+
+:	lda ($03,s),y					; load X pos for that
+	clc
+	adc $05,s                		; add saved Global X Pos
+	sta oamData,x                   ; H (X) pos of the sprite
+
+	bcc :+							; check and branch if carry is clear
+
+	iny								; skip this sprite cause of overflow
+	bra blockLoopMirror
+
+:	lda EnemyTempXOffsetHigh
+	lsr
+	sta EnemyTempXOffsetHigh
+
+:	lda $01,s
 	sta oamData+1,x                 ; V (Y) pos of the sprite
 
 	iny
@@ -391,6 +454,8 @@ blockLoopMirror:
 	inx
 	inx
 
+	inc	spriteCounter
+
 	bra blockLoopMirror
 
 endBlockLoop:
@@ -399,7 +464,7 @@ endBlockLoop:
 	pla
 	pla
 
-	bra lineLoop
+	jmp lineLoop
 
 endLineLoop:
 
@@ -411,6 +476,10 @@ fillLoop:
     lda #$e0
     sta oamData+1,x                 ; V (Y) pos of the sprite
 
+    lda EnemyTempXOffsetHigh
+	lsr
+	sta EnemyTempXOffsetHigh
+
     inx
     inx
     inx
@@ -421,37 +490,32 @@ fillLoop:
 
 endFillLoop:
 
+	; need to calculate offset
+	; offset is $200 + (offset OAM / 8)  * 2
+
+	; X offset goes from 0 -> FF -> 1F8 -> 200 becomes 00
+	; when doing that calculation keep high byte in memory
+
 	; TODO handle that correctly in function (NOT HARD CODED)
 	; TODO fix index for those
-	lda #%10101010
+	;lda #%10101010
+	;sta oamData + $202				; 4 sprites
+	;sta oamData + $203				; 4 sprites
+
+	lda EnemyTempXOffsetHigh
+	and #$0f
+	tay
+	lda highByte,Y
 	sta oamData + $202
+
+	lda EnemyTempXOffsetHigh
+	lsr
+	lsr
+	lsr
+	lsr
+	tay
+	lda highByte,Y
 	sta oamData + $203
-	sta oamData + $204
-	sta oamData + $205
-	sta oamData + $206
-	sta oamData + $207
-	sta oamData + $208
-	sta oamData + $209
-	sta oamData + $20A
-	sta oamData + $20B
-	sta oamData + $20C
-	sta oamData + $20D
-	sta oamData + $20E
-	sta oamData + $20F
-	sta oamData + $210
-	sta oamData + $211
-	sta oamData + $212
-	sta oamData + $213
-	sta oamData + $214
-	sta oamData + $215
-	sta oamData + $216
-	sta oamData + $217
-	sta oamData + $218
-	sta oamData + $219
-	sta oamData + $21A
-	sta oamData + $21B
-	sta oamData + $21C
-	sta oamData + $21D
 
     plx
 	ply
@@ -612,6 +676,10 @@ reactLoop:
 	and ENEMY_STATUS_ACTIVE_FLAG
 	beq skipReact
 
+	lda padPushDataLow1
+	bit #PAD_LOW_RIGHT
+	beq :+
+
 	rep #$20
 	.A16
 
@@ -624,6 +692,27 @@ reactLoop:
 	.A8
 	.I16
 
+	bra :++
+
+:
+
+	lda padPushDataLow1
+	bit #PAD_LOW_LEFT
+	beq :+
+
+	rep #$20
+	.A16
+
+	lda EnemyArrayXOffset,Y			; increment xPos
+	dec
+	sta EnemyArrayXOffset,Y
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+:
 	txa								; slot to anim
 	jsr animEnemy
 
