@@ -33,51 +33,51 @@ hero.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK2             Offs=000000  Size=006FC0  Align=00001  Fill=0000
 enemy.o:
-    CODE              Offs=000C64  Size=0003A5  Align=00001  Fill=0000
+    CODE              Offs=000C64  Size=0003A7  Align=00001  Fill=0000
     RODATA            Offs=000082  Size=00001A  Align=00001  Fill=0000
-    BSS               Offs=0000EA  Size=000076  Align=00001  Fill=0000
+    BSS               Offs=0000EA  Size=000083  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=000006  Size=000004  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000006  Size=000002  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
-    BANK1             Offs=0041A0  Size=000088  Align=00001  Fill=0000
+    BANK1             Offs=0041A0  Size=0000F9  Align=00001  Fill=0000
     BANK3             Offs=000000  Size=008000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
-    CODE              Offs=001009  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=00100B  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=00009C  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000160  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00016D  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=00000A  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000008  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     STARTUP           Offs=000000  Size=000039  Align=00001  Fill=0000
     ROMINFO           Offs=000000  Size=000030  Align=00001  Fill=0000
     VECTORS           Offs=000000  Size=00001C  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(init.o):
-    CODE              Offs=001009  Size=0000F3  Align=00001  Fill=0000
+    CODE              Offs=00100B  Size=0000F3  Align=00001  Fill=0000
     RODATA            Offs=00009C  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000160  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00016D  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=00000A  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000008  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(event.o):
-    CODE              Offs=0010FC  Size=0000CE  Align=00001  Fill=0000
+    CODE              Offs=0010FE  Size=0000CE  Align=00001  Fill=0000
     RODATA            Offs=00009C  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000160  Size=000083  Align=00001  Fill=0000
+    BSS               Offs=00016D  Size=000083  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=00000A  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000008  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(pad.o):
-    CODE              Offs=0011CA  Size=000136  Align=00001  Fill=0000
+    CODE              Offs=0011CC  Size=000136  Align=00001  Fill=0000
     RODATA            Offs=00009C  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=0001E3  Size=000012  Align=00001  Fill=0000
+    BSS               Offs=0001F0  Size=000012  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=00000A  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000008  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 /Users/lint/Dropbox/Snes/projects/Snes_Tools/cc65-sfclib/bin/sfc.lib(sprite.o):
-    CODE              Offs=001300  Size=000074  Align=00001  Fill=0000
+    CODE              Offs=001302  Size=000074  Align=00001  Fill=0000
     RODATA            Offs=00009C  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=0001F5  Size=000221  Align=00001  Fill=0000
+    BSS               Offs=000202  Size=000221  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
-    ZEROPAGE          Offs=00000A  Size=000000  Align=00001  Fill=0000
+    ZEROPAGE          Offs=000008  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 
 
@@ -87,14 +87,14 @@ Name                   Start     End    Size  Align
 ----------------------------------------------------
 DATA                  000000  000000  000000  00001
 NULL                  000000  000000  000000  00001
-ZEROPAGE              000000  000009  00000A  00001
-BSS                   000200  000615  000416  00001
+ZEROPAGE              000000  000007  000008  00001
+BSS                   000200  000622  000423  00001
 STARTUP               008000  008038  000039  00001
-CODE                  008039  0093AC  001374  00001
-RODATA                0093AD  009448  00009C  00001
+CODE                  008039  0093AE  001376  00001
+RODATA                0093AF  00944A  00009C  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
-BANK1                 018000  01C227  004228  00001
+BANK1                 018000  01C298  004299  00001
 BANK2                 028000  02EFBF  006FC0  00001
 BANK3                 038000  03FFFF  008000  00001
 BANK4                 048000  04E35F  006360  00001
@@ -104,48 +104,48 @@ Exports list by name:
 ---------------------
 EnemyArrayAnimAddress     0002EB  LA    EnemyArrayAnimFrameCounter 000312  LA    
 EnemyArrayAnimFrameIndex  000305  LA    EnemyArrayAnimJumpFramecounter 00031F  LA    
-EnemyArrayFlag            000353  LA    EnemyArrayOAMSlot         000346  LA    
+EnemyArrayFlag            000360  LA    EnemyArrayOAMSlotOffset   000346  LA    
 EnemyArrayXOffset         00032C  LA    EnemyTempXOffsetHigh      0002EA  LA    
-OAMDataUpdated            00939F RLA    _IRQHandler               00836D RLA    
+OAMDataUpdated            0093A1 RLA    _IRQHandler               00836D RLA    
 _NMIHandler               00836E RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
 __ROMINFO_LAST__          00FFE0  LA    __ROMINFO_SIZE__          000034  EA    
 __ROMINFO_START__         00FFB0  LA    __STARTUP__               000001 REA    
 __VECTORS_FILEOFFS__      007FE4  EA    __VECTORS_LAST__          010000  LA    
 __VECTORS_SIZE__          00001C  EA    __VECTORS_START__         00FFE4  LA    
 _main                     008039 RLA    _preInit                  008375 RLA    
-addEnemy                  008DE6  LA    addEvent                  009161 RLA    
-animEnemy                 008F71  LA    animationJumpFrameCounter 0002E4  LA    
-clearOAM                  009339  LA    copyOAM                   009368 RLA    
-doUpdateScore             0002CE  LA    eventsTable               000360  LA    
-getEventCounter           0091F7 RLA    grabbingWalk              01C21B  LA    
+addEnemy                  008DE6  LA    addEvent                  009163 RLA    
+animEnemy                 008F81  LA    animationJumpFrameCounter 0002E4  LA    
+clearOAM                  00933B  LA    copyOAM                   00936A RLA    
+doUpdateScore             0002CE  LA    eventsTable               00036D  LA    
+getEventCounter           0091F9 RLA    grabbingWalk              01C27B  LA    
 grabbingWalk1             01C1D0  LA    grabbingWalk2             01C1E5  LA    
-hdmaInitGame              008E38 RLA    hdmaInitTitle             008E17  LA    
+hdmaInitGame              008E3C RLA    hdmaInitTitle             008E1B  LA    
 heroYOffset               000003  LZ    highByte                  01C1C0  LA    
-initEnemySprite           008C9D RLA    initEvents                009135 RLA    
+initEnemySprite           008C9D RLA    initEvents                009137 RLA    
 initHeroSprite            00892D RLA    initLevel                 0083F2 RLA    
-initPad                   009203 RLA    initScore                 00864F RLA    
-initSnes                  009042 RLA    oamData                   0003F5 RLA    
-padFirstPushData1         0003E5  LA    padFirstPushDataHigh1     0003E6  LA    
-padFirstPushDataLow1      0003E5 RLA    padPushData1              0003E3 RLA    
-padPushData2              0003E9  LA    padPushData3              0003ED  LA    
-padPushData4              0003F1  LA    padPushDataHigh1          0003E4  LA    
-padPushDataHigh2          0003EA  LA    padPushDataHigh3          0003ED  LA    
-padPushDataHigh4          0003F1  LA    padPushDataLow1           0003E3 RLA    
-padPushDataLow2           0003E9  LA    padPushDataLow3           0003EE  LA    
-padPushDataLow4           0003F2  LA    padReleaseData1           0003E7  LA    
-padReleaseData2           0003EB  LA    padReleaseData3           0003EF  LA    
-padReleaseData4           0003F3  LA    padReleaseDataHigh1       0003E8  LA    
-padReleaseDataHigh2       0003EC  LA    padReleaseDataHigh3       0003EF  LA    
-padReleaseDataHigh4       0003F3  LA    padReleaseDataLow1        0003E7 RLA    
-padReleaseDataLow2        0003EB  LA    padReleaseDataLow3        0003F0  LA    
-padReleaseDataLow4        0003F4  LA    processEvents             009190 RLA    
-reactEnemy                008FF4 RLA    reactHero                 008B3F RLA    
-readPad1                  009241 RLA    readPad2                  00927F  LA    
-readPad3                  0092BD  LA    readPad4                  0092FB  LA    
-removeEvent               0091E0  LA    scoreEvent                00889C  LA    
+initPad                   009205 RLA    initScore                 00864F RLA    
+initSnes                  009044 RLA    oamData                   000402 RLA    
+padFirstPushData1         0003F2  LA    padFirstPushDataHigh1     0003F3  LA    
+padFirstPushDataLow1      0003F2 RLA    padPushData1              0003F0 RLA    
+padPushData2              0003F6  LA    padPushData3              0003FA  LA    
+padPushData4              0003FE  LA    padPushDataHigh1          0003F1  LA    
+padPushDataHigh2          0003F7  LA    padPushDataHigh3          0003FA  LA    
+padPushDataHigh4          0003FE  LA    padPushDataLow1           0003F0 RLA    
+padPushDataLow2           0003F6  LA    padPushDataLow3           0003FB  LA    
+padPushDataLow4           0003FF  LA    padReleaseData1           0003F4  LA    
+padReleaseData2           0003F8  LA    padReleaseData3           0003FC  LA    
+padReleaseData4           000400  LA    padReleaseDataHigh1       0003F5  LA    
+padReleaseDataHigh2       0003F9  LA    padReleaseDataHigh3       0003FC  LA    
+padReleaseDataHigh4       000400  LA    padReleaseDataLow1        0003F4 RLA    
+padReleaseDataLow2        0003F8  LA    padReleaseDataLow3        0003FD  LA    
+padReleaseDataLow4        000401  LA    processEvents             009192 RLA    
+reactEnemy                008FF6 RLA    reactHero                 008B3F RLA    
+readPad1                  009243 RLA    readPad2                  009281  LA    
+readPad3                  0092BF  LA    readPad4                  0092FD  LA    
+removeEvent               0091E2  LA    scoreEvent                00889C  LA    
 scoreMapData              00020E  LA    scorePlayer1              0002D0  LA    
 scrollDirection           00020B RLA    scrollLevel               0084E9 RLA    
-scrollValue               000209  LA    setEnemyOAM               008E59  LA    
+scrollValue               000209  LA    setEnemyOAM               008E5D  LA    
 setEnergyPlayer           0087D2  LA    splashScreen              00838C  LA    
 spriteCounter             0002E1 RLA    timeCounter               0002DB  LA    
 transferHeroSpriteDataEvent 008ADA RLA    updateScorePlayer1        008755  LA    
@@ -164,22 +164,22 @@ spriteCounter             0002E1 RLA    animationJumpFrameCounter 0002E4  LA
 EnemyTempXOffsetHigh      0002EA  LA    EnemyArrayAnimAddress     0002EB  LA    
 EnemyArrayAnimFrameIndex  000305  LA    EnemyArrayAnimFrameCounter 000312  LA    
 EnemyArrayAnimJumpFramecounter 00031F  LA    EnemyArrayXOffset         00032C  LA    
-EnemyArrayOAMSlot         000346  LA    EnemyArrayFlag            000353  LA    
-eventsTable               000360  LA    padPushDataLow1           0003E3 RLA    
-padPushData1              0003E3 RLA    padPushDataHigh1          0003E4  LA    
-padFirstPushDataLow1      0003E5 RLA    padFirstPushData1         0003E5  LA    
-padFirstPushDataHigh1     0003E6  LA    padReleaseDataLow1        0003E7 RLA    
-padReleaseData1           0003E7  LA    padReleaseDataHigh1       0003E8  LA    
-padPushDataLow2           0003E9  LA    padPushData2              0003E9  LA    
-padPushDataHigh2          0003EA  LA    padReleaseDataLow2        0003EB  LA    
-padReleaseData2           0003EB  LA    padReleaseDataHigh2       0003EC  LA    
-padPushDataHigh3          0003ED  LA    padPushData3              0003ED  LA    
-padPushDataLow3           0003EE  LA    padReleaseData3           0003EF  LA    
-padReleaseDataHigh3       0003EF  LA    padReleaseDataLow3        0003F0  LA    
-padPushData4              0003F1  LA    padPushDataHigh4          0003F1  LA    
-padPushDataLow4           0003F2  LA    padReleaseData4           0003F3  LA    
-padReleaseDataHigh4       0003F3  LA    padReleaseDataLow4        0003F4  LA    
-oamData                   0003F5 RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
+EnemyArrayOAMSlotOffset   000346  LA    EnemyArrayFlag            000360  LA    
+eventsTable               00036D  LA    padPushDataLow1           0003F0 RLA    
+padPushData1              0003F0 RLA    padPushDataHigh1          0003F1  LA    
+padFirstPushDataLow1      0003F2 RLA    padFirstPushData1         0003F2  LA    
+padFirstPushDataHigh1     0003F3  LA    padReleaseDataLow1        0003F4 RLA    
+padReleaseData1           0003F4  LA    padReleaseDataHigh1       0003F5  LA    
+padPushDataLow2           0003F6  LA    padPushData2              0003F6  LA    
+padPushDataHigh2          0003F7  LA    padReleaseDataLow2        0003F8  LA    
+padReleaseData2           0003F8  LA    padReleaseDataHigh2       0003F9  LA    
+padPushDataHigh3          0003FA  LA    padPushData3              0003FA  LA    
+padPushDataLow3           0003FB  LA    padReleaseData3           0003FC  LA    
+padReleaseDataHigh3       0003FC  LA    padReleaseDataLow3        0003FD  LA    
+padPushData4              0003FE  LA    padPushDataHigh4          0003FE  LA    
+padPushDataLow4           0003FF  LA    padReleaseData4           000400  LA    
+padReleaseDataHigh4       000400  LA    padReleaseDataLow4        000401  LA    
+oamData                   000402 RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
 __VECTORS_FILEOFFS__      007FE4  EA    _main                     008039 RLA    
 _IRQHandler               00836D RLA    _NMIHandler               00836E RLA    
 _preInit                  008375 RLA    splashScreen              00838C  LA    
@@ -190,20 +190,20 @@ updateTime                008860 RLA    scoreEvent                00889C  LA
 writeNumberToScoreMap     0088E4  LA    initHeroSprite            00892D RLA    
 transferHeroSpriteDataEvent 008ADA RLA    reactHero                 008B3F RLA    
 initEnemySprite           008C9D RLA    addEnemy                  008DE6  LA    
-hdmaInitTitle             008E17  LA    hdmaInitGame              008E38 RLA    
-setEnemyOAM               008E59  LA    animEnemy                 008F71  LA    
-reactEnemy                008FF4 RLA    initSnes                  009042 RLA    
-initEvents                009135 RLA    addEvent                  009161 RLA    
-processEvents             009190 RLA    removeEvent               0091E0  LA    
-getEventCounter           0091F7 RLA    initPad                   009203 RLA    
-readPad1                  009241 RLA    readPad2                  00927F  LA    
-readPad3                  0092BD  LA    readPad4                  0092FB  LA    
-clearOAM                  009339  LA    copyOAM                   009368 RLA    
-OAMDataUpdated            00939F RLA    __ROMINFO_START__         00FFB0  LA    
+hdmaInitTitle             008E1B  LA    hdmaInitGame              008E3C RLA    
+setEnemyOAM               008E5D  LA    animEnemy                 008F81  LA    
+reactEnemy                008FF6 RLA    initSnes                  009044 RLA    
+initEvents                009137 RLA    addEvent                  009163 RLA    
+processEvents             009192 RLA    removeEvent               0091E2  LA    
+getEventCounter           0091F9 RLA    initPad                   009205 RLA    
+readPad1                  009243 RLA    readPad2                  009281  LA    
+readPad3                  0092BF  LA    readPad4                  0092FD  LA    
+clearOAM                  00933B  LA    copyOAM                   00936A RLA    
+OAMDataUpdated            0093A1 RLA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
 __VECTORS_LAST__          010000  LA    highByte                  01C1C0  LA    
 grabbingWalk1             01C1D0  LA    grabbingWalk2             01C1E5  LA    
-grabbingWalk              01C21B  LA    
+grabbingWalk              01C27B  LA    
 
 
 Imports list:
@@ -213,7 +213,7 @@ EnemyArrayAnimFrameCounter (enemy.o):
 EnemyArrayAnimFrameIndex (enemy.o):
 EnemyArrayAnimJumpFramecounter (enemy.o):
 EnemyArrayFlag (enemy.o):
-EnemyArrayOAMSlot (enemy.o):
+EnemyArrayOAMSlotOffset (enemy.o):
 EnemyArrayXOffset (enemy.o):
 EnemyTempXOffsetHigh (enemy.o):
 OAMDataUpdated (sprite.o):

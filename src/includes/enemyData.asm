@@ -88,6 +88,38 @@ grabbingWalk3:						; 6 sprite blocks
 	.byte 			  $10, $01, $08
 	.byte	$00
 
+grabbingArmUpWalk1:					; 4 sprite blocks
+	.byte   $01, $00, $09, $09, $02
+	.byte   $01, $10, $09, $08, $08
+	.byte   $01, $20, $09, $09, $0c
+	.byte   $01, $30, $09, $09, $0e
+	.byte	$00
+
+grabbingArmUpWalk2:					; 5 sprite blocks
+	.byte   $01, $00, $09, $09, $02
+	.byte   $01, $10, $08, $09, $06
+	.byte   $01, $20, $02, $11, $0a
+	.byte   $02, $30, $02, $11, $0a
+	.byte 			  $11, $02, $0c
+	.byte	$00
+
+grabbingArmUpWalk3:
+	.byte   $01, $00, $09, $09, $02
+	.byte   $01, $10, $08, $09, $0a
+	.byte   $02, $20, $02, $11, $20
+	.byte 			  $11, $02, $22
+	.byte   $02, $30, $02, $11, $20
+	.byte 			  $11, $02, $22
+	.byte	$00
+
+grabbingGrab1:
+	.byte   $01, $00, $09, $09, $04
+	.byte   $02, $10, $09, $08, $0c
+	.byte 			  $18, $02, $0e
+	.byte   $01, $20, $09, $09, $0e
+	.byte   $01, $30, $09, $09, $24
+	.byte	$00
+
 ;******************************************************************************
 ;*** Animation frames *********************************************************
 ;******************************************************************************
@@ -104,4 +136,20 @@ grabbingWalk:
 	.word .LOWORD(grabbingWalk1)
 	.byte $08
 	.word .LOWORD(grabbingWalk3)
+	.byte $00
+
+grabbingArmUpWalk:
+	.byte $08
+	.word .LOWORD(grabbingArmUpWalk1)
+	.byte $08
+	.word .LOWORD(grabbingArmUpWalk2)
+	.byte $08
+	.word .LOWORD(grabbingArmUpWalk1)
+	.byte $08
+	.word .LOWORD(grabbingArmUpWalk3)
+	.byte $00
+
+grabbingGrab:
+	.byte $08
+	.word .LOWORD(grabbingGrab1)
 	.byte $00

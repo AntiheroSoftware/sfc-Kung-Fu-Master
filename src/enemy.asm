@@ -26,7 +26,7 @@
             .export EnemyArrayAnimFrameCounter
             .export EnemyArrayAnimJumpFramecounter
             .export EnemyArrayXOffset
-            .export EnemyArrayOAMSlot
+            .export EnemyArrayOAMSlotOffset
             .export EnemyArrayFlag
             .export addEnemy
             .export animEnemy
@@ -49,13 +49,14 @@ ENEMY_SPRITE_NUMBER = 13
 EnemyCurrentAnimAddress:
 	.res 2
 
-EnemyCurrentXOffset:
-	.res 2
-
 .segment "BSS"
 
 EnemyTempXOffsetHigh:
 	.res 1
+
+; *****************************************************************************
+; *** Array of enemies definition *********************************************
+; *****************************************************************************
 
 EnemyArrayAnimAddress:
  	.res 2 * ENEMY_SPRITE_NUMBER
@@ -72,8 +73,8 @@ EnemyArrayAnimJumpFramecounter:
 EnemyArrayXOffset:
 	.res 2 * ENEMY_SPRITE_NUMBER
 
-EnemyArrayOAMSlot:
-	.res 1 * ENEMY_SPRITE_NUMBER
+EnemyArrayOAMSlotOffset:
+	.res 2 * ENEMY_SPRITE_NUMBER
 
 EnemyArrayFlag:
 	.res 1 * ENEMY_SPRITE_NUMBER
@@ -118,7 +119,7 @@ initArrayLoop:
     sta EnemyArrayAnimFrameIndex,X
     sta EnemyArrayAnimFrameCounter,X
     sta EnemyArrayAnimJumpFramecounter,X
-    sta EnemyArrayOAMSlot,X
+    sta EnemyArrayOAMSlotOffset,X
     sta EnemyArrayFlag,X
 
     sta EnemyArrayAnimAddress,Y
@@ -134,7 +135,9 @@ initArrayLoop:
 endInitArrayLoop:
 
 	lda #$00						; enemy slot ( 0 - 13 )
-	ldx #.LOWORD(grabbingWalk)
+	;ldx #.LOWORD(grabbingWalk)
+	ldx #.LOWORD(grabbingArmUpWalk)
+	;ldx #.LOWORD(grabbingGrab)
 	jsr addEnemy
 
 	;lda #$01						; enemy slot ( 0 - 13 )
@@ -199,10 +202,12 @@ endInitArrayLoop:
 	txa
 	asl
 	asl
+	asl								; index slot * 8
 	asl
-	asl
-	sta EnemyArrayXOffset,X			; reset X Offset
-	;stz EnemyArrayXOffset,X		; reset X Offset
+	asl 							; computed index slot * 4 cause each slot is taking 4 bytes
+	sta EnemyArrayOAMSlotOffset,X	; set OAM slot offset
+
+	stz EnemyArrayXOffset,X			; reset X Offset
 
 	plx								; get back index slot
 
@@ -286,30 +291,39 @@ endInitArrayLoop:
 ;******************************************************************************
 ;*** setEnemyOAM ennemies with hdma trick *************************************
 ;******************************************************************************
-;*** offsetOAM  (A register)                                                ***
+;*** index of slot  (A register)                                            ***
 ;*** dataAddr   (X register)                                                ***
-;*** xPos       (Y register)                                                ***
 ;******************************************************************************
 
 .proc setEnemyOAM
     php
-    phy								; save xPos in the stack
-    phx								; save dataAddr in the stack
 
-    ldy #$0000						; index in metaprite table
+	txy								; save dataAddr
 
     rep #$20
 	.A16
 
 	and #$00ff
-	asl								; OAMSlot * 4 cause each slot is taking 4 bytes
-	asl
+	asl								; index * 2
 	tax								; set OAM offset table
+	pha								; push/save index of slot
+
+	lda EnemyArrayXOffset,X
+	pha								; push/save XOffset
+
+	phy								; push/save dataAddr
+
+	ldy EnemyArrayOAMSlotOffset,X
+	tyx
+
+	lda #$0000						; reset accumulator
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
+
+	ldy #$0000						; index in metaprite table
 
     lda #$00
 	sta spriteCounter				; reset spriteCounter
@@ -331,8 +345,8 @@ continueLineLoop:
 	pha
 
 	; TODO check direction of enemy
-	;jmp blockLoop					; jmp to correct blockLoop code (mirror/normal)
-	jmp blockLoopMirror					; jmp to correct blockLoop code (mirror/normal)
+	jmp blockLoop					; jmp to correct blockLoop code (mirror/normal)
+	;jmp blockLoopMirror					; jmp to correct blockLoop code (mirror/normal)
 
 blockLoop:
 	lda $02,s						; load blockNumber
@@ -397,7 +411,7 @@ blockLoop:
 
 	bra blockLoop
 
-blockLoopMirror:					; lda #%01110011					; TODO rectify this
+blockLoopMirror:
 	lda $02,s						; load blockNumber
 	cmp #$00
 	beq endBlockLoop				; check all block are done
@@ -446,7 +460,7 @@ blockLoopMirror:					; lda #%01110011					; TODO rectify this
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%01110011					; TODO rectify this
+	lda #%01110011					; TODO comment this
 	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
 
 	inx
@@ -490,23 +504,16 @@ fillLoop:
 
 endFillLoop:
 
-	; need to calculate offset
-	; offset is $200 + (offset OAM / 8)  * 2
+    plx								; push out old unused value of stack to get back index
+	ply								; push out old unused value of stack to get back index
 
-	; X offset goes from 0 -> FF -> 1F8 -> 200 becomes 00
-	; when doing that calculation keep high byte in memory
-
-	; TODO handle that correctly in function (NOT HARD CODED)
-	; TODO fix index for those
-	;lda #%10101010
-	;sta oamData + $202				; 4 sprites
-	;sta oamData + $203				; 4 sprites
+	plx								; restore index of slot
 
 	lda EnemyTempXOffsetHigh
 	and #$0f
 	tay
 	lda highByte,Y
-	sta oamData + $202
+	sta oamData + $200,X
 
 	lda EnemyTempXOffsetHigh
 	lsr
@@ -515,10 +522,8 @@ endFillLoop:
 	lsr
 	tay
 	lda highByte,Y
-	sta oamData + $203
+	sta oamData + $201,X
 
-    plx
-	ply
     plp
     rts
 .endproc
@@ -545,9 +550,6 @@ endFillLoop:
 	tay
 	lda EnemyArrayAnimAddress,Y
 	sta EnemyCurrentAnimAddress		; set current anim address
-
-	lda EnemyArrayXOffset,Y
-	sta EnemyCurrentXOffset
 
 	lda #$0000
 
@@ -606,12 +608,7 @@ nextFrameContinue:
 noLoop:
 
 	txa
-	asl
-	asl
-	asl								; index slot * 8
-	clc
-	adc #$08						; computed index slot + 8
-	pha
+	pha								; push index slot (0-13)
 
     lda EnemyArrayAnimFrameIndex,X
 	tay
@@ -622,9 +619,6 @@ noLoop:
 
 	lda (EnemyCurrentAnimAddress),Y	; dataAddr
 	tax
-
-	lda EnemyCurrentXOffset			; set xPos
-	tay
 
 	rep #$10
 	sep #$20
@@ -694,16 +688,14 @@ reactLoop:
 
 	bra :++
 
-:
-
-	lda padPushDataLow1
+:	lda padPushDataLow1
 	bit #PAD_LOW_LEFT
 	beq :+
 
 	rep #$20
 	.A16
 
-	lda EnemyArrayXOffset,Y			; increment xPos
+	lda EnemyArrayXOffset,Y			; decrement xPos
 	dec
 	sta EnemyArrayXOffset,Y
 
@@ -712,8 +704,8 @@ reactLoop:
 	.A8
 	.I16
 
-:
-	txa								; slot to anim
+
+:	txa								; slot to anim
 	jsr animEnemy
 
 skipReact:

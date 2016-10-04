@@ -141,7 +141,7 @@ heroXOffset:
     phx								; save dataAddr in the stack
 
     ldy #$0000						; index in metaprite table
-    ldx #$0000						; OAM offset
+    ldx #$01E0						; OAM offset
 
     lda #$00
 	sta spriteCounter
@@ -258,10 +258,9 @@ fillLoop:
 
 endFillLoop:
 
-	; TODO handle that correctly in function (NOT HARD CODED)
 	lda #%10101010
-	sta oamData + $200
-	sta oamData + $201
+	sta oamData + $21e
+	sta oamData + $21f
 
     plx
 	ply
