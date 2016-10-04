@@ -6,21 +6,17 @@ ENEMY_STATUS_MIROR_FLAG 	= %00000010
 .segment "BANK1"
 
 enemySpritePal:
-    .incbin "../ressource/ennemies.clr"
+    .incbin "../ressource/enemyFull.clr"
 
 .segment "BANK3"
 
-enemySpriteBank1Tiles:
-    .incbin "../ressource/ennemies1.pic"
+enemySpriteFullTiles:
+	.incbin "../ressource/enemyFull.pic"
 
-enemySpriteBank2Tiles:
-    .incbin "../ressource/ennemies2.pic"
-
-enemySpriteBank3Tiles:
-    .incbin "../ressource/ennemies3.pic"
-
-enemySpriteBank4Tiles:
-    .incbin "../ressource/ennemies4.pic"
+enemySpriteBank1Tiles := enemySpriteFullTiles
+enemySpriteBank2Tiles := enemySpriteFullTiles + $2000
+enemySpriteBank3Tiles := enemySpriteFullTiles + $4000
+enemySpriteBank4Tiles := enemySpriteFullTiles + $6000
 
 .segment "RODATA"
 
