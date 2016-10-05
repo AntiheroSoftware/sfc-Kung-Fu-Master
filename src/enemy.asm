@@ -6,6 +6,7 @@
 
             .setcpu     "65816"
             .feature	c_comments
+            .linecont
 
             .include    "snes.inc"
             .include    "snes-pad.inc"
@@ -49,6 +50,12 @@ ENEMY_SPRITE_NUMBER = 13
 EnemyCurrentAnimAddress:
 	.res 2
 
+EnemyCurrentArrayIndexByte:
+	.res 2
+
+EnemyCurrentArrayIndexWord:
+	.res 2
+
 .segment "BSS"
 
 EnemyTempXOffsetHigh:
@@ -78,6 +85,49 @@ EnemyArrayOAMSlotOffset:
 
 EnemyArrayFlag:
 	.res 1 * ENEMY_SPRITE_NUMBER
+
+.macro EnemyDataIndexSetFromA
+	rep #$20
+	.A16
+
+	and #$00ff
+	sta EnemyCurrentArrayIndexByte
+    asl								; index slot * 2
+	sta EnemyCurrentArrayIndexWord
+	lda EnemyCurrentArrayIndexByte	; restore value
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+.endmacro
+
+.macro EnemyDataLDA variableName
+	phx
+	.if    (.xmatch(EnemyArrayAnimFrameIndex, {variableName}) \
+		.or .xmatch(EnemyArrayAnimFrameCounter, {variableName}) \
+		.or .xmatch(EnemyArrayAnimJumpFramecounter, {variableName}) \
+		.or .xmatch(EnemyArrayFlag, {variableName}))
+		ldx EnemyCurrentArrayIndexByte
+		lda variableName,X
+	.else
+		.error "EnemyDataLDA: that variable don't exist"
+	.endif
+	plx
+.endmacro
+
+.macro EnemyDataLDX variableName
+	phy
+	.if    (.xmatch(EnemyArrayAnimAddress, {variableName}) \
+		.or .xmatch(EnemyArrayXOffset, {variableName}) \
+		.or .xmatch(EnemyArrayOAMSlotOffset, {variableName}))
+		ldy EnemyCurrentArrayIndexWord
+		ldx variableName,Y
+	.else
+		.error "EnemyDataLDX: that variable don't exist"
+	.endif
+	ply
+.endmacro
 
 .segment "CODE"
 
@@ -704,7 +754,6 @@ reactLoop:
 	.A8
 	.I16
 
-
 :	txa								; slot to anim
 	jsr animEnemy
 
@@ -722,4 +771,3 @@ endReactLoop:
 	pla
 	rts
 .endproc
-
