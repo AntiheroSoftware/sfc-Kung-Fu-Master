@@ -86,7 +86,7 @@ EnemyArrayOAMSlotOffset:
 EnemyArrayFlag:
 	.res 1 * ENEMY_SPRITE_NUMBER
 
-.macro EnemyDataIndexSetFromA
+.macro EnemyDataIndexSetFromAccumulator
 	rep #$20
 	.A16
 
