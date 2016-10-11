@@ -20,6 +20,8 @@
             .export 	hdmaInitTitle
             .export 	hdmaInitGame
 
+			.export EnemyCurrentArrayIndexByte
+			.export EnemyCurrentArrayIndexWord
 			.export EnemyTempXOffsetHigh
             .export setEnemyOAM
             .export EnemyArrayAnimAddress
@@ -102,6 +104,25 @@ EnemyArrayFlag:
 	.I16
 .endmacro
 
+.macro EnemyDataIndexSetFromXIndex
+	pha
+	rep #$20
+	.A16
+
+	txa
+	and #$00ff
+	sta EnemyCurrentArrayIndexByte
+    asl								; index slot * 2
+	sta EnemyCurrentArrayIndexWord
+	lda EnemyCurrentArrayIndexByte	; restore value
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+	pla
+.endmacro
+
 .macro EnemyDataLDA variableName
 	phx
 	.if    (.xmatch(EnemyArrayAnimFrameIndex, {variableName}) \
@@ -170,7 +191,6 @@ initArrayLoop:
     sta EnemyArrayAnimFrameCounter,X
     sta EnemyArrayAnimJumpFramecounter,X
     sta EnemyArrayOAMSlotOffset,X
-    sta EnemyArrayFlag,X
 
     sta EnemyArrayAnimAddress,Y
     sta EnemyArrayXOffset,Y
@@ -178,41 +198,20 @@ initArrayLoop:
 	sta EnemyArrayAnimAddress,Y
 	sta EnemyArrayXOffset,Y
 
+	lda #ENEMY_STATUS_MIRROR_FLAG
+	sta EnemyArrayFlag,X
+
 	inx
 	iny
 	bra initArrayLoop
 
 endInitArrayLoop:
 
-	lda #$00						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	ldx #.LOWORD(grabbingArmUpWalk)
-	;ldx #.LOWORD(grabbingGrab)
+	lda #$00						; set enemy type
+	ora #ENEMY_STATUS_TYPE_GRAB		; grab
+	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
-
-	;lda #$01						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
-
-	;lda #$02						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
-
-	;lda #$03						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
-
-	;lda #$04						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
-
-	;lda #$05						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
-
-	;lda #$06						; enemy slot ( 0 - 13 )
-	;ldx #.LOWORD(grabbingWalk)
-	;jsr addEnemy
 
 	plb
 	plp
@@ -225,8 +224,8 @@ endInitArrayLoop:
 ;******************************************************************************
 ;*** addEnemy *****************************************************************
 ;******************************************************************************
-;*** slot (A)																***
-;*** animAddr (X)															***
+;*** flags (A)																***
+;*** slot (X)													     		***
 ;******************************************************************************
 
 .proc addEnemy
@@ -235,21 +234,42 @@ endInitArrayLoop:
 	phy
 	php
 
-	txy								; keep anim address in Y
+	EnemyDataIndexSetFromXIndex
+
+	ldx EnemyCurrentArrayIndexByte
+	ora #ENEMY_STATUS_ACTIVE_FLAG
+	sta EnemyArrayFlag,X
+	stz EnemyArrayAnimFrameIndex,X
+	stz EnemyArrayAnimFrameCounter,X
+	stz EnemyArrayAnimJumpFramecounter,X
+
+	bit #ENEMY_STATUS_TYPE_GRAB
+	beq check_knife
+
+	ldx EnemyCurrentArrayIndexWord
 
 	rep #$20
 	.A16
 
-	and #$00ff
-	tax								; put index of slot in X register
-	phx								; save X (index slot)
-	asl								; index slot * 2
-	tax
-	tya								; transfer saved anim address in a
+	bit #ENEMY_STATUS_MIRROR_FLAG
+	bne grab_mirror_init			; Mirror flag is set we init for mirror
 
-	sta EnemyArrayAnimAddress,X		; store anim address
+grab_normal_init:
 
-	txa
+	lda #$ffe0
+	sta EnemyArrayXOffset,X
+
+	bra grab_end_init
+
+grab_mirror_init:
+
+	lda #$00ff
+	sta EnemyArrayXOffset,X
+
+grab_end_init:
+
+	ldy EnemyCurrentArrayIndexByte
+	tya
 	asl
 	asl
 	asl								; index slot * 8
@@ -257,21 +277,19 @@ endInitArrayLoop:
 	asl 							; computed index slot * 4 cause each slot is taking 4 bytes
 	sta EnemyArrayOAMSlotOffset,X	; set OAM slot offset
 
-	stz EnemyArrayXOffset,X			; reset X Offset
-
-	plx								; get back index slot
+	lda #.LOWORD(grabbingWalk)
+	sta EnemyArrayAnimAddress,X
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
 
-	stz EnemyArrayAnimFrameIndex,X
-	stz EnemyArrayAnimFrameCounter,X
+	jmp check_end
 
-	lda #$00
-	ora #ENEMY_STATUS_ACTIVE_FLAG
-	sta EnemyArrayFlag,X
+check_knife:
+
+check_end:
 
 	plp
 	ply
@@ -394,9 +412,11 @@ continueLineLoop:
     adc #$80
 	pha
 
-	; TODO check direction of enemy
-	jmp blockLoop					; jmp to correct blockLoop code (mirror/normal)
-	;jmp blockLoopMirror					; jmp to correct blockLoop code (mirror/normal)
+	EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
+	and #ENEMY_STATUS_MIRROR_FLAG
+	cmp #$00
+	beq blockLoop					; jmp to correct blockLoop code (normal)
+	jmp blockLoopMirror				; jmp to correct blockLoop code (mirror)
 
 blockLoop:
 	lda $02,s						; load blockNumber
@@ -755,6 +775,9 @@ reactLoop:
 	.I16
 
 :	txa								; slot to anim
+
+	EnemyDataIndexSetFromAccumulator
+
 	jsr animEnemy
 
 skipReact:
