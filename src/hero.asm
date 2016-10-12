@@ -19,9 +19,7 @@
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
 			.export		spriteCounter
-
-			.export animationJumpFrameCounter
-			.export heroYOffset
+			.export 	heroXOffset
 
 SPRITE_DATA_BANK 	= $02
 SPRITE_VRAM 		= $2000

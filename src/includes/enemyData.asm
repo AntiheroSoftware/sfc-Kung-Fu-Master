@@ -102,18 +102,17 @@ grabbingArmUpWalk1:					; 4 sprite blocks
 grabbingArmUpWalk2:					; 5 sprite blocks
 	.byte   $01, $00, $09, $09, $02
 	.byte   $01, $10, $08, $09, $06
-	.byte   $01, $20, $02, $11, $0a
+	.byte   $01, $20, $08, $09, $0a
 	.byte   $02, $30, $02, $11, $0a
 	.byte 			  $11, $02, $0c
 	.byte	$00
 
-grabbingArmUpWalk3:
-	.byte   $01, $00, $09, $09, $02
-	.byte   $01, $10, $08, $09, $0a
-	.byte   $02, $20, $02, $11, $20
-	.byte 			  $11, $02, $22
-	.byte   $02, $30, $02, $11, $20
-	.byte 			  $11, $02, $22
+grabbingArmUpWalk3:					; 5 sprite blocks
+	.byte   $01, $00, $09, $09, $02	; right foot in front
+	.byte   $01, $10, $09, $09, $0a
+	.byte   $01, $20, $0c, $11, $20
+	.byte   $02, $30, $03, $11, $20
+	.byte 			  $12, $02, $22
 	.byte	$00
 
 grabbingGrab1:

@@ -12,6 +12,7 @@
             .include    "snes-pad.inc"
             .include    "snes-event.inc"
             .include    "snes-sprite.inc"
+            .include    "includes/hero.inc"
 
             .import 	spriteCounter
 
@@ -737,44 +738,80 @@ reactLoop:
 	beq endReactLoop
 
 	lda EnemyArrayFlag,X
-	and ENEMY_STATUS_ACTIVE_FLAG
+	bit #ENEMY_STATUS_ACTIVE_FLAG
 	beq skipReact
-
-	lda padPushDataLow1
-	bit #PAD_LOW_RIGHT
-	beq :+
 
 	rep #$20
 	.A16
 
-	lda EnemyArrayXOffset,Y			; increment xPos
-	inc
-	sta EnemyArrayXOffset,Y
+	bit #ENEMY_STATUS_MIRROR_FLAG
+	bne :+++
+
+	;*******************
+	;*** Normal mode ***
+	;*******************
+
+	lda heroXOffset
+	and #$00ff
+	sec
+	sbc EnemyArrayXOffset,Y
+
+	cmp #$04						; TODO set a constant
+	bne :+
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
+
+	stz EnemyArrayAnimFrameIndex,X
+	stz EnemyArrayAnimFrameCounter,X
+	stz EnemyArrayAnimJumpFramecounter,X
+
+	rep #$20
+	.A16
+
+	lda #.LOWORD(grabbingGrab)
+	sta EnemyArrayAnimAddress,Y
+
+	bra :++++
+
+:	cmp #$30						; TODO set a constant
+	bpl :+
+
+	lda #.LOWORD(grabbingArmUpWalk)
+	sta EnemyArrayAnimAddress,Y
+
+:	lda EnemyArrayXOffset,Y			; go right
+	inc
+	sta EnemyArrayXOffset,Y			; increment xPos
 
 	bra :++
 
-:	lda padPushDataLow1
-	bit #PAD_LOW_LEFT
-	beq :+
+:	;*******************
+	;*** Mirror mode ***
+	;*******************
 
-	rep #$20
-	.A16
-
-	lda EnemyArrayXOffset,Y			; decrement xPos
+	lda EnemyArrayXOffset,Y			; go left
 	dec
-	sta EnemyArrayXOffset,Y
+	sta EnemyArrayXOffset,Y			; decrement xPos
 
-	rep #$10
+	sec
+	sbc heroXOffset
+	and #$00ff
+
+	cmp #$30						; TODO set a constant
+	bpl :+
+
+	lda #.LOWORD(grabbingArmUpWalk)
+	sta EnemyArrayAnimAddress,Y
+
+:	rep #$10
 	sep #$20
 	.A8
 	.I16
 
-:	txa								; slot to anim
+	txa								; slot to anim
 
 	EnemyDataIndexSetFromAccumulator
 
@@ -784,7 +821,7 @@ skipReact:
 	inx								; update indexes
 	iny
 	iny
-	bra reactLoop
+	jmp reactLoop
 
 endReactLoop:
 
