@@ -210,7 +210,7 @@ endInitArrayLoop:
 
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
 
@@ -454,6 +454,12 @@ blockLoop:
 
 	bcc :+							; check and branch if carry is clear
 
+	lda ($03,s),y
+	cmp #$f0						; allow metasprite offset of -15
+
+	bcs :+							; if carry is set we are good
+									; skip on carry clear
+
 	iny								; skip this sprite cause of overflow
 	iny
 	bra blockLoop
@@ -516,6 +522,12 @@ blockLoopMirror:
 	sta oamData,x                   ; H (X) pos of the sprite
 
 	bcc :+							; check and branch if carry is clear
+									; sprite might be overflow
+	lda ($03,s),y
+	cmp #$f0						; allow metasprite offset of -15
+
+	bcs :+							; if carry is set we are good
+									; skip on carry clear
 
 	iny								; skip this sprite cause of overflow
 	bra blockLoopMirror
@@ -715,7 +727,7 @@ endAnim:
 .endproc
 
 ;******************************************************************************
-;*** reactEnemy ****************************************************************
+;*** reactEnemy ***************************************************************
 ;******************************************************************************
 ;*** index of slot  (A register)                                            ***
 ;******************************************************************************
@@ -741,30 +753,77 @@ reactLoop:
 	bit #ENEMY_STATUS_ACTIVE_FLAG
 	beq skipReact
 
+reactCheckGrab:
+	bit #ENEMY_STATUS_TYPE_GRAB
+	beq reactCheckKnife
+
+	jsr reactEnemyGrab
+	bra skipReact
+
+reactCheckKnife:
+	bit #ENEMY_STATUS_TYPE_KNIFE
+	beq reactCheckMidget
+
+	jsr reactEnemyKnife
+	bra skipReact
+
+reactCheckMidget:
+	bit #ENEMY_STATUS_TYPE_KNIFE
+	beq skipReact
+
+	jsr reactEnemyMidget
+	bra skipReact
+
+skipReact:
+	inx								; update indexes
+	iny
+	iny
+	jmp reactLoop
+
+endReactLoop:
+
+	plp
+	ply
+	plx
+	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** reactEnemyGrab ***********************************************************
+;******************************************************************************
+
+.proc reactEnemyGrab
+	pha
+	phx
+	phy
+	php
+
 	rep #$20
 	.A16
 
 	bit #ENEMY_STATUS_MIRROR_FLAG
-	bne :+++
+	bne mirrorMode
 
 	;*******************
 	;*** Normal mode ***
 	;*******************
 
+normalMode:
 	lda heroXOffset
 	and #$00ff
 	sec
-	sbc EnemyArrayXOffset,Y
+	sbc EnemyArrayXOffset,Y					; calculate distance between enemy and hero
 
-	cmp #$04						; TODO set a constant
-	bne :+
+	cmp #ENEMY_NORMAL_GRAB_DISTANCE_GRAB
+	bne normalModeLiftArmCheck
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
 
-	stz EnemyArrayAnimFrameIndex,X
+	stz EnemyArrayAnimFrameIndex,X			; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
 	stz EnemyArrayAnimJumpFramecounter,X
 
@@ -774,56 +833,110 @@ reactLoop:
 	lda #.LOWORD(grabbingGrab)
 	sta EnemyArrayAnimAddress,Y
 
-	bra :++++
+	bra end
 
-:	cmp #$30						; TODO set a constant
-	bpl :+
+normalModeLiftArmCheck:
+	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
+	bpl normalModeGoRight
 
-	lda #.LOWORD(grabbingArmUpWalk)
-	sta EnemyArrayAnimAddress,Y
+	lda #.LOWORD(grabbingArmUpWalk)			; we don't reset the animation indexes and counter
+	sta EnemyArrayAnimAddress,Y				; so animation is fluid in the walk process
 
-:	lda EnemyArrayXOffset,Y			; go right
+normalModeGoRight:
+	lda EnemyArrayXOffset,Y					; go right
 	inc
-	sta EnemyArrayXOffset,Y			; increment xPos
+	sta EnemyArrayXOffset,Y					; increment enemy X Offset
 
-	bra :++
+	bra end
 
-:	;*******************
+	;*******************
 	;*** Mirror mode ***
 	;*******************
 
-	lda EnemyArrayXOffset,Y			; go left
-	dec
-	sta EnemyArrayXOffset,Y			; decrement xPos
-
+mirrorMode:
+	lda EnemyArrayXOffset,Y
 	sec
 	sbc heroXOffset
-	and #$00ff
+	and #$00ff								; calculate distance between enemy and hero
 
-	cmp #$30						; TODO set a constant
-	bpl :+
+	cmp #ENEMY_MIRROR_GRAB_DISTANCE_GRAB
+	bne mirrorModeLiftArmCheck
 
-	lda #.LOWORD(grabbingArmUpWalk)
-	sta EnemyArrayAnimAddress,Y
-
-:	rep #$10
+	rep #$10
 	sep #$20
 	.A8
 	.I16
 
-	txa								; slot to anim
+	stz EnemyArrayAnimFrameIndex,X			; reset animation indexes and counter
+	stz EnemyArrayAnimFrameCounter,X
+	stz EnemyArrayAnimJumpFramecounter,X
 
+	rep #$20
+	.A16
+
+	lda #.LOWORD(grabbingGrab)
+	sta EnemyArrayAnimAddress,Y
+
+	bra end
+
+mirrorModeLiftArmCheck:
+	cmp #ENEMY_MIRROR_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
+	bpl mirrorModeGoLeft
+
+	lda #.LOWORD(grabbingArmUpWalk)			; we don't reset the animation indexes and counter
+	sta EnemyArrayAnimAddress,Y				; so animation is fluid in the walk process
+
+mirrorModeGoLeft:
+	lda EnemyArrayXOffset,Y					; go left
+	dec
+	sta EnemyArrayXOffset,Y					; decrement enemy X Offset
+
+	bra end
+
+end:
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	txa										; slot to anim
 	EnemyDataIndexSetFromAccumulator
-
 	jsr animEnemy
 
-skipReact:
-	inx								; update indexes
-	iny
-	iny
-	jmp reactLoop
+	plp
+	ply
+	plx
+	pla
+	rts
+.endproc
 
-endReactLoop:
+;******************************************************************************
+;*** reactEnemyKnife **********************************************************
+;******************************************************************************
+
+.proc reactEnemyKnife
+	pha
+	phx
+	phy
+	php
+
+	plp
+	ply
+	plx
+	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** reactEnemyMidget *********************************************************
+;******************************************************************************
+
+
+.proc reactEnemyMidget
+	pha
+	phx
+	phy
+	php
 
 	plp
 	ply

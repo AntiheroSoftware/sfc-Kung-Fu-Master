@@ -7,6 +7,12 @@ ENEMY_STATUS_TYPE_GRAB		= %00100000
 ENEMY_STATUS_TYPE_KNIFE		= %01000000
 ENEMY_STATUS_TYPE_MIDGET	= %01100000
 
+ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP 	= $30
+ENEMY_NORMAL_GRAB_DISTANCE_GRAB 	= $04
+
+ENEMY_MIRROR_GRAB_DISTANCE_ARMS_UP	= $30
+ENEMY_MIRROR_GRAB_DISTANCE_GRAB 	= $04
+
 .segment "BANK1"
 
 enemySpritePal:
@@ -108,9 +114,9 @@ grabbingArmUpWalk2:					; 5 sprite blocks
 	.byte	$00
 
 grabbingArmUpWalk3:					; 5 sprite blocks
-	.byte   $01, $00, $09, $09, $02	; right foot in front
-	.byte   $01, $10, $09, $09, $0a
-	.byte   $01, $20, $0c, $11, $20
+	.byte   $01, $00, $09, $09, $02	; right foot in front (normal mode)
+	.byte   $01, $10, $09, $09, $0a ; left foot in front (mirror mode)
+	.byte   $01, $20, $0c, $06, $20
 	.byte   $02, $30, $03, $11, $20
 	.byte 			  $12, $02, $22
 	.byte	$00
@@ -118,7 +124,7 @@ grabbingArmUpWalk3:					; 5 sprite blocks
 grabbingGrab1:
 	.byte   $01, $00, $09, $09, $04
 	.byte   $02, $10, $09, $08, $0c
-	.byte 			  $18, $02, $0e
+	.byte 			  $18, $f8, $0e
 	.byte   $01, $20, $09, $09, $0e
 	.byte   $01, $30, $09, $09, $24
 	.byte	$00
