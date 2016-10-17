@@ -1,3 +1,7 @@
+HERO_STATUS_MIRROR_FLAG 	= %00000001
+
+SPRITE_DATA_BANK 	= $02
+
 .segment "BANK2"
 
 KFM_Player_final_Tiles:
@@ -14,6 +18,8 @@ KFM_Player_final_Pal:
 ;*** Metasprites **************************************************************
 ;******************************************************************************
 ;*** Adress in bank for tiles                                               ***
+;*** Normal mode hit offset                                                 ***
+;*** Mirror mode hit offset                                                 ***
 ;*** Number of horizontal tiles                                             ***
 ;*** Y offset of the line                                                   ***
 ;*** X offset                                                               ***
@@ -21,8 +27,11 @@ KFM_Player_final_Pal:
 ;*** Tile Number                                                            ***
 ;******************************************************************************
 
+; TODO add information about the frame if it's a HIT frame or not (+ offsets)
+
 heroStand1:							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles)
+	.byte	$00, $00
 	.byte   $01, $00, $0c, $2a, $00
 	.byte   $02, $10, $0c, $2a, $02
 	.byte             $1b, $1b, $04
@@ -34,6 +43,7 @@ heroStand1:							; 7 sprite blocks
 
 heroWalk1: 							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*1))
+	.byte	$00, $00
 	.byte   $01, $00, $11, $23, $00
 	.byte   $02, $10, $01, $33, $02
 	.byte             $10, $23, $04
@@ -45,6 +55,7 @@ heroWalk1: 							; 7 sprite blocks
 
 heroWalk2:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*2))
+	.byte	$00, $00
 	.byte   $01, $00, $0a, $2a, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -53,6 +64,7 @@ heroWalk2:							; 4 sprite blocks
 
 heroWalk3:							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*3))
+	.byte	$00, $00
 	.byte   $01, $00, $10, $24, $00
 	.byte   $02, $10, $00, $34, $02
 	.byte             $0f, $24, $04
@@ -64,6 +76,7 @@ heroWalk3:							; 7 sprite blocks
 
 heroWalk4:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*4))
+	.byte	$00, $00
 	.byte   $01, $00, $0b, $2a, $00
 	.byte   $01, $10, $0b, $2a, $02
 	.byte   $01, $20, $0b, $2a, $04
@@ -72,6 +85,7 @@ heroWalk4:							; 4 sprite blocks
 
 heroDownStand1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*5))
+	.byte	$00, $00
 	.byte   $01, $10, $09, $24, $00
 	.byte   $01, $20, $06, $27, $02
 	.byte   $02, $30, $00, $2d, $04
@@ -80,6 +94,7 @@ heroDownStand1:						; 4 sprite blocks
 
 heroDownKick1:						; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*6))
+	.byte	$00, $00
 	.byte   $01, $10, $08, $25, $00
 	.byte   $02, $20, $00, $2d, $02
 	.byte             $0f, $1e, $04
@@ -89,6 +104,7 @@ heroDownKick1:						; 5 sprite blocks
 
 heroDownKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*7))
+	.byte	$00, $00
 	.byte   $01, $10, $08, $25, $00
 	.byte   $02, $20, $02, $2b, $02
 	.byte             $11, $1c, $04
@@ -100,6 +116,7 @@ heroDownKick2:						; 7 sprite blocks
 
 heroDownPunch1:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*8))
+	.byte	$00, $00
 	.byte   $02, $10, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $20, $00, $2d, $04
@@ -110,6 +127,7 @@ heroDownPunch1:						; 6 sprite blocks
 
 heroDownPunch2:						; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*9))
+	.byte	$00, $00
 	.byte   $01, $10, $00, $2d, $00
 	.byte   $02, $20, $00, $2d, $04
 	.byte             $0f, $1e, $06
@@ -119,6 +137,7 @@ heroDownPunch2:						; 5 sprite blocks
 
 heroDownPunch3:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*10))
+	.byte	$00, $00
 	.byte   $02, $10, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $20, $00, $2d, $04
@@ -129,6 +148,7 @@ heroDownPunch3:						; 6 sprite blocks
 
 heroStandKick1:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*11))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -140,6 +160,7 @@ heroStandKick1:						; 7 sprite blocks
 
 heroStandKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*12))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $1b, $12, $02
 	.byte   $03, $10, $00, $2d, $04
@@ -151,6 +172,7 @@ heroStandKick2:						; 7 sprite blocks
 
 heroStandPunch1:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*13))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -162,6 +184,7 @@ heroStandPunch1:					; 7 sprite blocks
 
 heroStandPunch2:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*14))
+	.byte	$00, $00
 	.byte   $01, $00, $02, $2b, $00
 	.byte   $01, $10, $02, $2b, $04
 	.byte   $01, $20, $05, $28, $08
@@ -171,6 +194,7 @@ heroStandPunch2:					; 7 sprite blocks
 
 heroStandPunch3:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*15))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -182,6 +206,7 @@ heroStandPunch3:					; 7 sprite blocks
 
 heroJump1:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*16))
+	.byte	$00, $00
 	.byte   $01, $00, $0a, $2a, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -190,6 +215,7 @@ heroJump1:							; 4 sprite blocks
 
 heroJump2:							; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*17))
+	.byte	$00, $00
 	.byte   $01, $00, $0a, $2a, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -199,6 +225,7 @@ heroJump2:							; 5 sprite blocks
 
 heroJumpKick1:						; 8 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*18))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -211,6 +238,7 @@ heroJumpKick1:						; 8 sprite blocks
 
 heroJump3:							; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
+	.byte	$00, $00
 	.byte   $01, $00, $0e, $26, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -220,6 +248,7 @@ heroJump3:							; 5 sprite blocks
 
 heroJumpRun1:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
+	.byte	$00, $00
 	.byte   $01, $00, $0f, $1e, $00
 	.byte   $02, $10, $00, $2d, $02
 	.byte             $0f, $1e, $04
@@ -230,6 +259,7 @@ heroJumpRun1:						; 6 sprite blocks
 
 heroJumpRun2:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
+	.byte	$00, $00
 	.byte   $01, $00, $0d, $27, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -238,6 +268,7 @@ heroJumpRun2:						; 4 sprite blocks
 
 heroHitLow1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*22))
+	.byte	$00, $00
 	.byte   $01, $00, $0f, $25, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -246,6 +277,7 @@ heroHitLow1:						; 4 sprite blocks
 
 heroHitHigh1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*23))
+	.byte	$00, $00
 	.byte   $01, $00, $0a, $2a, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -254,6 +286,7 @@ heroHitHigh1:						; 4 sprite blocks
 
 heroGrabbed1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*24))
+	.byte	$00, $00
 	.byte   $01, $00, $0a, $2a, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
@@ -262,6 +295,7 @@ heroGrabbed1:						; 4 sprite blocks
 
 heroFall1:							; 8 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*25))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -273,6 +307,7 @@ heroFall1:							; 8 sprite blocks
 
 heroFall2:							; 8 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*26))
+	.byte	$00, $00
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $03, $10, $00, $2d, $04

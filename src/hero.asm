@@ -21,7 +21,6 @@
 			.export		spriteCounter
 			.export 	heroXOffset
 
-SPRITE_DATA_BANK 	= $02
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
 
@@ -47,15 +46,13 @@ forceRefresh:
 heroTransferAddr:					; Address of sprite Data to transfer
 	.res 2
 
-heroBlockLoop:						; Normal or Mirror block loop
-	.res 2
-
 .segment "ZEROPAGE"
 
 animInProgress:						; is there an animation in progress
-	.res 1
-
-animAddr:							; address of the animation definition
+	.res 1							; $01 simple animation in progress
+									; $02 jump animation in progress
+									
+heroAnimAddr:						; address of the animation definition
 	.res 2
 
 heroYOffset:
@@ -63,6 +60,12 @@ heroYOffset:
 
 heroXOffset:
 	.res 2
+
+heroHitOffset:
+	.res 1
+
+heroFlag:							; define status of actual position
+	.res 1							; or what to expect next when we go further in animation
 
 .segment "CODE"
 
@@ -94,6 +97,7 @@ heroXOffset:
 	sta animationJumpFrameCounter
 	sta animInProgress
 	sta forceRefresh
+	sta heroFlag
 
 	pla
 	sta heroYOffset
@@ -110,13 +114,13 @@ heroXOffset:
 	; load hero sprite palette
 	CGRAMLoad KFM_Player_final_Pal, $80, $20
 
-	jsr setNormalSpriteMode
+	jsr setMirrorSpriteMode
 
 	lda #$01
 	sta $2101                       ; set sprite address
 
 	ldx #.LOWORD(heroStand)
-	stx animAddr
+	stx heroAnimAddr
 
 	jsr animHero
 
@@ -134,6 +138,7 @@ heroXOffset:
 ;******************************************************************************
 
 .proc setHeroOAM
+	pha
     php								; TODO change order and php last
     phy								; save xPos in the stack
     phx								; save dataAddr in the stack
@@ -149,16 +154,19 @@ lineLoop:							; loop for each line
     cmp #$00
     bne continueLineLoop			; if no block it's the end
 	jmp endLineLoop
+
 continueLineLoop:
     pha								; save it to the stack
 
     iny								; load Y Pos for that line
-    lda ($02,s),y					; save it to the stack
+    lda ($02,s),y
     clc
     adc heroYOffset
-	pha
+	pha								; save it to the stack
 
-	jmp (heroBlockLoop)				; jmp to correct blockLoop code (mirror/normal)
+	lda heroFlag
+	bit HERO_STATUS_MIRROR_FLAG
+	bne blockLoopMirror				; jmp to correct blockLoop code (mirror/normal)
 
 blockLoop:
 	lda $02,s						; load blockNumber
@@ -263,13 +271,14 @@ endFillLoop:
     plx
 	ply
     plp
+    pla
     rts
 .endproc
 
 ;******************************************************************************
-;*** anim hero ****************************************************************
+;*** animHero *****************************************************************
 ;******************************************************************************
-;*** animAddr                                                               ***
+;*** heroAnimAddr                                                           ***
 ;*** heroXOffset                                                            ***
 ;******************************************************************************
 
@@ -308,7 +317,7 @@ endFillLoop:
 	beq firstFrame
 
     dec								; decrement to match count
-    cmp (animAddr),y              	; we did all frames for that index
+    cmp (heroAnimAddr),y			; we did all frames for that index
     beq nextFrame
 
 	inc animationFrameCounter		; disable this to make it manual on testing
@@ -317,7 +326,7 @@ endFillLoop:
     cmp #$01
 	beq forceRefreshReset
 
-    bra endAnim
+    jmp endAnim
 
 firstFrame:
 	lda #$01
@@ -340,7 +349,7 @@ nextFrame:
 nextFrameContinue:
     tay
 
-    lda (animAddr),y				; check if we are in a no loop animation
+    lda (heroAnimAddr),y			; check if we are in a no loop animation
 	cmp #$ff
 	bne :+
 
@@ -349,7 +358,7 @@ nextFrameContinue:
 	sta animInProgress
 	bra endAnim
 
-:   lda (animAddr),y
+:   lda (heroAnimAddr),y
     cmp #$00
     bne noLoop
 
@@ -370,7 +379,7 @@ noLoop:
 	rep #$20
 	.A16
 
-	lda (animAddr),y
+	lda (heroAnimAddr),y
 	tax
 
 	rep #$10
@@ -379,10 +388,34 @@ noLoop:
 	.I16
 
 	phx								; contains adress of tiles
+
 	inx
-	inx								; increment to go to tile definition
+	inx								; increment to go to hit offset definition
+
+	; calculate hit offset
+	lda heroFlag
+	bit HERO_STATUS_MIRROR_FLAG
+	bne calculateMirrorHitOffset
+
+calculateNormalHitOffset:
+	lda $0000,X
+	sec
+	sbc heroXOffset
+	sta heroHitOffset
+	bra :+
+
+calculateMirrorHitOffset:
+	inx
+	lda $0000,X
+    clc
+	adc heroXOffset
+	sta heroHitOffset
+	bra :++
+
+:	inx
+:	inx								; increment offset to go to tiles definition
 	ldy heroXOffset					; x Pos
-	jsr setHeroOAM					; todo check why A is modified when returning
+	jsr setHeroOAM
 
 	jsr OAMDataUpdated
 
@@ -485,10 +518,11 @@ noTransfer:
 ;*******************************************************************************
 
 .proc setMirrorSpriteMode
-	phx
-	ldx #setHeroOAM::blockLoopMirror
-	stx heroBlockLoop
-	ply
+	pha
+	lda heroFlag
+	ora #HERO_STATUS_MIRROR_FLAG
+	sta heroFlag
+	pla
 	rts
 .endproc
 
@@ -499,10 +533,12 @@ noTransfer:
 ;*******************************************************************************
 
 .proc setNormalSpriteMode
-	phx
-	ldx #setHeroOAM::blockLoop
-	stx heroBlockLoop
-	ply
+	pha
+	lda heroFlag
+	and #HERO_STATUS_MIRROR_FLAG
+	sta heroFlag
+	stz	heroFlag						; TODO fox for good "negative and" instruction
+	pla
 	rts
 .endproc
 
@@ -545,6 +581,10 @@ noTransfer:
 	lda animInProgress
 	bit #$01						; simple animation in progress
 	beq :+
+	
+	; TODO put here check if we need to end animation earlier
+	; TODO check if we are still down after a down animation
+	; TODO check if DOWN was pressed while animation
 
 	jsr animHero
 	jmp endHeroPadCheck
@@ -606,7 +646,7 @@ noTransfer:
 	bra :++
 
 :	ldx #.LOWORD(heroJump)
-:	stx animAddr
+:	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	stz animationJumpFrameCounter
@@ -625,7 +665,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroDownStand)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	jsr animHero
@@ -643,7 +683,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroDownKick)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	lda #$01
@@ -656,7 +696,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroDownPunch)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	lda #$01
@@ -672,7 +712,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroStand)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	jsr animHero
@@ -688,7 +728,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroStandKick)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	lda #$01
@@ -701,7 +741,7 @@ noTransfer:
 	beq :+
 
 	ldx #.LOWORD(heroStandPunch)
-	stx animAddr
+	stx heroAnimAddr
 	stz animFrameIndex
 	stz animationFrameCounter
 	lda #$01
@@ -714,12 +754,12 @@ noTransfer:
 
 	lda padFirstPushDataLow1		; check it's first time that we push LEFT or RIGHT
 	bit #PAD_LOW_RIGHT
-	bne :+							; if we push RIGHT we set AnimAddr
+	bne :+							; if we push RIGHT we set heroAnimAddr
 	bit #PAD_LOW_LEFT
 	beq :++							; if we don't push LEFT for the first time, we check for next test
 									; if we push LEFT for the first time, execute next line
 :	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
-	stx animAddr
+	stx heroAnimAddr
 
 :	lda padPushDataLow1				; check if we push LEFT or RIGHT
 	bit #PAD_LOW_RIGHT
