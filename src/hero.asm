@@ -399,16 +399,12 @@ noLoop:
 
 calculateNormalHitOffset:
 	lda $0000,X
-	sec
-	sbc heroXOffset
 	sta heroHitOffset
 	bra :+
 
 calculateMirrorHitOffset:
 	inx
 	lda $0000,X
-    clc
-	adc heroXOffset
 	sta heroHitOffset
 	bra :++
 
