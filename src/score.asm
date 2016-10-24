@@ -16,6 +16,8 @@
 
             .export 	initScore
             .export 	updateTime
+            .export 	updateEnergyPlayer
+            .export 	setEnergyPlayer
 
 			.export doUpdateScore
             .export scoreEvent
@@ -26,6 +28,7 @@
             .export updateScoreTop
             .export setEnergyPlayer
             .export writeNumberToScoreMap
+            .export energyPlayer
 
 .segment "BSS"
 
@@ -283,6 +286,22 @@ loopCopyScoreMap:
 ;******************************************************************************
 
 ;******************************************************************************
+;*** updateEnergyPlayer *******************************************************
+;******************************************************************************
+;*** A contains how much energy need to be removed                          ***
+;******************************************************************************
+
+.proc updateEnergyPlayer
+	eor #$ff
+	sec
+	adc energyPlayer				; inverted substraction
+	cmp #$00
+	bpl :+
+	lda #$00
+:	rts
+.endproc
+
+;******************************************************************************
 ;*** setEnergyPlayer functions ************************************************
 ;******************************************************************************
 ;*** A contains new energy value (0 - 64)                                   ***
@@ -302,7 +321,7 @@ loopCopyScoreMap:
 	lsr
 	lsr								; divide value by 8
 
-	ldx #$0000						; map offset TODO set correct start value
+	ldx #ENERGY_PLAYER_POSITION		; map offset
 	ldy #$0000						; counter
 
 loopFull:							; full energy bar tile
@@ -310,10 +329,11 @@ loopFull:							; full energy bar tile
 	beq realValue
 
 	pha
-	lda #$08						; TODO use correct tile
+	lda #ENERGY_PLAYER_OFFSET		; offset of the first tile (full)
 	sta scoreMapData,x
 	pla
 
+	inx
 	inx
 	iny
 	dec
@@ -323,14 +343,20 @@ realValue:
 
 	pla								; restore initial value
 
+	cmp #$00
+	beq loopEmpty
+
 	cpy #$0008
 	beq end
 
 	and #%00000111					; mask to get only last 3 bits
+	eor #%00000111					; invert
 	clc
-	adc #$ee						; add offset TODO set correct offset
+	adc #ENERGY_PLAYER_OFFSET		; add offset to first tile offset
 
 	sta scoreMapData,x
+
+	inx
 	inx
 	iny
 
@@ -339,8 +365,10 @@ loopEmpty:
 	cpy #$0008
 	beq end
 
-	lda #$00						; TODO use correct tile
+	lda #ENERGY_PLAYER_OFFSET + 8	; offset of the last tile (empty)
 	sta scoreMapData,x
+
+	inx
 	inx
 	iny
 

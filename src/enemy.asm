@@ -13,6 +13,12 @@
             .include    "snes-event.inc"
             .include    "snes-sprite.inc"
             .include    "includes/hero.inc"
+            .include    "includes/score.inc"
+
+            .include 	"includes/enemyData.asm"
+
+            ENEMY_MAIN_CODE = 1
+			.include    "includes/enemy.inc"
 
             .import 	spriteCounter
 
@@ -38,8 +44,7 @@
             .export grabbingWalk1
             .export grabbingWalk2
             .export highByte
-
-.include "includes/enemyData.asm"
+            .export reactEnemyGrab
 
 SPRITE_TILE_ZONE1_ADDR	= $3000
 SPRITE_TILE_ZONE2_ADDR	= $4000
@@ -88,68 +93,6 @@ EnemyArrayOAMSlotOffset:
 
 EnemyArrayFlag:
 	.res 1 * ENEMY_SPRITE_NUMBER
-
-.macro EnemyDataIndexSetFromAccumulator
-	rep #$20
-	.A16
-
-	and #$00ff
-	sta EnemyCurrentArrayIndexByte
-    asl								; index slot * 2
-	sta EnemyCurrentArrayIndexWord
-	lda EnemyCurrentArrayIndexByte	; restore value
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-.endmacro
-
-.macro EnemyDataIndexSetFromXIndex
-	pha
-	rep #$20
-	.A16
-
-	txa
-	and #$00ff
-	sta EnemyCurrentArrayIndexByte
-    asl								; index slot * 2
-	sta EnemyCurrentArrayIndexWord
-	lda EnemyCurrentArrayIndexByte	; restore value
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-	pla
-.endmacro
-
-.macro EnemyDataLDA variableName
-	phx
-	.if    (.xmatch(EnemyArrayAnimFrameIndex, {variableName}) \
-		.or .xmatch(EnemyArrayAnimFrameCounter, {variableName}) \
-		.or .xmatch(EnemyArrayAnimJumpFramecounter, {variableName}) \
-		.or .xmatch(EnemyArrayFlag, {variableName}))
-		ldx EnemyCurrentArrayIndexByte
-		lda variableName,X
-	.else
-		.error "EnemyDataLDA: that variable don't exist"
-	.endif
-	plx
-.endmacro
-
-.macro EnemyDataLDX variableName
-	phy
-	.if    (.xmatch(EnemyArrayAnimAddress, {variableName}) \
-		.or .xmatch(EnemyArrayXOffset, {variableName}) \
-		.or .xmatch(EnemyArrayOAMSlotOffset, {variableName}))
-		ldy EnemyCurrentArrayIndexWord
-		ldx variableName,Y
-	.else
-		.error "EnemyDataLDX: that variable don't exist"
-	.endif
-	ply
-.endmacro
 
 .segment "CODE"
 
@@ -235,7 +178,7 @@ endInitArrayLoop:
 	phy
 	php
 
-	EnemyDataIndexSetFromXIndex
+	_EnemyDataIndexSetFromXIndex
 
 	ldx EnemyCurrentArrayIndexByte
 	ora #ENEMY_STATUS_ACTIVE_FLAG
@@ -413,7 +356,7 @@ continueLineLoop:
     adc #$80
 	pha
 
-	EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
+	_EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
 	and #ENEMY_STATUS_MIRROR_FLAG
 	cmp #$00
 	beq blockLoop					; jmp to correct blockLoop code (normal)
@@ -745,6 +688,8 @@ endAnim:
 	ldx #$0000
 	ldy #$0000
 
+	_ResetHeroGrabFlag
+
 reactLoop:
 	cpx #ENEMY_SPRITE_NUMBER
 	beq endReactLoop
@@ -792,12 +737,85 @@ endReactLoop:
 ;******************************************************************************
 ;*** reactEnemyGrab ***********************************************************
 ;******************************************************************************
+;*** A contains enemyFlag                                                   ***
+;******************************************************************************
 
 .proc reactEnemyGrab
 	pha
 	phx
 	phy
 	php
+
+	;*** check if we are grabbing (shake counter is not zero) ***
+	;************************************************************
+
+	and #ENEMY_STATUS_SHAKE_COUNT_MASK
+
+	cmp #$00
+	beq notGrabbing						; We are currently not grabbing so we continue
+
+	cmp #$01
+	beq branchToFall					; if shake count is decrement until 1
+										; enemy is killed and will fall
+
+	;*** enemy is grabbing the hero ***
+	;**********************************
+
+	pha									; save shake count
+	_GetHeroShakingFlag					; check if hero is shaking
+	cmp #$00
+	beq heroDontShake
+
+heroShake:
+
+	_EnemyDataLDA EnemyArrayAnimFrameCounter
+	cmp #$04							; check if enemy anim frame counter is equal to 4
+	beq heroShakeContinue
+	cmp #$08							; check if enemy anim frame counter is equal to 8
+	beq heroShakeContinue
+
+	bra heroNoEnergyLose
+
+heroShakeContinue:
+	pla
+	dec									; decrement shake count value
+	_setEnemyShakingCounter
+
+	lda #$01							; decrement hero energy
+	jsr updateEnergyPlayer
+	jsr setEnergyPlayer
+
+	jmp end
+
+heroDontShake:
+
+	_EnemyDataLDA EnemyArrayAnimFrameCounter
+	cmp #$04							; check if enemy anim frame counter is equal to 4
+	beq heroDontShakeContinue
+	cmp #$08							; check if enemy anim frame counter is equal to 8
+	beq heroDontShakeContinue
+
+	bra heroNoEnergyLose
+
+heroDontShakeContinue:
+	pla
+
+	lda #$01							; decrement hero energy
+	jsr updateEnergyPlayer
+	jsr setEnergyPlayer
+
+	jmp end
+
+heroNoEnergyLose:
+	pla
+	jmp end
+
+branchToFall:
+	jmp fall
+
+notGrabbing:
+
+	lda EnemyArrayFlag,X
 
 	rep #$20
 	.A16
@@ -833,19 +851,21 @@ normalMode:
 	lda #.LOWORD(grabbingGrab)
 	sta EnemyArrayAnimAddress,Y
 
+	_ResetEnemyShakingCounter					; set shakingCounter in enemyFlag to init value
+
 	bra end
 
 normalModeLiftArmCheck:
 	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	bpl normalModeGoRight
 
-	lda #.LOWORD(grabbingArmUpWalk)			; we don't reset the animation indexes and counter
-	sta EnemyArrayAnimAddress,Y				; so animation is fluid in the walk process
+	lda #.LOWORD(grabbingArmUpWalk)				; we don't reset the animation indexes and counter
+	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
 
 normalModeGoRight:
-	lda EnemyArrayXOffset,Y					; go right
+	lda EnemyArrayXOffset,Y						; go right
 	inc
-	sta EnemyArrayXOffset,Y					; increment enemy X Offset
+	sta EnemyArrayXOffset,Y						; increment enemy X Offset
 
 	bra end
 
@@ -857,7 +877,7 @@ mirrorMode:
 	lda EnemyArrayXOffset,Y
 	sec
 	sbc heroXOffset
-	and #$00ff								; calculate distance between enemy and hero
+	and #$00ff									; calculate distance between enemy and hero
 
 	cmp #ENEMY_MIRROR_GRAB_DISTANCE_GRAB
 	bne mirrorModeLiftArmCheck
@@ -867,7 +887,7 @@ mirrorMode:
 	.A8
 	.I16
 
-	stz EnemyArrayAnimFrameIndex,X			; reset animation indexes and counter
+	stz EnemyArrayAnimFrameIndex,X				; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
 	stz EnemyArrayAnimJumpFramecounter,X
 
@@ -877,30 +897,33 @@ mirrorMode:
 	lda #.LOWORD(grabbingGrab)
 	sta EnemyArrayAnimAddress,Y
 
+	_ResetEnemyShakingCounter					; set shakingCounter in enemyFlag
+
 	bra end
 
 mirrorModeLiftArmCheck:
 	cmp #ENEMY_MIRROR_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	bpl mirrorModeGoLeft
 
-	lda #.LOWORD(grabbingArmUpWalk)			; we don't reset the animation indexes and counter
-	sta EnemyArrayAnimAddress,Y				; so animation is fluid in the walk process
+	lda #.LOWORD(grabbingArmUpWalk)				; we don't reset the animation indexes and counter
+	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
 
 mirrorModeGoLeft:
-	lda EnemyArrayXOffset,Y					; go left
+	lda EnemyArrayXOffset,Y						; go left
 	dec
-	sta EnemyArrayXOffset,Y					; decrement enemy X Offset
+	sta EnemyArrayXOffset,Y						; decrement enemy X Offset
 
 	bra end
 
+fall:											; TODO do a real fall
 end:
 	rep #$10
 	sep #$20
 	.A8
 	.I16
 
-	txa										; slot to anim
-	EnemyDataIndexSetFromAccumulator
+	txa											; slot to anim
+	_EnemyDataIndexSetFromAccumulator
 	jsr animEnemy
 
 	plp

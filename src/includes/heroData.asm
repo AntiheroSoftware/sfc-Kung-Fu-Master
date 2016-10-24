@@ -1,7 +1,3 @@
-HERO_STATUS_MIRROR_FLAG 	= %00000001
-
-SPRITE_DATA_BANK 	= $02
-
 .segment "BANK2"
 
 KFM_Player_final_Tiles:

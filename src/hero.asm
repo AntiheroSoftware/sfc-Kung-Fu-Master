@@ -15,16 +15,23 @@
             .include    "includes/base.inc"
             .include    "includes/level.inc"
 
+			.include 	"includes/heroData.asm"
+
+            			HERO_MAIN_CODE = 1
+            .include    "includes/hero.inc"
+
             .export 	initHeroSprite
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
 			.export		spriteCounter
 			.export 	heroXOffset
+			.export 	heroFlag
+
+			.export setMirrorSpriteMode
+			.export setNormalSpriteMode
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
-
-.include "includes/heroData.asm"
 
 .segment "BSS"
 
@@ -34,7 +41,7 @@ spriteCounter:						; Temp Value used to count number of sprite used
 animFrameIndex:						; Index of the current animation
 	.res 1
 
-animationFrameCounter:				; Number of frame in animation
+animFrameCounter:				; Number of frame in animation
 	.res 1
 
 animationJumpFrameCounter:			; Number of total frame in jump animation
@@ -93,7 +100,7 @@ heroFlag:							; define status of actual position
 	; init various variable
 	lda #$00
 	sta animFrameIndex
-	sta animationFrameCounter
+	sta animFrameCounter
 	sta animationJumpFrameCounter
 	sta animInProgress
 	sta forceRefresh
@@ -165,7 +172,7 @@ continueLineLoop:
 	pha								; save it to the stack
 
 	lda heroFlag
-	bit HERO_STATUS_MIRROR_FLAG
+	bit #HERO_STATUS_MIRROR_FLAG
 	bne blockLoopMirror				; jmp to correct blockLoop code (mirror/normal)
 
 blockLoop:
@@ -312,7 +319,7 @@ endFillLoop:
 
     lda animFrameIndex
     tay
-    lda animationFrameCounter
+    lda animFrameCounter
     cmp #$00                        ; first time we do that animation
 	beq firstFrame
 
@@ -320,7 +327,7 @@ endFillLoop:
     cmp (heroAnimAddr),y			; we did all frames for that index
     beq nextFrame
 
-	inc animationFrameCounter		; disable this to make it manual on testing
+	inc animFrameCounter		; disable this to make it manual on testing
 
     lda forceRefresh
     cmp #$01
@@ -330,7 +337,7 @@ endFillLoop:
 
 firstFrame:
 	lda #$01
-    sta animationFrameCounter
+    sta animFrameCounter
 	lda #$00
 	sta animFrameIndex
 	bra nextFrameContinue
@@ -338,7 +345,7 @@ firstFrame:
 nextFrame:
 
     lda #$01
-    sta animationFrameCounter
+    sta animFrameCounter
 
     lda animFrameIndex
     inc
@@ -531,9 +538,8 @@ noTransfer:
 .proc setNormalSpriteMode
 	pha
 	lda heroFlag
-	and #HERO_STATUS_MIRROR_FLAG
+	and #<.BITNOT(HERO_STATUS_MIRROR_FLAG)
 	sta heroFlag
-	stz	heroFlag						; TODO fox for good "negative and" instruction
 	pla
 	rts
 .endproc
@@ -571,10 +577,19 @@ noTransfer:
 
 	txa
 
+	;*** Is hero grabbed by an enemy ***
+	;***********************************
+
+	_GetHeroGrabFlag
+	cmp #$00
+	beq :+
+
+	jsr setShakingFlag				; check if we are shaking and set heroFlag
+
 	;*** Is there an animation in progress ***
 	;*****************************************
 
-	lda animInProgress
+:	lda animInProgress
 	bit #$01						; simple animation in progress
 	beq :+
 	
@@ -644,7 +659,7 @@ noTransfer:
 :	ldx #.LOWORD(heroJump)
 :	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	stz animationJumpFrameCounter
 	lda #$02						; jump animation in progress
 	sta animInProgress
@@ -663,7 +678,7 @@ noTransfer:
 	ldx #.LOWORD(heroDownStand)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	jsr animHero
 	jmp endHeroPadCheck
 
@@ -681,7 +696,7 @@ noTransfer:
 	ldx #.LOWORD(heroDownKick)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	lda #$01
 	sta animInProgress
 	jsr animHero
@@ -694,7 +709,7 @@ noTransfer:
 	ldx #.LOWORD(heroDownPunch)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	lda #$01
 	sta animInProgress
 	jsr animHero
@@ -710,7 +725,7 @@ noTransfer:
 	ldx #.LOWORD(heroStand)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	jsr animHero
 	jmp endHeroPadCheck
 
@@ -726,7 +741,7 @@ noTransfer:
 	ldx #.LOWORD(heroStandKick)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	lda #$01
 	sta animInProgress
 	jsr animHero
@@ -739,7 +754,7 @@ noTransfer:
 	ldx #.LOWORD(heroStandPunch)
 	stx heroAnimAddr
 	stz animFrameIndex
-	stz animationFrameCounter
+	stz animFrameCounter
 	lda #$01
 	sta animInProgress
 	jsr animHero
@@ -783,5 +798,43 @@ endHeroPadCheck:
 	pla
 	plx
 	ply
+	rts
+.endproc
+
+;*******************************************************************************
+;*** setShakingFlag ************************************************************
+;*******************************************************************************
+;*** No parameters                                                           ***
+;*******************************************************************************
+
+.proc setShakingFlag
+	pha
+
+	lda heroFlag
+	and #<.BITNOT(HERO_STATUS_SHAKING_FLAG)
+	sta heroFlag								; reset shaking flag
+
+	bit #HERO_STATUS_MIRROR_FLAG
+	bne checkMirror
+
+checkNormal:
+
+	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
+	beq :+
+	and #HERO_STATUS_SHAKING_FLAG
+	sta heroFlag
+:	bra endCheck
+
+checkMirror:
+
+	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
+	bne :+
+	and #HERO_STATUS_SHAKING_FLAG
+	sta heroFlag
+:	bra endCheck
+
+endCheck:
+
+	pla
 	rts
 .endproc
