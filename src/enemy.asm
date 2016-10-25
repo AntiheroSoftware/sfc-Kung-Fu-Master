@@ -754,6 +754,8 @@ endReactLoop:
 	cmp #$00
 	beq notGrabbing						; We are currently not grabbing so we continue
 
+	_SetHeroGrabFlag					; we grab the hero
+
 	cmp #$01
 	beq branchToFall					; if shake count is decrement until 1
 										; enemy is killed and will fall

@@ -144,6 +144,6 @@ grabbingArmUpWalk:
 	.byte $00
 
 grabbingGrab:
-	.byte $08
+	.byte $01
 	.word .LOWORD(grabbingGrab1)
 	.byte $00

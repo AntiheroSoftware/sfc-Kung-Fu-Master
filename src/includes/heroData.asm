@@ -449,6 +449,11 @@ heroJumpRun:
 	.word .LOWORD(heroStand1)
 	.byte $ff
 
+heroGrabbed:
+	.byte $01
+	.word .LOWORD(heroGrabbed1)
+	.byte $ff
+
 heroJumpOffsetTable:
 	; old values
 	;.byte  0,  0,  5, 12, 14, 16, 18, 20, 22, 31, 32, 34, 35, 36	; 14 values

@@ -29,6 +29,7 @@
 
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
+			.export setShakingFlag
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -582,14 +583,32 @@ noTransfer:
 
 	_GetHeroGrabFlag
 	cmp #$00
-	beq :+
+	beq checkAnimInProgress
 
 	jsr setShakingFlag				; check if we are shaking and set heroFlag
+
+	;*** Set the good mirror mode for hero sprite ***
+	;************************************************
+
+	_CheckHeroMirrorMode			; TODO fix bug with mirror mode and shaking
+
+	ldx heroAnimAddr
+	cpx #.LOWORD(heroGrabbed)		; check if current anim is already "heroGrabbed"
+	beq :+
+
+	ldx #.LOWORD(heroGrabbed)
+	stx heroAnimAddr
+	stz animFrameIndex
+	stz animFrameCounter
+
+:	jsr animHero
+	jmp endHeroPadCheck
 
 	;*** Is there an animation in progress ***
 	;*****************************************
 
-:	lda animInProgress
+checkAnimInProgress:
+	lda animInProgress
 	bit #$01						; simple animation in progress
 	beq :+
 	
@@ -621,21 +640,7 @@ noTransfer:
 	;*** Set the good mirror mode for hero sprite ***
 	;************************************************
 
-	lda padFirstPushDataLow1
-	bit #PAD_LOW_LEFT
-	beq :+
-	jsr setMirrorSpriteMode
-	lda #$01
-	sta forceRefresh
-	bra :++
-
-:	lda padFirstPushDataLow1
-	bit #PAD_LOW_RIGHT
-	beq :+
-	jsr setNormalSpriteMode
-	lda #$01
-	sta forceRefresh
-:
+	_CheckHeroMirrorMode
 
 	;*** Check pad direction ***
 	;***************************
@@ -821,7 +826,7 @@ checkNormal:
 
 	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
 	beq :+
-	and #HERO_STATUS_SHAKING_FLAG
+	ora #HERO_STATUS_SHAKING_FLAG
 	sta heroFlag
 :	bra endCheck
 
@@ -829,7 +834,7 @@ checkMirror:
 
 	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
 	bne :+
-	and #HERO_STATUS_SHAKING_FLAG
+	ora #HERO_STATUS_SHAKING_FLAG
 	sta heroFlag
 :	bra endCheck
 

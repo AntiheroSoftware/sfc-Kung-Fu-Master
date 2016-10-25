@@ -48,3 +48,23 @@ SPRITE_DATA_BANK 	= $02
     and #HERO_STATUS_SHAKING_FLAG
 
 .endmacro
+
+.macro _CheckHeroMirrorMode
+
+    lda padFirstPushDataLow1
+    bit #PAD_LOW_LEFT
+    beq :+
+    jsr setMirrorSpriteMode
+    lda #$01
+    sta forceRefresh
+    bra :++
+
+:	lda padFirstPushDataLow1
+    bit #PAD_LOW_RIGHT
+    beq :+
+    jsr setNormalSpriteMode
+    lda #$01
+    sta forceRefresh
+:
+
+.endmacro
