@@ -144,6 +144,6 @@ grabbingArmUpWalk:
 	.byte $00
 
 grabbingGrab:
-	.byte $01
+	.byte $08								; value is 8 cause we use frame counter to lose energy counter
 	.word .LOWORD(grabbingGrab1)
 	.byte $00

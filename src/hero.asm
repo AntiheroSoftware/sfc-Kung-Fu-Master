@@ -827,6 +827,7 @@ checkNormal:
 	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
 	beq :+
 	ora #HERO_STATUS_SHAKING_FLAG
+	and #<.BITNOT(HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG)
 	sta heroFlag
 :	bra endCheck
 
@@ -835,6 +836,7 @@ checkMirror:
 	bit #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
 	bne :+
 	ora #HERO_STATUS_SHAKING_FLAG
+	ora #HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG
 	sta heroFlag
 :	bra endCheck
 

@@ -45,6 +45,8 @@
             .export grabbingWalk2
             .export highByte
             .export reactEnemyGrab
+            .export enemyGrabFall
+            .export clearEnemy
 
 SPRITE_TILE_ZONE1_ADDR	= $3000
 SPRITE_TILE_ZONE2_ADDR	= $4000
@@ -153,7 +155,7 @@ endInitArrayLoop:
 
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
 
@@ -239,6 +241,49 @@ check_end:
 	ply
 	plx
 	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** clearEnemy ***************************************************************
+;******************************************************************************
+;*** slot (X)													     		***
+;******************************************************************************
+
+.proc clearEnemy
+	phy
+	phx
+	pha
+
+	lda #$00
+	sta EnemyArrayFlag,X
+
+	ldy EnemyArrayOAMSlotOffset,X
+	tyx
+
+	ldy #$0000
+
+clearLoop:
+	cpy #$0008
+	beq endClearLoop
+
+	lda #$e0
+	sta oamData+1,x                 ; V (Y) pos of the sprite
+
+	inx
+	inx
+	inx
+	inx
+
+	iny
+
+	bra clearLoop
+
+endClearLoop:
+
+	pla
+	plx
+	ply
 	rts
 .endproc
 
@@ -754,21 +799,25 @@ endReactLoop:
 	cmp #$00
 	beq notGrabbing						; We are currently not grabbing so we continue
 
-	_SetHeroGrabFlag					; we grab the hero
-
 	cmp #$01
 	beq branchToFall					; if shake count is decrement until 1
 										; enemy is killed and will fall
+
+	_SetHeroGrabFlag					; we grab the hero
 
 	;*** enemy is grabbing the hero ***
 	;**********************************
 
 	pha									; save shake count
 	_GetHeroShakingFlag					; check if hero is shaking
-	cmp #$00
-	beq heroDontShake
+	cmp #HERO_STATUS_SHAKING_FLAG
+	bne heroDontShake
 
 heroShake:
+
+	pla
+	dec									; decrement shake count value
+	_setEnemyShakingCounter
 
 	_EnemyDataLDA EnemyArrayAnimFrameCounter
 	cmp #$04							; check if enemy anim frame counter is equal to 4
@@ -779,9 +828,6 @@ heroShake:
 	bra heroNoEnergyLose
 
 heroShakeContinue:
-	pla
-	dec									; decrement shake count value
-	_setEnemyShakingCounter
 
 	lda #$01							; decrement hero energy
 	jsr updateEnergyPlayer
@@ -790,6 +836,8 @@ heroShakeContinue:
 	jmp end
 
 heroDontShake:
+
+	pla
 
 	_EnemyDataLDA EnemyArrayAnimFrameCounter
 	cmp #$04							; check if enemy anim frame counter is equal to 4
@@ -800,7 +848,6 @@ heroDontShake:
 	bra heroNoEnergyLose
 
 heroDontShakeContinue:
-	pla
 
 	lda #$01							; decrement hero energy
 	jsr updateEnergyPlayer
@@ -809,7 +856,6 @@ heroDontShakeContinue:
 	jmp end
 
 heroNoEnergyLose:
-	pla
 	jmp end
 
 branchToFall:
@@ -918,6 +964,15 @@ mirrorModeGoLeft:
 	bra end
 
 fall:											; TODO do a real fall
+	jsr enemyGrabFall
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	bra skipAnim
+
 end:
 	rep #$10
 	sep #$20
@@ -928,10 +983,17 @@ end:
 	_EnemyDataIndexSetFromAccumulator
 	jsr animEnemy
 
+skipAnim:
+
 	plp
 	ply
 	plx
 	pla
+	rts
+.endproc
+
+.proc enemyGrabFall
+	jsr clearEnemy								; disable ennemy
 	rts
 .endproc
 
