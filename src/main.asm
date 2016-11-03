@@ -244,6 +244,7 @@ checkForGameStart:
 gameStart:
 
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
+	stz CPU_NMITIMEN				; Disable NMI and pad reading
 
 	jsr initEvents					; reset events
 
@@ -267,8 +268,6 @@ gameStart:
 	ldy #EVENT_GAME_SCREEN_TRANSFER_HERO_SPRITE_DATA
 	jsr addEvent
 
-	setINIDSP $0f   				; Enable screen full brightness
-
 	lda #$81        				; Enable NMI + pad reading
 	sta CPU_NMITIMEN
 
@@ -276,6 +275,10 @@ gameStart:
 	sta controlValue
 	lda #CONTROL_VALUE_NONE
 	sta controlNextValue
+
+	wai 							; Wait at least one NMI interrupt before setting full brightness
+
+	setINIDSP $0f   				; Enable screen full brightness
 
 gameStartInfiniteLoop:
 
