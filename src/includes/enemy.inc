@@ -24,6 +24,13 @@ ENEMY_STATUS_TYPE_GRAB			= %01000000
 ENEMY_STATUS_TYPE_KNIFE			= %10000000
 ENEMY_STATUS_TYPE_MIDGET		= %11000000
 
+ENEMY_MS_UZONE     = %10000000  ; sprite char is in up zone (bit 5)
+ENEMY_MS_VFLIP     = %01000000  ; vertical flip (bit 8)
+ENEMY_MS_SMALL_PAL = %00000000  ; palette 1 for enemy small guys (bit 6-7)
+ENEMY_MS_KNIFE_PAL = %00000000  ; palette 1 for enemy knife guys (bit 6-7)
+ENEMY_MS_GRAB_PAL  = %00010000  ; palette 2 for enemy grab guys (bit 6-7)
+ENEMY_MS_BLOCK_NUMBER_MASK = %00001111
+
 ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP 	= $30
 ENEMY_NORMAL_GRAB_DISTANCE_GRAB 	= $04
 

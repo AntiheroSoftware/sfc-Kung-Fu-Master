@@ -1,12 +1,15 @@
 .segment "BANK1"
 
 enemySpritePal:
-    .incbin "../ressource/enemyFull.clr"
+    .incbin "../ressource/spriteFull.clr"
+
+spriteBaseTiles:
+	.incbin "../ressource/spriteFull.pic", $0000, $2000
 
 .segment "BANK3"
 
 enemySpriteFullTiles:
-	.incbin "../ressource/enemyFull.pic"
+	.incbin "../ressource/spriteFull.pic", $2000
 
 enemySpriteBank1Tiles := enemySpriteFullTiles
 enemySpriteBank2Tiles := enemySpriteFullTiles + $2000
@@ -44,6 +47,42 @@ highByte:
 	.byte %11111110
 	.byte %11111111
 
+metaspriteStatusNormal:
+	.byte %00110101
+	.byte %00110111
+	.byte %00111001
+	.byte %00111011
+	.byte %10110101
+	.byte %10110111
+	.byte %10111001
+	.byte %10111011
+	.byte %00110100
+	.byte %00110110
+	.byte %00111000
+	.byte %00111010
+	.byte %10110100
+	.byte %10110110
+	.byte %10111000
+	.byte %10111010
+
+metaspriteStatusMirror:
+	.byte %01110101
+	.byte %01110111
+	.byte %01111001
+	.byte %01111011
+	.byte %11110101
+	.byte %11110111
+	.byte %11111001
+	.byte %11111011
+	.byte %01110100
+	.byte %01110110
+	.byte %01111000
+	.byte %01111010
+	.byte %11110100
+	.byte %11110110
+	.byte %11111000
+	.byte %11111010
+
 ;******************************************************************************
 ;*** Sprite definition ********************************************************
 ;******************************************************************************
@@ -51,7 +90,7 @@ highByte:
 ;******************************************************************************
 ;*** Metasprites **************************************************************
 ;******************************************************************************
-;*** Number of horizontal tiles                                             ***
+;*** Number of horizontal tiles + STATUS bits                               ***
 ;*** Y offset of the line                                                   ***
 ;*** X offset                                                               ***
 ;*** X offset Mirror                                                        ***
@@ -59,59 +98,59 @@ highByte:
 ;******************************************************************************
 
 grabbingWalk1:						; 4 sprite blocks
-	.byte   $01, $00, $09, $09, $00
-	.byte   $01, $10, $09, $08, $00
-	.byte   $01, $20, $09, $09, $00
-	.byte   $01, $30, $09, $09, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $00
 	.byte	$00
 
 grabbingWalk2:						; 6 sprite blocks
-	.byte   $01, $00, $09, $09, $00
-	.byte   $01, $10, $08, $09, $02
-	.byte   $02, $20, $02, $11, $02
-	.byte 			  $11, $02, $04
-	.byte   $02, $30, $02, $11, $02
-	.byte 			  $11, $02, $04
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $08, $09, $02
+	.byte   ENEMY_MS_GRAB_PAL + $02, $20, $02, $11, $02
+	.byte 			  			$11, $02, $04
+	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $02, $11, $02
+	.byte 			  			$11, $02, $04
 	.byte	$00
 
 grabbingWalk3:						; 6 sprite blocks
-	.byte   $01, $00, $09, $09, $00
-	.byte   $01, $10, $09, $08, $04
-	.byte   $02, $20, $01, $10, $06
-	.byte  			  $10, $01, $08
-	.byte   $02, $30, $01, $10, $06
-	.byte 			  $10, $01, $08
-	.byte	$00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $00
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $04
+	.byte   ENEMY_MS_GRAB_PAL + $02, $20, $01, $10, $06
+	.byte  			  			$10, $01, $08
+	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $01, $10, $06
+	.byte 			  			$10, $01, $08
+	.byte	ENEMY_MS_GRAB_PAL + $00
 
 grabbingArmUpWalk1:					; 4 sprite blocks
-	.byte   $01, $00, $09, $09, $02
-	.byte   $01, $10, $09, $08, $08
-	.byte   $01, $20, $09, $09, $0c
-	.byte   $01, $30, $09, $09, $0e
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $02
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $08
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $0c
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $0e
 	.byte	$00
 
 grabbingArmUpWalk2:					; 5 sprite blocks
-	.byte   $01, $00, $09, $09, $02
-	.byte   $01, $10, $08, $09, $06
-	.byte   $01, $20, $08, $09, $0a
-	.byte   $02, $30, $02, $11, $0a
-	.byte 			  $11, $02, $0c
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $02
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $08, $09, $06
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $08, $09, $0a
+	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $02, $11, $0a
+	.byte 			  			$11, $02, $0c
 	.byte	$00
 
 grabbingArmUpWalk3:					; 5 sprite blocks
-	.byte   $01, $00, $09, $09, $02	; right foot in front (normal mode)
-	.byte   $01, $10, $09, $09, $0a ; left foot in front (mirror mode)
-	.byte   $01, $20, $0c, $06, $20
-	.byte   $02, $30, $03, $11, $20
-	.byte 			  $12, $02, $22
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $02	; right foot in front (normal mode)
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $09, $0a ; left foot in front (mirror mode)
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $0c, $06, $20
+	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $03, $11, $20
+	.byte 			  			$12, $02, $22
 	.byte	$00
 
 grabbingGrab1:
-	.byte   $01, $00, $09, $09, $04
-	.byte   $02, $10, $09, $08, $0c
-	.byte 			  $18, $f8, $0e
-	.byte   $01, $20, $09, $09, $0e
-	.byte   $01, $30, $09, $09, $24
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $04
+	.byte   ENEMY_MS_GRAB_PAL + $02, $10, $09, $08, $0c
+	.byte 			  			$18, $f8, $0e
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $0e
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $24
 	.byte	$00
 
 ;******************************************************************************

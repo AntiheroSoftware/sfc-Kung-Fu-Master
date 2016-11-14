@@ -48,6 +48,8 @@
             .export enemyGrabFall
             .export clearEnemy
 
+SPRITE_TILE_BASE_ADDR = $2000
+
 SPRITE_TILE_ZONE1_ADDR	= $3000
 SPRITE_TILE_ZONE2_ADDR	= $4000
 SPRITE_TILE_ZONE3_ADDR	= $5000
@@ -118,7 +120,9 @@ EnemyArrayFlag:
 	phb
 
 	; load enemy sprite palette
-	CGRAMLoad enemySpritePal, $90, $20
+	CGRAMLoad enemySpritePal, $90, $40
+
+	VRAMLoad spriteBaseTiles, SPRITE_TILE_BASE_ADDR, $2000
 
 	VRAMLoad enemySpriteBank1Tiles, SPRITE_TILE_ZONE1_ADDR, $2000
 	VRAMLoad enemySpriteBank2Tiles, SPRITE_TILE_ZONE2_ADDR, $2000
@@ -388,10 +392,12 @@ endClearLoop:
 
 lineLoop:							; loop for each line
     lda ($01,s),y					; load number block for this line
+    and #ENEMY_MS_BLOCK_NUMBER_MASK
     cmp #$00
     bne continueLineLoop			; if no block it's the end
 	jmp endLineLoop
 continueLineLoop:
+	lda ($01,s),y					; load number block for this line + status
     pha								; save it to the stack
 
     iny								; load Y Pos for that line
@@ -409,6 +415,7 @@ continueLineLoop:
 
 blockLoop:
 	lda $02,s						; load blockNumber
+	and #ENEMY_MS_BLOCK_NUMBER_MASK
 	cmp #$00
 	bne :+
 	jmp endBlockLoop				; check all block are done
@@ -464,9 +471,17 @@ blockLoop:
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%00110011					; TODO comment this
-	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
+	lda $02,s
+	lsr
+	lsr
+	lsr
+	lsr
+	phy
+	tay
+	lda metaspriteStatusNormal,y
+	ply
 
+	sta oamData+3,x
 	inx
 	inx
 	inx
@@ -478,6 +493,7 @@ blockLoop:
 
 blockLoopMirror:
 	lda $02,s						; load blockNumber
+	and #ENEMY_MS_BLOCK_NUMBER_MASK
 	cmp #$00
 	beq endBlockLoop				; check all block are done
 	dec
@@ -531,9 +547,17 @@ blockLoopMirror:
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%01110011					; TODO comment this
-	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
+	lda $02,s
+	lsr
+	lsr
+	lsr
+	lsr
+	phy
+	tay
+	lda metaspriteStatusNormal,y
+	ply
 
+	sta oamData+3,x
 	inx
 	inx
 	inx

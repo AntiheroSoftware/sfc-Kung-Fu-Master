@@ -8,6 +8,7 @@ TODO
 ====
 
 * check gfx for hero grabbed
+* review sprite gfx for enemies to optimise and have full enemy gfx
 
 * make enemy fall
 * make hero fall when energy is 0
@@ -19,3 +20,5 @@ DONE
 ====
 
 * ~~On level start there is somehow partly messed gfx and partly loaded frame~~ fixed 03/11/16
+* ~~fix palette problems with spriteFull (more than 16 colors) Might need to have a custom tool for that~~ fixed 14/11/16
+
