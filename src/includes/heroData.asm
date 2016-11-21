@@ -451,7 +451,7 @@ heroJumpRun:
 
 heroGrabbed:
 	.byte $01
-	.word .LOWORD(heroGrabbed1)
+	.word .LOWORD(heroGrabbed1)		; TODO does heroGrabbed1 have a function ?
 	.byte $ff
 
 heroJumpOffsetTable:

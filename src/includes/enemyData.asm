@@ -48,40 +48,50 @@ highByte:
 	.byte %11111111
 
 metaspriteStatusNormal:
+	.byte %00110011
 	.byte %00110101
 	.byte %00110111
 	.byte %00111001
-	.byte %00111011
+	.byte %10110011
 	.byte %10110101
 	.byte %10110111
 	.byte %10111001
-	.byte %10111011
+	.byte %00110010
 	.byte %00110100
 	.byte %00110110
 	.byte %00111000
-	.byte %00111010
+	.byte %10110010
 	.byte %10110100
 	.byte %10110110
 	.byte %10111000
-	.byte %10111010
 
 metaspriteStatusMirror:
+	.byte %01110011
 	.byte %01110101
 	.byte %01110111
 	.byte %01111001
-	.byte %01111011
+	.byte %11110011
 	.byte %11110101
 	.byte %11110111
 	.byte %11111001
-	.byte %11111011
+	.byte %01110010
 	.byte %01110100
 	.byte %01110110
 	.byte %01111000
-	.byte %01111010
+	.byte %11110010
 	.byte %11110100
 	.byte %11110110
 	.byte %11111000
-	.byte %11111010
+
+enemyFallYOffset:
+	.byte 0, 0, 1, 1, 2
+	.byte 4, 5, 6, 7, 8, 9, 10, 12
+	.byte 15, 17, 19, 22, 24, 27, 29, 32, 35, 39, 42, 46, 50, 54, 58, 63, 67
+
+enemyFallXOffset:
+	.byte 1, 2, 3, 4, 5
+	.byte 6, 7, 8, 9, 10, 11, 12, 13
+	.byte 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
 
 ;******************************************************************************
 ;*** Sprite definition ********************************************************
@@ -108,18 +118,18 @@ grabbingWalk2:						; 6 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $00
 	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $08, $09, $02
 	.byte   ENEMY_MS_GRAB_PAL + $02, $20, $02, $11, $02
-	.byte 			  			$11, $02, $04
+	.byte 			  					  $11, $02, $04
 	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $02, $11, $02
-	.byte 			  			$11, $02, $04
+	.byte 			  					  $11, $02, $04
 	.byte	$00
 
 grabbingWalk3:						; 6 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $00
 	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $04
 	.byte   ENEMY_MS_GRAB_PAL + $02, $20, $01, $10, $06
-	.byte  			  			$10, $01, $08
+	.byte  			  					  $10, $01, $08
 	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $01, $10, $06
-	.byte 			  			$10, $01, $08
+	.byte 			  					  $10, $01, $08
 	.byte	ENEMY_MS_GRAB_PAL + $00
 
 grabbingArmUpWalk1:					; 4 sprite blocks
@@ -134,7 +144,7 @@ grabbingArmUpWalk2:					; 5 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $08, $09, $06
 	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $08, $09, $0a
 	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $02, $11, $0a
-	.byte 			  			$11, $02, $0c
+	.byte 			  					  $11, $02, $0c
 	.byte	$00
 
 grabbingArmUpWalk3:					; 5 sprite blocks
@@ -142,16 +152,36 @@ grabbingArmUpWalk3:					; 5 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $09, $0a ; left foot in front (mirror mode)
 	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $0c, $06, $20
 	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $03, $11, $20
-	.byte 			  			$12, $02, $22
+	.byte 			  					  $12, $02, $22
 	.byte	$00
 
-grabbingGrab1:
+grabbingGrab1:						; 5 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $04
 	.byte   ENEMY_MS_GRAB_PAL + $02, $10, $09, $08, $0c
-	.byte 			  			$18, $f8, $0e
+	.byte 			  					  $18, $f8, $0e
 	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $0e
 	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $24
 	.byte	$00
+
+grabbingFall1:						; 7 sprite blocks
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $0b, $00, $10, $e0
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $1b, $00, $10, $e2
+	.byte 			  					  				   $10, $00, $e4
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $2b, $00, $10, $e6
+	.byte 			  					  				   $10, $00, $e8
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $32, $17, $07, $ea
+	.byte 	$00
+
+grabbingFall2:						; 8 sprite blocks
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $10, $00, $20, $ec
+	.byte												   $10, $10, $ee
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $20, $00, $20, $c0
+	.byte 			  					  				   $10, $10, $c2
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $23, $20, $00, $c4
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $03, $30, $00, $20, $c6
+	.byte 			  					  				   $10, $10, $c8
+	.byte 			  					  				   $20, $00, $ca
+	.byte 	$00
 
 ;******************************************************************************
 ;*** Animation frames *********************************************************
@@ -185,4 +215,13 @@ grabbingArmUpWalk:
 grabbingGrab:
 	.byte $08								; value is 8 cause we use frame counter to lose energy counter
 	.word .LOWORD(grabbingGrab1)
+	.byte $00
+
+grabbingFall:
+	.byte $05
+	.word .LOWORD(grabbingGrab1)
+	.byte $08
+	.word .LOWORD(grabbingFall1)
+	.byte $11
+	.word .LOWORD(grabbingFall2)
 	.byte $00

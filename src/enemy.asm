@@ -34,7 +34,7 @@
             .export EnemyArrayAnimAddress
             .export EnemyArrayAnimFrameIndex
             .export EnemyArrayAnimFrameCounter
-            .export EnemyArrayAnimJumpFramecounter
+            .export EnemyArrayOffsetFramecounter
             .export EnemyArrayXOffset
             .export EnemyArrayOAMSlotOffset
             .export EnemyArrayFlag
@@ -43,10 +43,16 @@
             .export grabbingWalk
             .export grabbingWalk1
             .export grabbingWalk2
+            .export grabbingGrab
+            .export grabbingFall
+            .export grabbingFall1
             .export highByte
             .export reactEnemyGrab
             .export enemyGrabFall
             .export clearEnemy
+            .export EnemyCurrentYOffset
+            .export EnemyCurrentXOffset
+            .export enemyFallYOffset
 
 SPRITE_TILE_BASE_ADDR = $2000
 
@@ -68,6 +74,12 @@ EnemyCurrentArrayIndexByte:
 EnemyCurrentArrayIndexWord:
 	.res 2
 
+EnemyCurrentYOffset:
+	.res 1
+
+EnemyCurrentXOffset:
+	.res 1
+
 .segment "BSS"
 
 EnemyTempXOffsetHigh:
@@ -86,7 +98,10 @@ EnemyArrayAnimFrameIndex:
 EnemyArrayAnimFrameCounter:
 	.res 1 * ENEMY_SPRITE_NUMBER
 
-EnemyArrayAnimJumpFramecounter:
+EnemyArrayOffsetFramecounter:
+	.res 1 * ENEMY_SPRITE_NUMBER
+
+EnemyArrayYOffset:
 	.res 1 * ENEMY_SPRITE_NUMBER
 
 EnemyArrayXOffset:
@@ -139,7 +154,7 @@ initArrayLoop:
 
     sta EnemyArrayAnimFrameIndex,X
     sta EnemyArrayAnimFrameCounter,X
-    sta EnemyArrayAnimJumpFramecounter,X
+    sta EnemyArrayOffsetFramecounter,X
     sta EnemyArrayOAMSlotOffset,X
 
     sta EnemyArrayAnimAddress,Y
@@ -159,7 +174,7 @@ endInitArrayLoop:
 
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
 
@@ -184,6 +199,9 @@ endInitArrayLoop:
 	phy
 	php
 
+	stz EnemyCurrentYOffset
+	stz EnemyCurrentXOffset
+
 	_EnemyDataIndexSetFromXIndex
 
 	ldx EnemyCurrentArrayIndexByte
@@ -191,7 +209,7 @@ endInitArrayLoop:
 	sta EnemyArrayFlag,X
 	stz EnemyArrayAnimFrameIndex,X
 	stz EnemyArrayAnimFrameCounter,X
-	stz EnemyArrayAnimJumpFramecounter,X
+	stz EnemyArrayOffsetFramecounter,X
 
 	bit #ENEMY_STATUS_TYPE_GRAB
 	beq check_knife
@@ -405,6 +423,8 @@ continueLineLoop:
     clc
     ;adc heroYOffset				; TODO make a global for enemy Y offset
     adc #$80
+    clc
+    adc EnemyCurrentYOffset
 	pha
 
 	_EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
@@ -415,8 +435,7 @@ continueLineLoop:
 
 blockLoop:
 	lda $02,s						; load blockNumber
-	and #ENEMY_MS_BLOCK_NUMBER_MASK
-	cmp #$00
+	bit #ENEMY_MS_BLOCK_NUMBER_MASK
 	bne :+
 	jmp endBlockLoop				; check all block are done
 :	dec
@@ -429,6 +448,8 @@ blockLoop:
 	beq :+
 
 	lda ($03,s),y					; load X pos for that
+	sec
+	sbc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
@@ -443,6 +464,8 @@ blockLoop:
 	bra :+++
 
 :	lda ($03,s),y					; load X pos for that
+	sec
+	sbc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
@@ -450,7 +473,9 @@ blockLoop:
 	bcc :+							; check and branch if carry is clear
 
 	lda ($03,s),y
-	cmp #$f0						; allow metasprite offset of -15
+	sec
+	sbc EnemyCurrentXOffset
+	cmp #$e0						; allow metasprite offset of -31
 
 	bcs :+							; if carry is set we are good
 									; skip on carry clear
@@ -493,8 +518,7 @@ blockLoop:
 
 blockLoopMirror:
 	lda $02,s						; load blockNumber
-	and #ENEMY_MS_BLOCK_NUMBER_MASK
-	cmp #$00
+	bit #ENEMY_MS_BLOCK_NUMBER_MASK
 	beq endBlockLoop				; check all block are done
 	dec
 	sta $02,s						; update counter
@@ -507,6 +531,8 @@ blockLoopMirror:
 	beq :+
 
 	lda ($03,s),y					; load X pos for that
+	clc
+	adc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
@@ -522,13 +548,17 @@ blockLoopMirror:
 
 :	lda ($03,s),y					; load X pos for that
 	clc
+	adc EnemyCurrentXOffset
+	clc
 	adc $05,s                		; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
 
 	bcc :+							; check and branch if carry is clear
 									; sprite might be overflow
 	lda ($03,s),y
-	cmp #$f0						; allow metasprite offset of -15
+	clc
+	adc EnemyCurrentXOffset
+	cmp #$e0						; allow metasprite offset of -31
 
 	bcs :+							; if carry is set we are good
 									; skip on carry clear
@@ -554,7 +584,7 @@ blockLoopMirror:
 	lsr
 	phy
 	tay
-	lda metaspriteStatusNormal,y
+	lda metaspriteStatusMirror,y
 	ply
 
 	sta oamData+3,x
@@ -915,7 +945,7 @@ normalMode:
 
 	stz EnemyArrayAnimFrameIndex,X			; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
-	stz EnemyArrayAnimJumpFramecounter,X
+	stz EnemyArrayOffsetFramecounter,X
 
 	rep #$20
 	.A16
@@ -925,7 +955,7 @@ normalMode:
 
 	_ResetEnemyShakingCounter					; set shakingCounter in enemyFlag to init value
 
-	bra end
+	jmp end
 
 normalModeLiftArmCheck:
 	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
@@ -961,7 +991,7 @@ mirrorMode:
 
 	stz EnemyArrayAnimFrameIndex,X				; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
-	stz EnemyArrayAnimJumpFramecounter,X
+	stz EnemyArrayOffsetFramecounter,X
 
 	rep #$20
 	.A16
@@ -987,14 +1017,9 @@ mirrorModeGoLeft:
 
 	bra end
 
-fall:											; TODO do a real fall
+fall:
+
 	jsr enemyGrabFall
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-
 	bra skipAnim
 
 end:
@@ -1017,7 +1042,70 @@ skipAnim:
 .endproc
 
 .proc enemyGrabFall
-	jsr clearEnemy								; disable ennemy
+
+	rep #$20
+	.A16
+
+	lda EnemyArrayAnimAddress,Y
+	cmp #.LOWORD(grabbingFall)
+	beq :+
+
+	lda #.LOWORD(grabbingFall)
+	sta EnemyArrayAnimAddress,Y
+	lda #$0000
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+	stz EnemyArrayAnimFrameIndex,X				; reset animation indexes and counter
+	stz EnemyArrayAnimFrameCounter,X
+	stz EnemyArrayOffsetFramecounter,X
+	beq :++
+
+:
+	.A16
+	lda #$0000
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+:	lda EnemyArrayOffsetFramecounter,X
+	cmp #$1d
+	bne :+
+
+	jsr clearEnemy
+	jsr OAMDataUpdated
+	rts
+:
+	inc
+	sta EnemyArrayOffsetFramecounter,X
+
+	phb
+	lda #ENEMY_DATA_BANK
+	pha
+	plb
+
+	lda EnemyArrayOffsetFramecounter,X
+
+	phx
+	tax
+	lda enemyFallYOffset,X
+	sta EnemyCurrentYOffset
+	lda enemyFallXOffset,X
+	sta EnemyCurrentXOffset
+	plx
+
+	plb
+
+	; TODO set enemy X offset
+
+	txa											; slot to anim
+	_EnemyDataIndexSetFromAccumulator
+	jsr animEnemy
+
+	stz EnemyCurrentYOffset
+	stz EnemyCurrentXOffset
+
 	rts
 .endproc
 

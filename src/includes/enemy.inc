@@ -14,7 +14,7 @@ ENEMY_DATA_BANK = $01
 
 ; First 3 bits of Flag reserved for shaking counter if it's a grab enemy
 
-ENEMY_STATUS_SHAKE_COUNT_INIT   = %00001010     ; need 8 left/right to get out of grab
+ENEMY_STATUS_SHAKE_COUNT_INIT   = %00000110     ; need 8 left/right to get out of grab
 ENEMY_STATUS_SHAKE_COUNT_MASK 	= %00001111
 
 ENEMY_STATUS_ACTIVE_FLAG 		= %00010000
@@ -76,7 +76,7 @@ ENEMY_MIRROR_GRAB_DISTANCE_GRAB 	= $04
     phx
     .if    (.xmatch(EnemyArrayAnimFrameIndex, {variableName}) \
             .or .xmatch(EnemyArrayAnimFrameCounter, {variableName}) \
-            .or .xmatch(EnemyArrayAnimJumpFramecounter, {variableName}) \
+            .or .xmatch(EnemyArrayOffsetFramecounter, {variableName}) \
             .or .xmatch(EnemyArrayFlag, {variableName}))
     ldx EnemyCurrentArrayIndexByte
     lda variableName,X
