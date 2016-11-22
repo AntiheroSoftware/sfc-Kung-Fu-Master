@@ -94,6 +94,8 @@ heroFlag:							; define status of actual position
 	phb
 	pha
 
+	jsr clearOAM
+
 	lda #SPRITE_DATA_BANK			; change data bank to sprite data bank
 	pha
 	plb
