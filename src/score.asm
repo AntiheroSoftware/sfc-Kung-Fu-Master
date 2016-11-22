@@ -122,7 +122,7 @@ loopCopyScoreMap:
 	plb								; restore data bank
 
 	VRAMLoad scoreTiles, SCORE_TILE_ADDR, $0c00
-	VRAMLoad scoreMapData, SCORE_MAP_ADDR, $c0
+	VRAMLoad scoreMap, SCORE_MAP_ADDR, $800			; init and clear full VRAM
 	CGRAMLoad scorePal, $60, $20
 
 	lda #$00

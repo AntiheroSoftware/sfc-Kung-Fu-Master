@@ -5,6 +5,9 @@ scoreTiles:
 
 scoreMap:
 	.incbin "../ressource/score.map"
+	.repeat $740
+		.byte $00
+	.endrepeat
 
 scorePal:
 	.incbin "../ressource/score.pal"
