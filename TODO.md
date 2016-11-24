@@ -4,6 +4,8 @@ BUGS
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
 
+* scroll is not regular at all on real hardware (too much stuff during vblank ???)
+
 TODO
 ====
 

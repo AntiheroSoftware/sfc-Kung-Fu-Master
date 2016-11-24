@@ -79,6 +79,22 @@ fadeOutValue:						; only used in splashScreen so can be reused
 splashCounter:						; only used in splashScreen so can be reused
 	.res 2
 
+.segment "ZEROPAGE"
+
+spriteTrickIndex:
+	.res 2
+
+.segment "RODATA"
+
+spriteTrickIRQVTimer:
+	.byte $00, $90, $a0, $b0
+
+spriteTrickIRQValue:
+	.byte %00000001
+	.byte %00001001
+	.byte %00010001
+	.byte %00011001
+
 .segment "CODE"
 
 .proc _main
@@ -104,7 +120,7 @@ splashCounter:						; only used in splashScreen so can be reused
 infiniteMainLoop:
 
 	lda controlValue
-	cmp #CONTROL_VALUE_NONE		; if controlValue is 0 we just wait
+	cmp #CONTROL_VALUE_NONE			; if controlValue is 0 we just wait
 	bne checkForAntiheroSplash
 	jmp waitForVBlank
 
@@ -254,7 +270,7 @@ gameStart:
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnemySprite
-	jsr hdmaInitGame
+	;jsr hdmaInitGame
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -268,7 +284,15 @@ gameStart:
 	ldy #EVENT_GAME_SCREEN_TRANSFER_HERO_SPRITE_DATA
 	jsr addEvent
 
-	lda #$81        				; Enable NMI + pad reading
+	ldx #$00FF						; IRQ init
+	sta $4207
+	ldx #$0000
+	sta $4209
+
+	ldx #$0000
+	stx spriteTrickIndex			; end of IRQ init
+
+	lda #$B1        				; Enable NMI + IRQ + pad reading
 	sta CPU_NMITIMEN
 
 	lda #CONTROL_VALUE_NONE
@@ -293,7 +317,10 @@ gameStartInfiniteLoop:
 	bra gameStartInfiniteLoop
 
 waitForVBlank:
-	wai
+	;wai
+:	lda $4210
+	bpl :-							; if NMI wasn't triggered we wait again
+
 	jmp infiniteMainLoop
 
 .endproc
@@ -319,7 +346,29 @@ exit:
 .endproc
 
 .proc _IRQHandler
-    rts
+	pha
+	phx
+
+	lda $4211           ; clear interrupt flag
+
+	ldx spriteTrickIndex
+	lda spriteTrickIRQValue,X
+	sta $2101
+
+	inx
+	cpx #$04
+	bne :+
+
+	ldx #$0000
+
+:	stx spriteTrickIndex
+	lda spriteTrickIRQVTimer,X
+	sta $4209
+
+	plx
+	pla
+
+	rts
 .endproc
 
 .proc _NMIHandler
