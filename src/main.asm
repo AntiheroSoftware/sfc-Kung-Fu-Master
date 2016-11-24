@@ -270,7 +270,6 @@ gameStart:
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnemySprite
-	;jsr hdmaInitGame
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -306,21 +305,28 @@ gameStart:
 
 gameStartInfiniteLoop:
 
+	jsr updateTime
+
 	ldx padPushData1
 	jsr reactHero
 
 	jsr reactEnemy
 
-	jsr updateTime
-
 	wai
+	wai
+	wai
+	wai
+	wai								; Wait for 4 IRQ and NMI to happen
+
+;:	lda $4212
+;	and #$80
+;	beq :-							; if still in V-Blank we wait
+
+
 	bra gameStartInfiniteLoop
 
 waitForVBlank:
-	;wai
-:	lda $4210
-	bpl :-							; if NMI wasn't triggered we wait again
-
+	wai
 	jmp infiniteMainLoop
 
 .endproc

@@ -18,12 +18,6 @@ enemySpriteBank4Tiles := enemySpriteFullTiles + $6000
 
 .segment "RODATA"
 
-hdmaMemTitle:
-	.byte $68,%00000001,$20,%00000001,$10,%00001001,$10,%00010001,$10,%00011001,$00
-
-hdmaMemGame:
-	.byte $70,%00000001,$20,%00000001,$10,%00001001,$10,%00010001,$10,%00011001,$00
-
 verticalOffsetTable:
 	.byte $80, $90, $a0, $b0
 

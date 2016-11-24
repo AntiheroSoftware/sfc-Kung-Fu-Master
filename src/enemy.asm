@@ -24,8 +24,6 @@
 
             .export 	initEnemySprite
             .export 	reactEnemy
-            .export 	hdmaInitTitle
-            .export 	hdmaInitGame
 
 			.export EnemyCurrentArrayIndexByte
 			.export EnemyCurrentArrayIndexWord
@@ -307,64 +305,6 @@ endClearLoop:
 	plx
 	ply
 	rts
-.endproc
-
-;******************************************************************************
-;*** hdmaInitTitle ************************************************************
-;******************************************************************************
-;*** TODO explain trick *******************************************************
-;******************************************************************************
-
-.proc hdmaInitTitle
-    pha
-    phx
-    php
-
-    lda #$00                        ; 1 byte value hdma (count,byte)
-    sta $4360
-    lda #$01                        ; sprite N select
-    sta $4361
-    ldx #hdmaMemTitle
-    stx $4362
-    lda #.BANKBYTE(hdmaMemTitle)
-    sta $4364
-    lda #%01000000
-    sta $420c                       ; enable hdma channel 0
-
-    plp
-    plx
-    pla
-
-    rts
-.endproc
-
-;******************************************************************************
-;*** hdmaInitGame *************************************************************
-;******************************************************************************
-;*** TODO explain trick *******************************************************
-;******************************************************************************
-
-.proc hdmaInitGame
-    pha
-    phx
-    php
-
-    lda #$00                        ; 1 byte value hdma (count,byte)
-    sta $4360
-    lda #$01                        ; sprite N select
-    sta $4361
-    ldx #hdmaMemGame
-    stx $4362
-    lda #.BANKBYTE(hdmaMemGame)
-    sta $4364
-    lda #%01000000
-    sta $420c                       ; enable hdma channel 0
-
-    plp
-    plx
-    pla
-
-    rts
 .endproc
 
 ;******************************************************************************

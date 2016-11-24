@@ -5,9 +5,6 @@
     .import 	initEnemySprite
     .import     reactEnemy
 
-    .import     hdmaInitTitle
-    .import     hdmaInitGame
-
 .ENDIF
 
 ENEMY_DATA_BANK = $01
