@@ -10,7 +10,7 @@ TODO
 ====
 
 * check gfx for hero grabbed
-* duplicate hit and and grab for enemies
+* duplicate hit and and grab for enemies (24/11/16 done for grab-grab)
 * review sprite gfx for enemies to optimise and have full enemy gfx
 
 * make hero fall when energy is 0

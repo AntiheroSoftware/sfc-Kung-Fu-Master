@@ -150,11 +150,11 @@ grabbingArmUpWalk3:					; 5 sprite blocks
 	.byte	$00
 
 grabbingGrab1:						; 5 sprite blocks
-	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $04
-	.byte   ENEMY_MS_GRAB_PAL + $02, $10, $09, $08, $0c
-	.byte 			  					  $18, $f8, $0e
-	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $0e
-	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $24
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $e0
+	.byte   ENEMY_MS_GRAB_PAL + $02, $10, $09, $08, $e2
+	.byte 			  					  $18, $f8, $e4
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $e0
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $e2
 	.byte	$00
 
 grabbingFall1:						; 7 sprite blocks
