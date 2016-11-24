@@ -1,6 +1,6 @@
 all: ressource
 
-ressource: splash irem titleScreen letterHand KFM_Player_final_sprite enemy spriteBase spriteFull
+ressource: splash irem titleScreen letterHand KFM_Player_final_sprite spriteFull
 
 splash: raw/splash.pcx
 	wine ../tools/pcx2snes.exe -screen -s8 -c16 -o16 raw/splash
@@ -26,14 +26,6 @@ KFM_Player_final_sprite: raw/KFM_Player_final_sprite.pcx
 	wine ../tools/pcx2snes.exe -n -s16 -c16 -o16 raw/KFM_Player_final_sprite
 	mv raw/KFM_Player_final_sprite.pic .
 	mv raw/KFM_Player_final_sprite.clr .
-enemy: raw/enemyFull.pcx
-	wine ../tools/pcx2snes.exe -n -s16 -c16 -o16 raw/enemyFull
-	mv raw/enemyFull.pic .
-	mv raw/enemyFull.clr ./enemyFull.clr
-spriteBase: raw/spriteBase.pcx
-	wine ../tools/pcx2snes.exe -n -s16 -c16 -o16 raw/spriteBase
-	mv raw/spriteBase.pic .
-	mv raw/spriteBase.clr ./spriteBase.clr
 spriteFull: raw/spriteFull.pcx
 	../../Tools/pcx2snes/pcx2snes -n -r -s16 -c16 -o32 raw/spriteFull
 	mv raw/spriteFull.pic .

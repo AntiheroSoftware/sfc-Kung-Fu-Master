@@ -31,7 +31,7 @@ hero.o:
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000002  Size=000008  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
-    BANK2             Offs=000000  Size=006FFA  Align=00001  Fill=0000
+    BANK2             Offs=000000  Size=007036  Align=00001  Fill=0000
 enemy.o:
     CODE              Offs=000D38  Size=0005D1  Align=00001  Fill=0000
     RODATA            Offs=00008A  Size=000004  Align=00001  Fill=0000
@@ -95,7 +95,7 @@ RODATA                0096B2  00973F  00008E  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 BANK1                 018000  01E357  006358  00001
-BANK2                 028000  02EFF9  006FFA  00001
+BANK2                 028000  02F035  007036  00001
 BANK3                 038000  03FFFF  008000  00001
 BANK4                 048000  04EA9F  006AA0  00001
 
