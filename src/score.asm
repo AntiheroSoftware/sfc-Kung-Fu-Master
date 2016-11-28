@@ -18,6 +18,7 @@
             .export 	updateTime
             .export 	updateEnergyPlayer
             .export 	setEnergyPlayer
+            .export 	energyPlayer
 
 			.export doUpdateScore
             .export scoreEvent
@@ -26,9 +27,8 @@
             .export scorePlayer1
             .export updateScorePlayer1
             .export updateScoreTop
-            .export setEnergyPlayer
             .export writeNumberToScoreMap
-            .export energyPlayer
+
 
 .segment "BSS"
 

@@ -6,6 +6,16 @@ KFM_Player_final_Tiles:
 KFM_Player_final_Pal:
 	.incbin "../ressource/KFM_Player_final_sprite.clr"
 
+heroFallYOffset:
+	.byte 0, 0, 1, 1, 2
+	.byte 4, 5, 6, 7, 8, 9, 10, 12
+	.byte 15, 17, 19, 22, 24, 27, 29, 32, 35, 39, 42, 46, 50, 54, 58, 63, 67
+
+heroFallXOffset:
+	.byte 1, 2, 3, 4, 5
+	.byte 6, 7, 8, 9, 10, 11, 12, 13
+	.byte 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
+
 ;******************************************************************************
 ;*** Hero Sprite definition ***************************************************
 ;******************************************************************************
@@ -304,14 +314,14 @@ heroFall1:							; 8 sprite blocks
 heroFall2:							; 8 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*26))
 	.byte	$00, $00
-	.byte   $02, $00, $00, $2d, $00
+	.byte   $02, $10, $00, $2d, $00
 	.byte             $0f, $1e, $02
-	.byte   $03, $10, $00, $2d, $04
+	.byte   $03, $20, $00, $2d, $04
 	.byte             $0f, $1e, $06
 	.byte             $1e, $0f, $08
-	.byte   $03, $20, $00, $2d, $0a
+	.byte   $03, $30, $00, $2d, $0a
 	.byte             $0f, $1e, $0c
-	.byte             $1e, $0f, $e0
+	.byte             $1e, $0f, $0e
 	.byte	$00
 
 ;******************************************************************************
@@ -453,6 +463,15 @@ heroGrabbed:
 	.byte $01
 	.word .LOWORD(heroGrabbed1)		; TODO does heroGrabbed1 have a function ?
 	.byte $ff
+
+heroFall:
+	.byte $05
+	.word .LOWORD(heroGrabbed1)
+	.byte $08
+	.word .LOWORD(heroFall1)
+	.byte $11
+	.word .LOWORD(heroFall2)
+	.byte $00
 
 heroJumpOffsetTable:
 	; old values

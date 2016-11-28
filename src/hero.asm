@@ -14,6 +14,7 @@
 
             .include    "includes/base.inc"
             .include    "includes/level.inc"
+            .include    "includes/score.inc"
 
 			.include 	"includes/heroData.asm"
 
@@ -30,6 +31,9 @@
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
 			.export setShakingFlag
+			.export fallHero
+			.export setHeroOAM
+			.export animHero
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -190,7 +194,7 @@ blockLoop:
 	iny
 	lda ($03,s),y					; load X pos for that
 	clc
-	adc $05,s                		; add saved Global X Pos
+	adc heroXOffset                	; add saved Global X Pos
 	sta oamData,x                   ; H (X) pos of the sprite
 
 	lda $01,s
@@ -224,7 +228,7 @@ blockLoopMirror:
 	iny
 	lda ($03,s),y					; load X pos for that
 	clc
-	adc $05,s                		; add saved Global X Pos
+	adc heroXOffset                	; add saved Global X Pos
 	sec
 	sbc #$1e						; remove mirror offset
 	sta oamData,x                   ; H (X) pos of the sprite
@@ -580,6 +584,17 @@ noTransfer:
 
 	txa
 
+	;*** Check energy of the enemy ***
+	;*********************************
+
+	lda energyPlayer
+	cmp #$00
+	bne :+
+	jsr fallHero
+	jmp endHeroPadCheck
+
+:
+
 	;*** Is hero grabbed by an enemy ***
 	;***********************************
 
@@ -805,6 +820,81 @@ endHeroPadCheck:
 	pla
 	plx
 	ply
+	rts
+.endproc
+
+;*******************************************************************************
+;*** fallHero ******************************************************************
+;*******************************************************************************
+;*** No parameters                                                           ***
+;*******************************************************************************
+
+.proc fallHero
+	pha
+	phx
+	phy
+	phb
+
+	rep #$20
+	.A16
+
+	lda #$0000
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	ldy heroAnimAddr
+	cpy #.LOWORD(heroFall)
+	beq :+										; hero is already falling
+
+	ldy #.LOWORD(heroFall)
+	sty heroAnimAddr
+	ldy #$0000
+	stz animFrameIndex							; reset animation indexes and counter
+	stz animFrameCounter
+	stz animationJumpFrameCounter
+
+:	lda animationJumpFrameCounter
+	cmp #$1d
+	bne :+
+
+	; TODO clear hero
+	bra :++										; TODO temp need to be removed
+
+:	inc
+	sta animationJumpFrameCounter
+
+	tax
+	lda heroXOffset
+	pha											; save original X Offset
+	clc
+	adc heroFallXOffset,X						; TODO check mirror mode
+	sta heroXOffset
+
+	lda heroYOffset
+	pha											; save original Y Offset
+	clc
+	adc heroFallYOffset,X
+	sta heroYOffset
+
+	lda #$01
+	sta forceRefresh
+
+	jsr animHero
+
+	pla
+	sta heroYOffset								; restore original Y Offset
+	pla
+	sta heroXOffset								; restore original X Offset
+
+:
+
+	plb
+	ply
+	plx
+	pla
 	rts
 .endproc
 
