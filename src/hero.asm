@@ -34,6 +34,7 @@
 			.export fallHero
 			.export setHeroOAM
 			.export animHero
+			.export clearHeroSprite
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -142,6 +143,46 @@ heroFlag:							; define status of actual position
 	plp
 	rts
 
+.endproc
+
+;******************************************************************************
+;*** clearHeroSprite **********************************************************
+;******************************************************************************
+;*** clear hero sprite                                                      ***
+;******************************************************************************
+
+.proc clearHeroSprite
+	phy
+	phx
+	pha
+
+	lda #$e0
+	ldy #$0079
+	ldx #$01E0
+
+clearLoop:
+	cpy #$0080
+	beq endClearLoop
+
+	sta oamData+1,x                 ; V (Y) pos of the sprite
+
+	inx
+	inx
+	inx
+	inx
+
+	iny
+
+	bra clearLoop
+
+endClearLoop:
+
+	jsr OAMDataUpdated				; for update of OAM
+
+	pla
+	plx
+	ply
+	rts
 .endproc
 
 ;******************************************************************************
@@ -860,8 +901,9 @@ endHeroPadCheck:
 	cmp #$1d
 	bne :+
 
-	; TODO clear hero
-	bra :++										; TODO temp need to be removed
+	jsr clearHeroSprite
+	; TODO make hero loose life and restart level
+	bra :++										; clear hero sprite
 
 :	inc
 	sta animationJumpFrameCounter
