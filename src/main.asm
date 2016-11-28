@@ -30,6 +30,8 @@
 SPLASH_TILE_ADDR	= $0000
 SPLASH_MAP_ADDR     = $1000
 
+MAIN_DATA_BANK = $00
+
 .segment "BANK1"
 
 antiheroSplashTiles:
@@ -355,6 +357,11 @@ exit:
 	pha
 	phx
 
+	phb
+	lda #MAIN_DATA_BANK
+	pha
+	plb
+
 	lda $4211           ; clear interrupt flag
 
 	ldx spriteTrickIndex
@@ -370,6 +377,8 @@ exit:
 :	stx spriteTrickIndex
 	lda spriteTrickIRQVTimer,X
 	sta $4209
+
+	plb
 
 	plx
 	pla
