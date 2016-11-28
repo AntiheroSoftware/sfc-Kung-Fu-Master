@@ -161,7 +161,7 @@ heroFlag:							; define status of actual position
 	ldx #$01E0
 
 clearLoop:
-	cpy #$0080
+	cpy #$0081
 	beq endClearLoop
 
 	sta oamData+1,x                 ; V (Y) pos of the sprite
@@ -903,18 +903,35 @@ endHeroPadCheck:
 
 	jsr clearHeroSprite
 	; TODO make hero loose life and restart level
-	bra :++										; clear hero sprite
+	bra :+++										; clear hero sprite
 
 :	inc
 	sta animationJumpFrameCounter
 
+	lda heroFlag
+	bit #HERO_STATUS_MIRROR_FLAG
+	bne mirrorMode				; jmp to correct blockLoop code (mirror/normal)
+
+normalMode:
+	lda animationJumpFrameCounter
+	tax
+	lda heroXOffset
+	pha											; save original X Offset
+	sec
+	sbc heroFallXOffset,X
+	sta heroXOffset
+	bra :+
+
+mirrorMode:
+	lda animationJumpFrameCounter
 	tax
 	lda heroXOffset
 	pha											; save original X Offset
 	clc
-	adc heroFallXOffset,X						; TODO check mirror mode
+	adc heroFallXOffset,X
 	sta heroXOffset
 
+:
 	lda heroYOffset
 	pha											; save original Y Offset
 	clc

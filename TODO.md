@@ -13,10 +13,14 @@ TODO
 * duplicate hit and and grab for enemies (24/11/16 done for grab-grab)
 * review sprite gfx for enemies to optimise and have full enemy gfx
 
-* make hero fall when energy is 0
 * make enemy scroll look ok when hero is moving
 
 * implement knife enemy
+
+* make hero lose a life and restart level or game over
+
+* implement letter screen
+* implement "player 1" message at level start 
 
 DONE
 ====
@@ -24,3 +28,4 @@ DONE
 * ~~On level start there is somehow partly messed gfx and partly loaded frame~~ fixed 03/11/16
 * ~~fix palette problems with spriteFull (more than 16 colors) Might need to have a custom tool for that~~ fixed 14/11/16
 * ~~make enemy fall~~ fixed 21/11/16
+* ~~make hero fall when energy is 0~~ fixed 28/11/16
