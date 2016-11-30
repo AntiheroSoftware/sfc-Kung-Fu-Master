@@ -1,3 +1,0 @@
-.import 	levelSelectStateDef
-
-.define levelSelectState = levelSelectStateDef

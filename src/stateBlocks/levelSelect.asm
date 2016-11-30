@@ -8,18 +8,17 @@
             .feature	c_comments
 
             .include    "snes.inc"
-            .include	"states.def"
 
             .export 	levelSelectStateDef
 
 .segment "RODATA"
 
 levelSelectStateDef:
-	.word #.LOWORD(levelSelectInit)
-	.word #.LOWORD(levelSelectBefore)
-	.word #.LOWORD(levelSelectMain)
-	.word #.LOWORD(levelSelectAfter)
-	.word #.LOWORD(levelSelectDestroy)
+	.word .LOWORD(levelSelectInit)
+	.word .LOWORD(levelSelectBefore)
+	.word .LOWORD(levelSelectMain)
+	.word .LOWORD(levelSelectAfter)
+	.word .LOWORD(levelSelectDestroy)
 
 .segment "CODE"
 
