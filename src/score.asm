@@ -19,6 +19,8 @@
             .export 	updateEnergyPlayer
             .export 	setEnergyPlayer
             .export 	energyPlayer
+            .export 	setLiveCounter
+			.export 	livesCounter
 
 			.export doUpdateScore
             .export scoreEvent
@@ -99,9 +101,6 @@ dragonCounter:
 	ldx #$2000
 	stx timeCounter
 
-	lda #$02
-	sta livesCounter
-
 	lda #$00
 	sta dragonCounter
 
@@ -137,9 +136,12 @@ loopCopyScoreMap:
 	ldy #EVENT_GAME_SCREEN_SCORE
 	jsr addEvent
 
-	ldx #$1200
+	ldx #$2400
 	jsr updateScorePlayer1
 	jsr updateScorePlayer2
+
+	lda #$02
+	jsr setLiveCounter
 
 	plp
 	plx
@@ -518,18 +520,35 @@ end:
 ;*******************************************************************************
 
 .proc setLiveCounter
-
+	pha
 	phx
 	phy
 	php
 
+	sta livesCounter
+	cmp $0a
+	bcc :+							; if lives counter is less than 10 continue
 
+	lda #$09						; else we top it to 9
+	bra :++
+
+:	cmp #$00
+	bcs :+
+
+	lda #$00
+
+:	clc
+	adc #$48
+	sta scoreMapData+$60
+
+	lda #$01
+	sta doUpdateScore
 
 	plp
 	ply
 	plx
+	pla
 	rts
-
 .endproc
 
 ;*******************************************************************************

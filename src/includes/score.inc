@@ -3,3 +3,5 @@
 .import 	updateEnergyPlayer
 .import     energyPlayer
 .import 	setEnergyPlayer
+.import 	setLiveCounter
+.import 	livesCounter

@@ -901,9 +901,12 @@ endHeroPadCheck:
 	cmp #$1d
 	bne :+
 
-	jsr clearHeroSprite
-	; TODO make hero loose life and restart level
-	bra :+++										; clear hero sprite
+	jsr clearHeroSprite							; clear hero sprite
+	lda livesCounter
+	dec
+	jsr setLiveCounter							; update live counter
+	; TODO  restart level
+	bra :+++
 
 :	inc
 	sta animationJumpFrameCounter
