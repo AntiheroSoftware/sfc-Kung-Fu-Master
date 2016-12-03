@@ -4,7 +4,7 @@ BUGS
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
 
-* scroll is not regular at all on real hardware (too much stuff during vblank ???)
+
 
 TODO
 ====
@@ -22,10 +22,13 @@ TODO
 * implement letter screen
 * implement "player 1" message at level start 
 
+* fix hero jump
+
 DONE
 ====
 
 * ~~On level start there is somehow partly messed gfx and partly loaded frame~~ fixed 03/11/16
 * ~~fix palette problems with spriteFull (more than 16 colors) Might need to have a custom tool for that~~ fixed 14/11/16
 * ~~make enemy fall~~ fixed 21/11/16
+* ~~scroll is not regular at all on real hardware (too much stuff during vblank ???)~~ fixed date ???
 * ~~make hero fall when energy is 0~~ fixed 28/11/16

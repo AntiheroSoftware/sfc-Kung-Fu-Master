@@ -1,3 +1,4 @@
 oldSrc
 *.iml
 .DS_Store
+*.o
