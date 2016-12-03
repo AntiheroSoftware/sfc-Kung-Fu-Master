@@ -680,10 +680,14 @@ checkAnimInProgress:
 :	bit #$02						; jump animation in progress
 	beq :+
 
-	ldx animationJumpFrameCounter	; set y offset for the jump
-	inx
-	stx animationJumpFrameCounter
+	lda animationJumpFrameCounter	; set y offset for the jump
+	inc
+	sta animationJumpFrameCounter
+	tax
+
 	lda heroYOffset
+	pha								; save heroYOffset
+
 	sec
 	sbc heroJumpOffsetTable,x
 	sta heroYOffset
@@ -692,6 +696,10 @@ checkAnimInProgress:
 	sta forceRefresh
 
 	jsr animHero
+
+	pla								; restore
+	sta heroYOffset
+
 	jmp endHeroPadCheck
 :
 
