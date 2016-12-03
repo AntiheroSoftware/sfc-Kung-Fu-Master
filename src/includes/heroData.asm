@@ -242,18 +242,8 @@ heroJumpKick1:						; 8 sprite blocks
 	.byte   $01, $40, $00, $2d, $0e
 	.byte	$00
 
-heroJump3:							; 5 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
-	.byte	$00, $00
-	.byte   $01, $00, $0e, $26, $00
-	.byte   $01, $10, $09, $2b, $02
-	.byte   $01, $20, $09, $2b, $04
-	.byte   $01, $30, $09, $2b, $06
-	.byte   $01, $40, $09, $2b, $08
-	.byte	$00
-
 heroJumpRun1:						; 6 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
+	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
 	.byte	$00, $00
 	.byte   $01, $00, $0f, $1e, $00
 	.byte   $02, $10, $00, $2d, $02
@@ -264,12 +254,22 @@ heroJumpRun1:						; 6 sprite blocks
 	.byte	$00
 
 heroJumpRun2:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
+	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
 	.byte	$00, $00
 	.byte   $01, $00, $0d, $27, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
 	.byte   $01, $30, $09, $2b, $06
+	.byte	$00
+
+heroJump3:							; 5 sprite blocks
+	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
+	.byte	$00, $00
+	.byte   $01, $00, $0e, $26, $00
+	.byte   $01, $10, $09, $2b, $02
+	.byte   $01, $20, $09, $2b, $04
+	.byte   $01, $30, $09, $2b, $06
+	.byte   $01, $40, $09, $2b, $08
 	.byte	$00
 
 heroHitLow1:						; 4 sprite blocks
@@ -432,13 +432,15 @@ heroStandPunchAgain:
 	.byte $ff
 
 heroJump:
-	.byte $07
+	.byte $04
 	.word .LOWORD(heroJump1)
-	.byte $07
+	.byte $05
 	.word .LOWORD(heroJump2)
-	.byte $07
+	.byte $11
 	.word .LOWORD(heroJump3)
-	.byte $07
+	.byte $05
+	.word .LOWORD(heroJump2)
+	.byte $04
 	.word .LOWORD(heroJump1)
 	.byte $01
 	.word .LOWORD(heroStand1)
@@ -474,10 +476,9 @@ heroFall:
 	.byte $00
 
 heroJumpOffsetTable:
-	; old values
-	;.byte  0,  0,  5, 12, 14, 16, 18, 20, 22, 31, 32, 34, 35, 36	; 14 values
-	;.byte 35, 34, 32, 31, 29, 27, 18, 14, 12,  6,  0,  0,  0,  0	; 14 values -> 28 values
-
-	.byte $00, $00, $05, $07, $02, $02, $02, $02, $02, $09, $01, $02, $01, $01	; 14 values
-	.byte $ff, $ff, $fe, $ff, $fe, $fe, $f7, $fb, $fe, $fa, $fa, $00, $00, $00	; 14 values -> 28 values
-	.byte $00
+	.byte 0, 0, 0, 0, 5								; 5 values
+	.byte 28, 30, 32, 34, 36, 38					; 6 values
+	.byte 20, 21, 23, 23, 24, 25, 25, 25, 25		; 9 values
+	.byte 25, 25, 24, 23, 21, 20, 20, 18, 16		; 9 values
+	.byte 34, 32, 30, 28, 22, 16					; 6 values
+	.byte 0, 0, 0, 0, 0								; 5 values -> 40 values

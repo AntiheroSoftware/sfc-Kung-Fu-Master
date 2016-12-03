@@ -22,8 +22,6 @@ TODO
 * implement letter screen
 * implement "player 1" message at level start 
 
-* fix hero jump
-
 DONE
 ====
 
@@ -32,3 +30,4 @@ DONE
 * ~~make enemy fall~~ fixed 21/11/16
 * ~~scroll is not regular at all on real hardware (too much stuff during vblank ???)~~ fixed date ???
 * ~~make hero fall when energy is 0~~ fixed 28/11/16
+* ~~fix hero jump~~ fixed 03/12/16
