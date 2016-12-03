@@ -39,7 +39,7 @@ enemy.o:
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=00000A  Size=000008  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
-    BANK1             Offs=0041A0  Size=0021B8  Align=00001  Fill=0000
+    BANK1             Offs=0041A0  Size=002198  Align=00001  Fill=0000
     BANK3             Offs=000000  Size=008000  Align=00001  Fill=0000
 state.o:
     CODE              Offs=0013D5  Size=000000  Align=00001  Fill=0000
@@ -101,7 +101,7 @@ CODE                  00803B  00977D  001743  00001
 RODATA                00977E  00980B  00008E  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
-BANK1                 018000  01E357  006358  00001
+BANK1                 018000  01E337  006338  00001
 BANK2                 028000  02F03F  007040  00001
 BANK3                 038000  03FFFF  008000  00001
 BANK4                 048000  04EA9F  006AA0  00001
@@ -126,14 +126,14 @@ addEnemy                  008FC3  LA    addEvent                  00952F RLA
 animEnemy                 0091B4  LA    animHero                  008AD7  LA    
 clearEnemy                009026  LA    clearHeroSprite           008A0E  LA    
 clearOAM                  00970A RLA    copyOAM                   009739 RLA    
-doUpdateScore             0002CE  LA    enemyFallYOffset          01E210  LA    
+doUpdateScore             0002CE  LA    enemyFallYOffset          01E1F0  LA    
 enemyGrabFall             009394  LA    energyPlayer              0002D9 RLA    
 eventsTable               000378  LA    fallHero                  008DA0  LA    
-getEventCounter           0095C5 RLA    grabbingFall              01E34E  LA    
-grabbingFall1             01E2F4  LA    grabbingGrab              01E34A  LA    
-grabbingWalk              01E330  LA    grabbingWalk1             01E24C  LA    
-grabbingWalk2             01E261  LA    heroFlag                  000009 RLZ    
-heroXOffset               000006 RLZ    highByte                  01E1E0  LA    
+getEventCounter           0095C5 RLA    grabbingFall              01E32E  LA    
+grabbingFall1             01E2D4  LA    grabbingGrab              01E32A  LA    
+grabbingWalk              01E310  LA    grabbingWalk1             01E22C  LA    
+grabbingWalk2             01E241  LA    heroFlag                  000009 RLZ    
+heroXOffset               000006 RLZ    highByte                  01E1C0  LA    
 initEnemySprite           008E3F RLA    initEvents                009503 RLA    
 initHeroSprite            00899F RLA    initLevel                 008430 RLA    
 initPad                   0095D1 RLA    initScore                 00868D RLA    
@@ -226,11 +226,11 @@ readPad3                  00968E  LA    readPad4                  0096CC  LA
 clearOAM                  00970A RLA    copyOAM                   009739 RLA    
 OAMDataUpdated            009770 RLA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
-__VECTORS_LAST__          010000  LA    highByte                  01E1E0  LA    
-enemyFallYOffset          01E210  LA    grabbingWalk1             01E24C  LA    
-grabbingWalk2             01E261  LA    grabbingFall1             01E2F4  LA    
-grabbingWalk              01E330  LA    grabbingGrab              01E34A  LA    
-grabbingFall              01E34E  LA    
+__VECTORS_LAST__          010000  LA    highByte                  01E1C0  LA    
+enemyFallYOffset          01E1F0  LA    grabbingWalk1             01E22C  LA    
+grabbingWalk2             01E241  LA    grabbingFall1             01E2D4  LA    
+grabbingWalk              01E310  LA    grabbingGrab              01E32A  LA    
+grabbingFall              01E32E  LA    
 
 
 Imports list:
