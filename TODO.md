@@ -6,6 +6,7 @@ conditions the offset get screwed
 
 IN PROGRESS
 ===========
+
 * implement hit for hero on kick then others ... 
 
 TODO
@@ -21,6 +22,8 @@ TODO
 
 * implement letter screen
 * implement "player 1" message at level start 
+
+* implement state engine for game
 
 DONE
 ====
