@@ -117,20 +117,25 @@ stopLoop:
 
 	lda scrollDirection
 	cmp scrollPreviousDirection
-	beq :++
+	beq sameDirection							; jump to same direction
 
 	cmp #LEVEL_SCROLL_RIGHT
-	beq :+ 							; Change direction for right
+	beq :++ 									; Change direction for right
 
+	cmp #LEVEL_SCROLL_LEFT
+	beq :+
+
+	bra noScroll
+
+:
 	jsr scrollLevelDirectionLeft
 	sta scrollPreviousDirection
-	bra :++
+	bra sameDirection
 
 :	jsr scrollLevelDirectionRight
 	sta scrollPreviousDirection
 
-:
-
+sameDirection:
 	ldx scrollValue
 	lda scrollDirection
 	cmp #LEVEL_SCROLL_RIGHT
@@ -172,7 +177,6 @@ scrollLeft:
 
 scrollRight:
 
-
 	cpx #$00ff						; check scroll right boundaries
 	beq scrollValueSet
 
@@ -207,6 +211,8 @@ scrollValueSet:
 
 	sep #$20
 	.A8
+
+noScroll:
 
 	plp
 	ply
@@ -343,8 +349,8 @@ VRAMOffset:
 	ldx #.LOWORD(levelMapInitial)
 	stx MAPOffset
 
-    lda #$00                        ; init scrollDirection
-    sta scrollDirection             ; 0 -> left ; 1 -> right
+    lda #LEVEL_SCROLL_LEFT         	; init scrollDirection (init with left)
+    sta scrollDirection
     sta scrollPreviousDirection
     sta doUpdate
 
@@ -405,7 +411,7 @@ noDMA:
 ;*******************************************************************************
 ;*** displayLevelLine **********************************************************
 ;*******************************************************************************
-;*** X contains VRAM adress to update                                        ***
+;*** X contains VRAM address to update                                        ***
 ;*** Y contains MAP offset                                                   ***
 ;*******************************************************************************
 

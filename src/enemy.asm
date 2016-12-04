@@ -14,6 +14,8 @@
             .include    "snes-sprite.inc"
             .include    "includes/hero.inc"
             .include    "includes/score.inc"
+            .include    "includes/level.inc"
+            .include    "includes/base.inc"
 
             .include 	"includes/enemyData.asm"
 
@@ -876,7 +878,7 @@ normalMode:
 	sbc EnemyArrayXOffset,Y					; calculate distance between enemy and hero
 
 	cmp #ENEMY_NORMAL_GRAB_DISTANCE_GRAB
-	bne normalModeLiftArmCheck
+	bcs normalModeLiftArmCheck				; >=
 
 	rep #$10
 	sep #$20
@@ -905,11 +907,25 @@ normalModeLiftArmCheck:
 	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
 
 normalModeGoRight:
-	lda EnemyArrayXOffset,Y						; go right
+	lda scrollDirection
+	and #$00ff
+	cmp #LEVEL_SCROLL_NONE
+	beq :+
+
+	cmp #LEVEL_SCROLL_RIGHT
+	beq :++
+
+	lda EnemyArrayXOffset,Y						; go right double speed
+	inc
+	inc
+	sta EnemyArrayXOffset,Y						; increment enemy X Offset
+	bra :++
+
+:	lda EnemyArrayXOffset,Y						; go right
 	inc
 	sta EnemyArrayXOffset,Y						; increment enemy X Offset
 
-	bra end
+:	bra end
 
 	;*******************
 	;*** Mirror mode ***
@@ -951,11 +967,25 @@ mirrorModeLiftArmCheck:
 	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
 
 mirrorModeGoLeft:
-	lda EnemyArrayXOffset,Y						; go left
+	lda scrollDirection
+	and #$00ff
+	cmp #LEVEL_SCROLL_NONE
+	beq :+
+
+	cmp #LEVEL_SCROLL_LEFT
+	beq :++
+
+	lda EnemyArrayXOffset,Y						; go left double speed
+	dec
+	dec
+	sta EnemyArrayXOffset,Y						; decrement enemy X Offset
+	bra :++
+
+:	lda EnemyArrayXOffset,Y						; go left
 	dec
 	sta EnemyArrayXOffset,Y						; decrement enemy X Offset
 
-	bra end
+:	bra end
 
 fall:
 

@@ -680,6 +680,16 @@ checkAnimInProgress:
 :	bit #$02						; jump animation in progress
 	beq :+
 
+	rep #$20
+	.A16
+
+	lda #$0000
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
 	lda animationJumpFrameCounter	; set y offset for the jump
 	inc
 	sta animationJumpFrameCounter
@@ -697,7 +707,7 @@ checkAnimInProgress:
 
 	jsr animHero
 
-	pla								; restore
+	pla								; restore heroYOffset
 	sta heroYOffset
 
 	jmp endHeroPadCheck
@@ -847,7 +857,7 @@ checkAnimInProgress:
 	bit #PAD_LOW_RIGHT
 	bne :+							; if we push RIGHT we call animHero
 	bit #PAD_LOW_LEFT
-	beq endHeroPadCheck				; if we don't push LEFT for the first time, we continue
+	beq noLevelScroll				; if we don't push LEFT, we continue
 									; if we push LEFT, execute next line
 
 	; TODO need to check boundaries of hero and level
@@ -862,6 +872,11 @@ checkAnimInProgress:
 	jsr scrollLevel
 
 :	jsr animHero					; display next animation frame
+	bra endHeroPadCheck
+
+noLevelScroll:
+	lda #LEVEL_SCROLL_NONE
+	sta scrollDirection
 
 endHeroPadCheck:
 
