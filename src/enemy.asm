@@ -178,7 +178,7 @@ endInitArrayLoop:
 
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
 
@@ -908,7 +908,7 @@ normalMode:
 
 	lda EnemyArrayFlag,X
 	ora #ENEMY_STATUS_HIT_MASK
-	ora heroHitType
+	ora heroHitPosition
 	sta EnemyArrayFlag,X					; set hit high flag
 	jmp fall								; else fall
 
@@ -993,7 +993,7 @@ mirrorMode:
 
 	lda EnemyArrayFlag,X
 	ora #ENEMY_STATUS_HIT_MASK
-	ora heroHitType
+	ora heroHitPosition
 	sta EnemyArrayFlag,X					; set hit high flag
 	jmp fall								; else fall
 

@@ -6,7 +6,7 @@
     .importzp   heroXOffset
     .importzp   heroFlag
     .importzp   heroHitOffset
-    .importzp   heroHitType
+    .importzp   heroHitPosition
 
 .ENDIF
 

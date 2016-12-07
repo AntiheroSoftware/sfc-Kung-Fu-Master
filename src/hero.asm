@@ -28,7 +28,7 @@
 			.export 	heroXOffset
 			.export 	heroFlag
 			.export 	heroHitOffset
-			.export 	heroHitType
+			.export 	heroHitPosition
 
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
@@ -83,7 +83,7 @@ heroXOffset:
 heroHitOffset:
 	.res 1
 
-heroHitType:
+heroHitPosition:
 	.res 1
 
 heroFlag:							; define status of actual position
@@ -462,7 +462,7 @@ noLoop:
 	rol
 	rol
 	rol
-	sta heroHitType
+	sta heroHitPosition
 
 	; calculate hit offset
 	lda heroFlag

@@ -137,7 +137,7 @@ grabbingWalk              01E389  LA    grabbingWalk1             01E254  LA
 grabbingWalk2             01E269  LA    heroDownKick2             02ED25  LA    
 heroDownPunch1            02ED45  LA    heroDownPunch3            02ED7C  LA    
 heroFlag                  00000A RLZ    heroHitOffset             000008 RLZ    
-heroHitType               000009 RLZ    heroStandKick2            02EDBB  LA    
+heroHitPosition           000009 RLZ    heroStandKick2            02EDBB  LA    
 heroXOffset               000006 RLZ    highByte                  01E1E0  LA    
 initEnemySprite           008E6E RLA    initEvents                0095B4 RLA    
 initHeroSprite            0089A5 RLA    initLevel                 008430 RLA    
@@ -178,7 +178,7 @@ writeNumberToScoreMap     00895C  LA
 Exports list by value:
 ----------------------
 __STARTUP__               000001 REA    heroXOffset               000006 RLZ    
-heroHitOffset             000008 RLZ    heroHitType               000009 RLZ    
+heroHitOffset             000008 RLZ    heroHitPosition           000009 RLZ    
 heroFlag                  00000A RLZ    EnemyCurrentArrayIndexByte 00000D  LZ    
 EnemyCurrentArrayIndexWord 00000F  LZ    EnemyCurrentYOffset       000011  LZ    
 EnemyCurrentXOffset       000012  LZ    __VECTORS_SIZE__          00001C  EA    
@@ -317,7 +317,7 @@ heroFlag (hero.o):
     enemy.o                   includes/hero.inc(7)
 heroHitOffset (hero.o):
     enemy.o                   includes/hero.inc(8)
-heroHitType (hero.o):
+heroHitPosition (hero.o):
     enemy.o                   includes/hero.inc(9)
 heroStandKick2 (hero.o):
 heroXOffset (hero.o):
