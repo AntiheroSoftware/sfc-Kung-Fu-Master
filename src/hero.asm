@@ -27,6 +27,8 @@
 			.export		spriteCounter
 			.export 	heroXOffset
 			.export 	heroFlag
+			.export 	heroHitOffset
+			.export 	heroHitType
 
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
@@ -35,6 +37,10 @@
 			.export setHeroOAM
 			.export animHero
 			.export clearHeroSprite
+			.export heroDownKick2
+			.export heroStandKick2
+			.export heroDownPunch1
+			.export heroDownPunch3
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -75,6 +81,9 @@ heroXOffset:
 	.res 2
 
 heroHitOffset:
+	.res 1
+
+heroHitType:
 	.res 1
 
 heroFlag:							; define status of actual position
@@ -447,19 +456,29 @@ noLoop:
 	inx
 	inx								; increment to go to hit offset definition
 
+	lda $820000,X
+	and #$c0
+	clc
+	rol
+	rol
+	rol
+	sta heroHitType
+
 	; calculate hit offset
 	lda heroFlag
 	bit HERO_STATUS_MIRROR_FLAG
 	bne calculateMirrorHitOffset
 
 calculateNormalHitOffset:
-	lda $0000,X
+	lda $820000,X
+	and #$3f
 	sta heroHitOffset
 	bra :+
 
 calculateMirrorHitOffset:
 	inx
-	lda $0000,X
+	lda $820000,X
+	and #$3f
 	sta heroHitOffset
 	bra :++
 

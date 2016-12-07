@@ -11,8 +11,13 @@ ENEMY_DATA_BANK = $01
 
 ; First 3 bits of Flag reserved for shaking counter if it's a grab enemy
 
-ENEMY_STATUS_SHAKE_COUNT_INIT   = %00000110     ; need 8 left/right to get out of grab
-ENEMY_STATUS_SHAKE_COUNT_MASK 	= %00001111
+ENEMY_STATUS_SHAKE_COUNT_INIT   = %00000110     ; need 4  left/right to get out of grab
+ENEMY_STATUS_SHAKE_COUNT_MASK 	= %00000111
+
+ENEMY_STATUS_HIT_MASK           = %00001000
+ENEMY_STATUS_HIT_HIGH           = %00001000
+ENEMY_STATUS_HIT_MID            = %00001010
+ENEMY_STATUS_HIT_LOW            = %00001011
 
 ENEMY_STATUS_ACTIVE_FLAG 		= %00010000
 ENEMY_STATUS_MIRROR_FLAG 		= %00100000

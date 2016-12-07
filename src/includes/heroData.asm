@@ -110,7 +110,7 @@ heroDownKick1:						; 5 sprite blocks
 
 heroDownKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*7))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_LOW + $20, HERO_FLAG_HIT_LOW + $20
 	.byte   $01, $10, $08, $25, $00
 	.byte   $02, $20, $02, $2b, $02
 	.byte             $11, $1c, $04
@@ -122,7 +122,7 @@ heroDownKick2:						; 7 sprite blocks
 
 heroDownPunch1:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*8))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_MID + $10, HERO_FLAG_HIT_MID + $10
 	.byte   $02, $10, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $20, $00, $2d, $04
@@ -143,7 +143,7 @@ heroDownPunch2:						; 5 sprite blocks
 
 heroDownPunch3:						; 6 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*10))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_MID + $10, HERO_FLAG_HIT_MID + $10
 	.byte   $02, $10, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $20, $00, $2d, $04
@@ -166,7 +166,7 @@ heroStandKick1:						; 7 sprite blocks
 
 heroStandKick2:						; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*12))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_HIGH + $20, HERO_FLAG_HIT_HIGH + $20
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $1b, $12, $02
 	.byte   $03, $10, $00, $2d, $04
@@ -178,7 +178,7 @@ heroStandKick2:						; 7 sprite blocks
 
 heroStandPunch1:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*13))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_HIGH + $10, HERO_FLAG_HIT_HIGH + $10
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04
@@ -200,7 +200,7 @@ heroStandPunch2:					; 7 sprite blocks
 
 heroStandPunch3:					; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*15))
-	.byte	$00, $00
+	.byte	HERO_FLAG_HIT_HIGH + $10, HERO_FLAG_HIT_HIGH + $10
 	.byte   $02, $00, $00, $2d, $00
 	.byte             $0f, $1e, $02
 	.byte   $02, $10, $00, $2d, $04

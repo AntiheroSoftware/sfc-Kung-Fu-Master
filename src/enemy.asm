@@ -44,7 +44,10 @@
             .export grabbingWalk1
             .export grabbingWalk2
             .export grabbingGrab
-            .export grabbingFall
+            .export grabbingShakeFall
+            .export grabbingHitHighFall
+            .export grabbingHitMidFall
+            .export grabbingHitLowFall
             .export grabbingFall1
             .export highByte
             .export reactEnemyGrab
@@ -53,6 +56,7 @@
             .export EnemyCurrentYOffset
             .export EnemyCurrentXOffset
             .export enemyFallYOffset
+            .export enemyFallAnimAddress
 
 SPRITE_TILE_BASE_ADDR = $2000
 
@@ -174,7 +178,7 @@ endInitArrayLoop:
 
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
+	ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	ldx #$0000						; enemy slot ( 0 - 13 )
 	jsr addEnemy
 
@@ -787,8 +791,19 @@ endReactLoop:
 	phy
 	php
 
+	pha									; save enemyFlag
+	and #ENEMY_STATUS_HIT_MASK
+	cmp #ENEMY_STATUS_HIT_MASK			; check if hero is hit
+	bne :+
+
+	pla									; restore full enemyFlag
+	jsr enemyGrabFall
+	jmp skipAnim
+
 	;*** check if we are grabbing (shake counter is not zero) ***
 	;************************************************************
+
+:	pla									; restore full enemyFlag
 
 	and #ENEMY_STATUS_SHAKE_COUNT_MASK
 
@@ -861,9 +876,6 @@ notGrabbing:
 
 	lda EnemyArrayFlag,X
 
-	rep #$20
-	.A16
-
 	bit #ENEMY_STATUS_MIRROR_FLAG
 	bne mirrorMode
 
@@ -873,17 +885,37 @@ notGrabbing:
 
 normalMode:
 	lda heroXOffset
-	and #$00ff
 	sec
 	sbc EnemyArrayXOffset,Y					; calculate distance between enemy and hero
 
+	;*** Check for hit ***
+	;*********************
+
+	pha 									; save calculated enemy offset
+
+	lda heroHitOffset
+	cmp #$0000
+	beq :+									; if hit Offset is 0 don't check for hit
+
+	pla
+	pha										; set back calculated enemy offset and keep it in stack
+
+	sec
+	sbc heroHitOffset
+	bpl :+									; if difference is positive -> continue
+
+	pla
+
+	lda EnemyArrayFlag,X
+	ora #ENEMY_STATUS_HIT_MASK
+	ora heroHitType
+	sta EnemyArrayFlag,X					; set hit high flag
+	jmp fall								; else fall
+
+:	pla										; restore calculated enemy offset
+
 	cmp #ENEMY_NORMAL_GRAB_DISTANCE_GRAB
 	bcs normalModeLiftArmCheck				; >=
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
 
 	stz EnemyArrayAnimFrameIndex,X			; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
@@ -900,6 +932,8 @@ normalMode:
 	jmp end
 
 normalModeLiftArmCheck:
+	rep #$20
+	.A16
 	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	bpl normalModeGoRight
 
@@ -925,25 +959,48 @@ normalModeGoRight:
 	inc
 	sta EnemyArrayXOffset,Y						; increment enemy X Offset
 
-:	bra end
+:	jmp end
 
 	;*******************
 	;*** Mirror mode ***
 	;*******************
 
+	.A8
+
 mirrorMode:
 	lda EnemyArrayXOffset,Y
 	sec
 	sbc heroXOffset
-	and #$00ff									; calculate distance between enemy and hero
+	;and #$ff									; calculate distance between enemy and hero
+
+	;*** Check for hit ***
+	;*********************
+
+	pha 									; save calculated enemy offset
+
+	lda heroHitOffset
+	cmp #$0000
+	beq :+									; if hit Offset is 0 don't check for hit
+
+	pla
+	pha										; set back calculated enemy offset and keep it in stack
+
+	sec
+	sbc heroHitOffset
+	bpl :+									; if difference is positive -> continue
+
+	pla
+
+	lda EnemyArrayFlag,X
+	ora #ENEMY_STATUS_HIT_MASK
+	ora heroHitType
+	sta EnemyArrayFlag,X					; set hit high flag
+	jmp fall								; else fall
+
+:	pla
 
 	cmp #ENEMY_MIRROR_GRAB_DISTANCE_GRAB
 	bne mirrorModeLiftArmCheck
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
 
 	stz EnemyArrayAnimFrameIndex,X				; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
@@ -960,6 +1017,8 @@ mirrorMode:
 	bra end
 
 mirrorModeLiftArmCheck:
+	rep #$20
+	.A16
 	cmp #ENEMY_MIRROR_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	bpl mirrorModeGoLeft
 
@@ -1011,17 +1070,36 @@ skipAnim:
 	rts
 .endproc
 
+;******************************************************************************
+;*** enemyGrabFall ***********************************************************
+;******************************************************************************
+
 .proc enemyGrabFall
+	phb
+	pha
+
+	lda #ENEMY_DATA_BANK
+	pha
+	plb
+
+	pla
 
 	rep #$20
 	.A16
 
+	and #$0007
+	phx
+	asl
+	tax
+
 	lda EnemyArrayAnimAddress,Y
-	cmp #.LOWORD(grabbingFall)
+	cmp enemyFallAnimAddress,X
 	beq :+
 
-	lda #.LOWORD(grabbingFall)
+	lda enemyFallAnimAddress,X
 	sta EnemyArrayAnimAddress,Y
+	plb
+	plx
 	lda #$0000
 	rep #$10
 	sep #$20
@@ -1032,7 +1110,8 @@ skipAnim:
 	stz EnemyArrayOffsetFramecounter,X
 	beq :++
 
-:
+:	plb
+	plx
 	.A16
 	lda #$0000
 	rep #$10
