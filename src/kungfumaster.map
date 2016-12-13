@@ -267,9 +267,9 @@ EnemyArrayFlag (enemy.o):
 EnemyArrayOAMSlotOffset (enemy.o):
 EnemyArrayOffsetFramecounter (enemy.o):
 EnemyArrayXOffset (enemy.o):
-    hit.o                     includes/enemy.inc(9)
+    hit.o                     includes/enemy.inc(7)
 EnemyArrayYOffset (enemy.o):
-    hit.o                     includes/enemy.inc(10)
+    hit.o                     includes/enemy.inc(8)
 EnemyCurrentArrayIndexByte (enemy.o):
 EnemyCurrentArrayIndexWord (enemy.o):
 EnemyCurrentXOffset (enemy.o):

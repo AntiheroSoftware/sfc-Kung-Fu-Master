@@ -1,13 +1,18 @@
+IN PROGRESS
+===========
+
+* implement first draft of upcoming grabbing enemies
+
 BUGS
 ====
 
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
 
-IN PROGRESS
+REFACTORING
 ===========
 
-* implement first draft of upcoming grabbing enemies
+* remove some 'trick' to gain ram, and optimize execution code. I think that at the final there is plenty of ram size.
 
 TODO
 ====
