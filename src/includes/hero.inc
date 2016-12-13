@@ -6,7 +6,8 @@
     .importzp   heroXOffset
     .importzp   heroFlag
     .importzp   heroHitOffset
-    .importzp   heroHitPosition
+    .importzp   heroHitZone
+    .importzp   heroHitType
 
 .ENDIF
 
@@ -18,6 +19,10 @@ HERO_STATUS_GRAB_FLAG 					= %00001000
 HERO_FLAG_HIT_HIGH             = %00000000
 HERO_FLAG_HIT_MID              = %10000000
 HERO_FLAG_HIT_LOW              = %11000000
+
+HERO_FLAG_HIT_NONE             = %00000000
+HERO_FLAG_HIT_KICK             = %00000001
+HERO_FLAG_HIT_PUNCH            = %00000010
 
 SPRITE_DATA_BANK 	= $02
 

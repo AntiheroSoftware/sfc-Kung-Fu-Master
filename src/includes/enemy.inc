@@ -4,6 +4,8 @@
 
     .import 	initEnemySprite
     .import     reactEnemy
+    .import 	EnemyArrayXOffset
+    .import 	EnemyArrayYOffset
 
 .ENDIF
 
@@ -22,6 +24,7 @@ ENEMY_STATUS_HIT_LOW            = %00001011
 ENEMY_STATUS_ACTIVE_FLAG 		= %00010000
 ENEMY_STATUS_MIRROR_FLAG 		= %00100000
 
+ENEMY_STATUS_TYPE_MASK			= %11000000
 ENEMY_STATUS_TYPE_GRAB			= %01000000
 ENEMY_STATUS_TYPE_KNIFE			= %10000000
 ENEMY_STATUS_TYPE_MIDGET		= %11000000

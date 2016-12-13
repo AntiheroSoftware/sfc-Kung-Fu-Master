@@ -17,6 +17,7 @@
             .include	"includes/enemy.inc"
             .include	"includes/level.inc"
             .include	"includes/score.inc"
+            .include	"includes/hit.inc"
 
             .forceimport	__STARTUP__
 
@@ -272,6 +273,7 @@ gameStart:
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnemySprite
+	jsr hitInit
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -313,6 +315,8 @@ gameStartInfiniteLoop:
 	jsr reactHero
 
 	jsr reactEnemy
+
+	jsr hitProcess
 
 	wai
 	wai

@@ -16,6 +16,7 @@
             .include    "includes/score.inc"
             .include    "includes/level.inc"
             .include    "includes/base.inc"
+            .include    "includes/hit.inc"
 
             .include 	"includes/enemyData.asm"
 
@@ -26,6 +27,10 @@
 
             .export 	initEnemySprite
             .export 	reactEnemy
+            .export     EnemyCurrentXOffset
+			.export     EnemyCurrentYOffset
+			.export 	EnemyArrayXOffset
+			.export 	EnemyArrayYOffset
 
 			.export EnemyCurrentArrayIndexByte
 			.export EnemyCurrentArrayIndexWord
@@ -53,8 +58,6 @@
             .export reactEnemyGrab
             .export enemyGrabFall
             .export clearEnemy
-            .export EnemyCurrentYOffset
-            .export EnemyCurrentXOffset
             .export enemyFallYOffset
             .export enemyFallAnimAddress
 
@@ -241,6 +244,10 @@ grab_mirror_init:
 grab_end_init:
 
 	ldy EnemyCurrentArrayIndexByte
+
+	lda #$80
+	sta EnemyArrayYOffset,Y
+
 	tya
 	asl
 	asl
@@ -908,7 +915,7 @@ normalMode:
 
 	lda EnemyArrayFlag,X
 	ora #ENEMY_STATUS_HIT_MASK
-	ora heroHitPosition
+	ora heroHitZone
 	sta EnemyArrayFlag,X					; set hit high flag
 	jmp fall								; else fall
 
@@ -993,7 +1000,7 @@ mirrorMode:
 
 	lda EnemyArrayFlag,X
 	ora #ENEMY_STATUS_HIT_MASK
-	ora heroHitPosition
+	ora heroHitZone
 	sta EnemyArrayFlag,X					; set hit high flag
 	jmp fall								; else fall
 
@@ -1108,7 +1115,11 @@ skipAnim:
 	stz EnemyArrayAnimFrameIndex,X				; reset animation indexes and counter
 	stz EnemyArrayAnimFrameCounter,X
 	stz EnemyArrayOffsetFramecounter,X
-	beq :++
+
+	lda EnemyArrayFlag,X
+	jsr hitAdd
+
+	bra :++
 
 :	plb
 	plx

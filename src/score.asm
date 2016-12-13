@@ -21,14 +21,16 @@
             .export 	energyPlayer
             .export 	setLiveCounter
 			.export 	livesCounter
+			.export 	updateScorePlayer1
+			.export 	updateScorePlayer2
+			.export 	updateScoreTop
+
 
 			.export doUpdateScore
             .export scoreEvent
             .export scoreMapData
             .export timeCounter
             .export scorePlayer1
-            .export updateScorePlayer1
-            .export updateScoreTop
             .export writeNumberToScoreMap
 
 
@@ -136,7 +138,7 @@ loopCopyScoreMap:
 	ldy #EVENT_GAME_SCREEN_SCORE
 	jsr addEvent
 
-	ldx #$2400
+	ldx #$0000
 	jsr updateScorePlayer1
 	jsr updateScorePlayer2
 

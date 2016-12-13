@@ -28,7 +28,8 @@
 			.export 	heroXOffset
 			.export 	heroFlag
 			.export 	heroHitOffset
-			.export 	heroHitPosition
+			.export 	heroHitZone
+			.export 	heroHitType
 
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
@@ -83,7 +84,10 @@ heroXOffset:
 heroHitOffset:
 	.res 1
 
-heroHitPosition:
+heroHitZone:
+	.res 1
+
+heroHitType:
 	.res 1
 
 heroFlag:							; define status of actual position
@@ -451,7 +455,7 @@ noLoop:
 	.A8
 	.I16
 
-	phx								; contains adress of tiles
+	phx								; contains adress of tiles TODO check if really usefull
 
 	inx
 	inx								; increment to go to hit offset definition
@@ -462,7 +466,13 @@ noLoop:
 	rol
 	rol
 	rol
-	sta heroHitPosition
+	sta heroHitZone
+
+	lda $820000,X
+	and #$3f
+	sta heroHitType
+
+	inx
 
 	; calculate hit offset
 	lda heroFlag
@@ -471,14 +481,12 @@ noLoop:
 
 calculateNormalHitOffset:
 	lda $820000,X
-	and #$3f
 	sta heroHitOffset
 	bra :+
 
 calculateMirrorHitOffset:
 	inx
 	lda $820000,X
-	and #$3f
 	sta heroHitOffset
 	bra :++
 

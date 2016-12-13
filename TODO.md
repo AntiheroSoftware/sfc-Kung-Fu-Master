@@ -7,7 +7,7 @@ conditions the offset get screwed
 IN PROGRESS
 ===========
 
-* set score sprite when enemy is hit
+* implement first draft of upcoming grabbing enemies
 
 TODO
 ====
@@ -24,6 +24,8 @@ TODO
 
 * implement state engine for game
 
+* switch to fastrom ?
+
 DONE
 ====
 
@@ -36,4 +38,6 @@ DONE
 * ~~make enemy scroll look ok when hero is moving~~ fixed 04/12/16
 * ~~duplicate hit and and grab for enemies (24/11/16 done for grab-grab)~~ fixed 06/12/16
 * ~~hit of grab enemy~~ fixed 06/12/16
+* ~~set hit sprite when enemy is hit~~ 13/12/16
+* ~~add heroHitType and change heroHitPosition to heroHitZone~~ 13/12/16
 
