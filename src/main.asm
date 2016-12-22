@@ -15,6 +15,7 @@
             .include	"includes/base.inc"
             .include	"includes/hero.inc"
             .include	"includes/enemy.inc"
+            .include	"includes/enemyStrategy.inc"
             .include	"includes/level.inc"
             .include	"includes/score.inc"
             .include	"includes/hit.inc"
@@ -274,6 +275,7 @@ gameStart:
 	jsr initHeroSprite
 	jsr initEnemySprite
 	jsr hitInit
+	jsr enemyStrategyInit
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -317,6 +319,8 @@ gameStartInfiniteLoop:
 	jsr reactEnemy
 
 	jsr hitProcess
+
+	jsr enemyStrategyGrab
 
 	wai
 	wai

@@ -4,6 +4,8 @@
 
     .import 	initEnemySprite
     .import     reactEnemy
+    .import 	addEnemy
+    .import 	findEmptySlotEnemy
     .import 	EnemyArrayXOffset
     .import 	EnemyArrayYOffset
 

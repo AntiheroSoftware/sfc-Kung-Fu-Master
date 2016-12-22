@@ -27,6 +27,8 @@
 
             .export 	initEnemySprite
             .export 	reactEnemy
+            .export 	addEnemy
+            .export 	findEmptySlotEnemy
             .export     EnemyCurrentXOffset
 			.export     EnemyCurrentYOffset
 			.export 	EnemyArrayXOffset
@@ -61,6 +63,7 @@
             .export enemyFallYOffset
             .export enemyFallAnimAddress
 
+
 SPRITE_TILE_BASE_ADDR = $2000
 
 SPRITE_TILE_ZONE1_ADDR	= $3000
@@ -68,7 +71,7 @@ SPRITE_TILE_ZONE2_ADDR	= $4000
 SPRITE_TILE_ZONE3_ADDR	= $5000
 SPRITE_TILE_ZONE4_ADDR	= $6000
 
-ENEMY_SPRITE_NUMBER = 13
+ENEMY_SPRITE_NUMBER = 14
 
 .segment "ZEROPAGE"
 
@@ -182,7 +185,7 @@ endInitArrayLoop:
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
 	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
-	ldx #$0000						; enemy slot ( 0 - 13 )
+	jsr findEmptySlotEnemy			; Load X with a free enemy slot ( 0 - 13 )
 	jsr addEnemy
 
 	plb
@@ -221,6 +224,10 @@ endInitArrayLoop:
 	bit #ENEMY_STATUS_TYPE_GRAB
 	beq check_knife
 
+	ldy EnemyCurrentArrayIndexByte
+	lda #$80						; set static Y offset for enemy
+	sta EnemyArrayYOffset,Y
+
 	ldx EnemyCurrentArrayIndexWord
 
 	rep #$20
@@ -242,11 +249,6 @@ grab_mirror_init:
 	sta EnemyArrayXOffset,X
 
 grab_end_init:
-
-	ldy EnemyCurrentArrayIndexByte
-
-	lda #$80
-	sta EnemyArrayYOffset,Y
 
 	tya
 	asl
@@ -278,6 +280,36 @@ check_end:
 .endproc
 
 ;******************************************************************************
+;*** findEmptySlotEnemy *******************************************************
+;******************************************************************************
+;*** return free slot (X)				    					     		***
+;******************************************************************************
+
+.proc findEmptySlotEnemy
+	php
+	pha
+
+	ldx #$0000
+search:
+	lda EnemyArrayFlag,X
+	and #ENEMY_STATUS_ACTIVE_FLAG
+	beq return
+	cpx #ENEMY_SPRITE_NUMBER-1
+	beq notFound
+	inx
+	bra search
+
+notFound:
+	ldx #$ffff
+
+return:
+
+	pla
+	plp
+	rts
+.endproc
+
+;******************************************************************************
 ;*** clearEnemy ***************************************************************
 ;******************************************************************************
 ;*** slot (X)													     		***
@@ -291,6 +323,7 @@ check_end:
 	lda #$00
 	sta EnemyArrayFlag,X
 
+	ldx EnemyCurrentArrayIndexWord
 	ldy EnemyArrayOAMSlotOffset,X
 	tyx
 
@@ -378,6 +411,23 @@ continueLineLoop:
     adc #$80
     clc
     adc EnemyCurrentYOffset
+
+	cmp #$e0
+	bcc :+
+
+	pla
+skipLineLoop:
+	iny
+	iny
+	iny
+	iny
+	dec
+	cmp #$00
+	bne skipLineLoop
+
+	bra lineLoop
+
+:
 	pha
 
 	_EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
@@ -737,6 +787,10 @@ endAnim:
 	phy
 	php
 
+	xba
+	lda	#$00
+	xba								; reset high byte of A
+
 	ldx #$0000
 	ldy #$0000
 
@@ -753,6 +807,9 @@ reactLoop:
 reactCheckGrab:
 	bit #ENEMY_STATUS_TYPE_GRAB
 	beq reactCheckKnife
+
+	stx EnemyCurrentArrayIndexByte
+	sty EnemyCurrentArrayIndexWord
 
 	jsr reactEnemyGrab
 	bra skipReact
@@ -775,7 +832,7 @@ skipReact:
 	inx								; update indexes
 	iny
 	iny
-	jmp reactLoop
+	bra reactLoop
 
 endReactLoop:
 
@@ -790,6 +847,8 @@ endReactLoop:
 ;*** reactEnemyGrab ***********************************************************
 ;******************************************************************************
 ;*** A contains enemyFlag                                                   ***
+;*** X contains enemy index	for byte ???									***
+;*** Y contains enemy index for word ???									***
 ;******************************************************************************
 
 .proc reactEnemyGrab
@@ -800,7 +859,7 @@ endReactLoop:
 
 	pha									; save enemyFlag
 	and #ENEMY_STATUS_HIT_MASK
-	cmp #ENEMY_STATUS_HIT_MASK			; check if hero is hit
+	cmp #ENEMY_STATUS_HIT_MASK			; check if enemy is hit
 	bne :+
 
 	pla									; restore full enemyFlag
@@ -934,6 +993,11 @@ normalMode:
 	lda #.LOWORD(grabbingGrab)
 	sta EnemyArrayAnimAddress,Y
 
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
 	_ResetEnemyShakingCounter					; set shakingCounter in enemyFlag to init value
 
 	jmp end
@@ -1019,6 +1083,11 @@ mirrorMode:
 	lda #.LOWORD(grabbingGrab)
 	sta EnemyArrayAnimAddress,Y
 
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
 	_ResetEnemyShakingCounter					; set shakingCounter in enemyFlag
 
 	bra end
@@ -1078,10 +1147,15 @@ skipAnim:
 .endproc
 
 ;******************************************************************************
-;*** enemyGrabFall ***********************************************************
+;*** enemyGrabFall ************************************************************
 ;******************************************************************************
 
 .proc enemyGrabFall
+;	pha
+;	phx
+;	phy
+;	php
+
 	phb
 	pha
 
@@ -1105,8 +1179,10 @@ skipAnim:
 
 	lda enemyFallAnimAddress,X
 	sta EnemyArrayAnimAddress,Y
-	plb
+
 	plx
+	plb
+
 	lda #$0000
 	rep #$10
 	sep #$20
@@ -1121,8 +1197,9 @@ skipAnim:
 
 	bra :++
 
-:	plb
-	plx
+:	plx
+	plb
+
 	.A16
 	lda #$0000
 	rep #$10
@@ -1165,6 +1242,11 @@ skipAnim:
 
 	stz EnemyCurrentYOffset
 	stz EnemyCurrentXOffset
+
+;	plp
+;	ply
+;	plx
+;	pla
 
 	rts
 .endproc
