@@ -63,6 +63,15 @@ titleScreenMap:
 titleScreenPal:
     .incbin "../ressource/titleScreen.clr"
 
+letterHandTiles:
+	.incbin "../ressource/letterHand.pic"
+
+letterHandMap:
+	.incbin "../ressource/letterHand.map"
+
+letterHandPal:
+	.incbin "../ressource/letterHand.clr"
+
 .segment "BSS"
 
 CONTROL_VALUE_NONE				= $00

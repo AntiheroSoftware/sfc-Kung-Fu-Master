@@ -7,7 +7,7 @@ main.o:
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000000  Size=000002  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
-    BANK1             Offs=000000  Size=0041A0  Align=00001  Fill=0000
+    BANK1             Offs=000000  Size=005840  Align=00001  Fill=0000
 level.o:
     CODE              Offs=000401  Size=000263  Align=00001  Fill=0000
     RODATA            Offs=000008  Size=000082  Align=00001  Fill=0000
@@ -39,7 +39,7 @@ enemy.o:
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=00000C  Size=000008  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
-    BANK1             Offs=0041A0  Size=00222F  Align=00001  Fill=0000
+    BANK1             Offs=005840  Size=00222F  Align=00001  Fill=0000
     BANK3             Offs=000000  Size=008000  Align=00001  Fill=0000
 enemyStrategy.o:
     CODE              Offs=0014D7  Size=000038  Align=00001  Fill=0000
@@ -115,7 +115,7 @@ CODE                  00803B  00999B  001961  00001
 RODATA                00999C  009A41  0000A6  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
-BANK1                 018000  01E3CE  0063CF  00001
+BANK1                 018000  01FA6E  007A6F  00001
 BANK2                 028000  02F096  007097  00001
 BANK3                 038000  03FFFF  008000  00001
 BANK4                 048000  04EA9F  006AA0  00001
@@ -141,21 +141,21 @@ addEvent                  00974D RLA    animEnemy                 009225  LA
 animHero                  008AE9  LA    clearEnemy                009085  LA    
 clearHeroSprite           008A20  LA    clearOAM                  009928 RLA    
 copyOAM                   009957 RLA    doUpdateScore             0002CE  LA    
-enemyFallAnimAddress      01E24C  LA    enemyFallYOffset          01E210  LA    
+enemyFallAnimAddress      01F8EC  LA    enemyFallYOffset          01F8B0  LA    
 enemyGrabFall             00947F  LA    enemyStrategyGrab         00951D RLA    
 enemyStrategyInit         009512 RLA    energyPlayer              0002D9 RLA    
 eventsTable               0003D0  LA    fallHero                  008DE0  LA    
 findEmptySlotEnemy        00906B RLA    getEventCounter           0097E3 RLA    
-grabbingFall1             01E34D  LA    grabbingGrab              01E3A3  LA    
-grabbingHitHighFall       01E3B1  LA    grabbingHitLowFall        01E3C5  LA    
-grabbingHitMidFall        01E3BB  LA    grabbingShakeFall         01E3A7  LA    
-grabbingWalk              01E389  LA    grabbingWalk1             01E254  LA    
-grabbingWalk2             01E269  LA    heroDownKick2             02ED2C  LA    
+grabbingFall1             01F9ED  LA    grabbingGrab              01FA43  LA    
+grabbingHitHighFall       01FA51  LA    grabbingHitLowFall        01FA65  LA    
+grabbingHitMidFall        01FA5B  LA    grabbingShakeFall         01FA47  LA    
+grabbingWalk              01FA29  LA    grabbingWalk1             01F8F4  LA    
+grabbingWalk2             01F909  LA    heroDownKick2             02ED2C  LA    
 heroDownPunch1            02ED4D  LA    heroDownPunch3            02ED86  LA    
 heroFlag                  00000B RLZ    heroHitOffset             000008 RLZ    
 heroHitType               00000A RLZ    heroHitZone               000009 RLZ    
 heroStandKick2            02EDC7  LA    heroXOffset               000006 RLZ    
-highByte                  01E1E0  LA    hitAdd                    00955F RLA    
+highByte                  01F880  LA    hitAdd                    00955F RLA    
 hitInit                   00954A RLA    hitProcess                0095FC RLA    
 hitRemove                 0095E3  LA    initEnemySprite           008E7F RLA    
 initEvents                009721 RLA    initHeroSprite            0089B1 RLA    
@@ -256,13 +256,13 @@ readPad3                  0098AC  LA    readPad4                  0098EA  LA
 clearOAM                  009928 RLA    copyOAM                   009957 RLA    
 OAMDataUpdated            00998E RLA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
-__VECTORS_LAST__          010000  LA    highByte                  01E1E0  LA    
-enemyFallYOffset          01E210  LA    enemyFallAnimAddress      01E24C  LA    
-grabbingWalk1             01E254  LA    grabbingWalk2             01E269  LA    
-grabbingFall1             01E34D  LA    grabbingWalk              01E389  LA    
-grabbingGrab              01E3A3  LA    grabbingShakeFall         01E3A7  LA    
-grabbingHitHighFall       01E3B1  LA    grabbingHitMidFall        01E3BB  LA    
-grabbingHitLowFall        01E3C5  LA    heroDownKick2             02ED2C  LA    
+__VECTORS_LAST__          010000  LA    highByte                  01F880  LA    
+enemyFallYOffset          01F8B0  LA    enemyFallAnimAddress      01F8EC  LA    
+grabbingWalk1             01F8F4  LA    grabbingWalk2             01F909  LA    
+grabbingFall1             01F9ED  LA    grabbingWalk              01FA29  LA    
+grabbingGrab              01FA43  LA    grabbingShakeFall         01FA47  LA    
+grabbingHitHighFall       01FA51  LA    grabbingHitMidFall        01FA5B  LA    
+grabbingHitLowFall        01FA65  LA    heroDownKick2             02ED2C  LA    
 heroDownPunch1            02ED4D  LA    heroDownPunch3            02ED86  LA    
 heroStandKick2            02EDC7  LA    
 
