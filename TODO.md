@@ -8,6 +8,7 @@ BUGS
 
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
+* Sometimes there is a bug where enemy fall a second time from upper position (eproduced it on first punch hit directly going on left) 
 
 REFACTORING
 ===========

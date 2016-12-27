@@ -231,7 +231,7 @@ heroJump1:							; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*16))
 	.byte	$00
 	.byte	$00, $00
-	.byte   $01, $00, $0a, $2a, $00
+	.byte   $01, $00, $09, $2b, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
 	.byte   $01, $30, $09, $2b, $06
@@ -241,7 +241,7 @@ heroJump2:							; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*17))
 	.byte	$00
 	.byte	$00, $00
-	.byte   $01, $00, $0a, $2a, $00
+	.byte   $01, $00, $09, $2b, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
 	.byte   $01, $30, $09, $2b, $06
@@ -262,8 +262,19 @@ heroJumpKick1:						; 8 sprite blocks
 	.byte   $01, $40, $00, $2d, $0e
 	.byte	$00
 
-heroJumpRun1:						; 6 sprite blocks
+heroJumpRun1:						; 4 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*19))
+	.byte	$00
+	.byte	$00, $00
+	.byte   $01, $00, $0d, $27, $00
+	.byte   $01, $10, $09, $2b, $02
+	.byte   $01, $20, $09, $2b, $04
+	.byte   $01, $30, $09, $2b, $06
+	.byte   $01, $40, $09, $2b, $08
+	.byte	$00
+
+heroJumpRun2:						; 6 sprite blocks
+	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
 	.byte	$00
 	.byte	$00, $00
 	.byte   $01, $00, $0f, $1e, $00
@@ -274,21 +285,11 @@ heroJumpRun1:						; 6 sprite blocks
 	.byte   $01, $30, $00, $2d, $0a
 	.byte	$00
 
-heroJumpRun2:						; 4 sprite blocks
-	.word	.LOWORD(KFM_Player_final_Tiles+($400*20))
-	.byte	$00
-	.byte	$00, $00
-	.byte   $01, $00, $0d, $27, $00
-	.byte   $01, $10, $09, $2b, $02
-	.byte   $01, $20, $09, $2b, $04
-	.byte   $01, $30, $09, $2b, $06
-	.byte	$00
-
 heroJump3:							; 5 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles+($400*21))
 	.byte	$00
 	.byte	$00, $00
-	.byte   $01, $00, $0e, $26, $00
+	.byte   $01, $00, $0d, $27, $00
 	.byte   $01, $10, $09, $2b, $02
 	.byte   $01, $20, $09, $2b, $04
 	.byte   $01, $30, $09, $2b, $06
@@ -475,17 +476,17 @@ heroJump:
 	.byte $ff
 
 heroJumpRun:
-	.byte $06
-	.word .LOWORD(heroJumpRun1)
-	.byte $06
-	.word .LOWORD(heroJump2)
-	.byte $06
+	.byte $04
 	.word .LOWORD(heroJumpRun2)
-	.byte $06
+	.byte $05
+	.word .LOWORD(heroJump2)
+	.byte $11
 	.word .LOWORD(heroJump3)
-	.byte $06
+	.byte $05
+	.word .LOWORD(heroJumpRun1)
+	.byte $04
 	.word .LOWORD(heroJump1)
-	.byte $03
+	.byte $01
 	.word .LOWORD(heroStand1)
 	.byte $ff
 
@@ -510,3 +511,11 @@ heroJumpOffsetTable:
 	.byte 25, 25, 24, 23, 21, 20, 20, 18, 16		; 9 values
 	.byte 34, 32, 30, 28, 22, 16					; 6 values
 	.byte 0, 0, 0, 0, 0								; 5 values -> 40 values
+
+heroJumpRunOffsetTable:
+	.byte 0, 0, 0, 0, 7								; 5 values
+	.byte 28, 30, 32, 34, 36, 38					; 6 values
+	.byte 20, 21, 23, 23, 24, 25, 25, 25, 25		; 9 values
+	.byte 25, 25, 24, 23, 21, 20, 20, 18, 16		; 9 values
+	.byte 34, 32, 30, 28, 22, 16					; 6 values TODO CHECK VALUES
+	.byte 0, 0, 0, 0, 0, 0							; 5 + 1 values -> 40 values

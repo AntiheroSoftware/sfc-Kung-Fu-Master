@@ -707,6 +707,9 @@ checkAnimInProgress:
 :	bit #$02						; jump animation in progress
 	beq :+
 
+;	bit #$04						; jump run animation in progress
+;	beq :+
+
 	rep #$20
 	.A16
 
@@ -726,7 +729,7 @@ checkAnimInProgress:
 	pha								; save heroYOffset
 
 	sec
-	sbc heroJumpOffsetTable,x
+	sbc heroJumpOffsetTable,x		; TODO use right jumprun table if needed
 	sta heroYOffset
 
 	lda #$01
@@ -756,8 +759,8 @@ checkAnimInProgress:
 	beq :++++
 
 	lda padPushDataLow1				; check if it's a jum run
-	bit #PAD_LOW_RIGHT				; TODO check why jump table isn't good
-	bne :+							; TODO check for timings
+	bit #PAD_LOW_RIGHT
+	bne :+
 	bit #PAD_LOW_LEFT
 	beq :++
 
