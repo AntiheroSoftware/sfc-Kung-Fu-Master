@@ -42,6 +42,7 @@
 			.export heroStandKick2
 			.export heroDownPunch1
 			.export heroDownPunch3
+			.export animInProgress
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -695,11 +696,35 @@ noTransfer:
 checkAnimInProgress:
 	lda animInProgress
 	bit #$01						; simple animation in progress
-	beq :+
+	beq :++							; go check if it's a an other type of animation
 	
-	; TODO put here check if we need to end animation earlier
 	; TODO check if we are still down after a down animation
-	; TODO check if DOWN was pressed while animation
+
+	;*** Check if down first pressed if it's the case we clear
+	;*** down first pressed so it can be triggered when
+	;*** animation is over
+	;************************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_DOWN				; check if DOWN button is pressed
+	beq :+							; if DOWN is not pressed we continue
+
+	lda padFirstPushDataLow1		; remove DOWN button press
+	and #%11111011					; so it can be set again
+	sta padFirstPushDataLow1		; later ...
+	lda padPushDataLow1
+	and #%11111011
+	sta padPushDataLow1
+
+:
+
+	;*** TODO Check if kick and currently in a good frame to trigger
+	;*** a new animation
+	;*************************************************************
+
+	;*** TODO Check if punch and currently in a good frame to trigger
+	;*** a new animation
+	;*************************************************************
 
 	jsr animHero
 	jmp endHeroPadCheck

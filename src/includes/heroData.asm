@@ -34,8 +34,6 @@ heroFallXOffset:
 ;*** Tile Number                                                            ***
 ;******************************************************************************
 
-; TODO add information about the frame if it's a HIT frame or not (+ offsets)
-
 heroStand1:							; 7 sprite blocks
 	.word	.LOWORD(KFM_Player_final_Tiles)
 	.byte	$00
