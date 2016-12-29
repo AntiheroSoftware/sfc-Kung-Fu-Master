@@ -43,6 +43,7 @@
 			.export heroDownPunch1
 			.export heroDownPunch3
 			.export animInProgress
+			.export heroAnimInterruptCounter
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -75,6 +76,9 @@ animInProgress:						; is there an animation in progress
 									
 heroAnimAddr:						; address of the animation definition
 	.res 2
+
+heroAnimInterruptCounter:			; number of frames after wich animation can be interrupted
+	.res 1							; if a new button have been pressed
 
 heroYOffset:
 	.res 1
@@ -371,7 +375,7 @@ endFillLoop:
 	rep #$20
 	.A16
 
-	ldx #$0000
+	ldx #$0000						; clear high byte of A register
 	txa
 
 	rep #$10
@@ -380,7 +384,8 @@ endFillLoop:
 	.I16
 
     lda animFrameIndex
-    tay
+    tay								; set index for getting animation frames (counter/address) into Y register
+
     lda animFrameCounter
     cmp #$00                        ; first time we do that animation
 	beq firstFrame
@@ -389,52 +394,69 @@ endFillLoop:
     cmp (heroAnimAddr),y			; we did all frames for that index
     beq nextFrame
 
-	inc animFrameCounter		; disable this to make it manual on testing
+	inc animFrameCounter			; <DEBUG> disable this to make it manual on testing
+	lda heroAnimInterruptCounter	; load and update "AnimInterruptCounter"
+	dec
+	cmp #$ff						; if value is greater than 0 we don't touch it
+	bne :+
+	lda #$00						; else we force to 0
+:	sta heroAnimInterruptCounter	; store the new value
 
     lda forceRefresh
-    cmp #$01
-	beq forceRefreshReset
+    cmp #$01						; check if forceResfresh is needed
+	beq forceRefreshReset			; skip to force refresh
 
-    jmp endAnim
+    jmp endAnim						; we are all done here, we can exit the fonction
 
 firstFrame:
+
+	;*** setup frame counter and index for the beginning of the animation
+	;***********************************************************************
+
+	ldy #$0000
+	lda (heroAnimAddr),Y			; get and set the counter where we will be able
+	sta heroAnimInterruptCounter	; to interrupt the animation
+
 	lda #$01
     sta animFrameCounter
-	lda #$00
+	lda #$01						; set to 1 so we skip "AnimInterruptCounter" info
 	sta animFrameIndex
-	bra nextFrameContinue
+	bra nextFrameContinue			; continue to to handle the frame
 
 nextFrame:
 
     lda #$01
-    sta animFrameCounter
+    sta animFrameCounter			; reset frame counter to 1
 
-    lda animFrameIndex
-    inc
-    inc
-    inc
-    sta animFrameIndex
+    lda animFrameIndex				; load frame index
+    inc								; skip counter
+    inc								; skip high byte of frame address
+    inc								; skip low byte of frame address
+    sta animFrameIndex				; store new frame index
 
 nextFrameContinue:
-    tay
+
+    tay								; set index for getting animation frames into Y register
 
     lda (heroAnimAddr),y			; check if we are in a no loop animation
 	cmp #$ff
 	bne :+
 
+	lda #$01						; we are at the end of the animation
+	sta animFrameIndex				; we reset the counter
 	lda #$00
-	sta animFrameIndex
 	sta animInProgress
-	bra endAnim
+	bra endAnim						; we exit the animation
 
 :   lda (heroAnimAddr),y
     cmp #$00
     bne noLoop
 
+    lda #$01						; we are in a loop
+    sta animFrameIndex				; reset the index
     lda #$00
-    sta animFrameIndex
     sta animInProgress
-    bra noLoop
+    bra noLoop						; ... and continue
 
 forceRefreshReset:
 	lda #$00
@@ -657,19 +679,19 @@ noTransfer:
 	;*********************************
 
 	lda energyPlayer
-	cmp #$00
-	bne :+
-	jsr fallHero
-	jmp endHeroPadCheck
+	cmp #$00						; check if player energy is 0
+	bne heroStillHaveEnergy
+	jsr fallHero					; if so we make it fall
+	jmp endHeroPadCheck				; nothing else to do we skip pad check
 
-:
+heroStillHaveEnergy:
 
 	;*** Is hero grabbed by an enemy ***
 	;***********************************
 
 	_GetHeroGrabFlag
-	cmp #$00
-	beq checkAnimInProgress
+	cmp #$00						; check if hero is grabbed
+	beq heroIsNotGrabbed
 
 	jsr setShakingFlag				; check if we are shaking and set heroFlag
 
@@ -682,7 +704,7 @@ noTransfer:
 	cpx #.LOWORD(heroGrabbed)		; check if current anim is already "heroGrabbed"
 	beq :+
 
-	ldx #.LOWORD(heroGrabbed)
+	ldx #.LOWORD(heroGrabbed)		; set "heroGrabbed" animation
 	stx heroAnimAddr
 	stz animFrameIndex
 	stz animFrameCounter
@@ -690,24 +712,23 @@ noTransfer:
 :	jsr animHero
 	jmp endHeroPadCheck
 
+heroIsNotGrabbed:
+
 	;*** Is there an animation in progress ***
 	;*****************************************
 
-checkAnimInProgress:
 	lda animInProgress
 	bit #$01						; simple animation in progress
-	beq :++							; go check if it's a an other type of animation
-	
-	; TODO check if we are still down after a down animation
+	beq :+							; go check if it's a an other type of animation
 
-	;*** Check if down first pressed if it's the case we clear
-	;*** down first pressed so it can be triggered when
+	;*** Check if DOWN is first pressed if it's the case we
+	;*** clear down first pressed so it can be triggered when
 	;*** animation is over
 	;************************************************************
 
 	lda padFirstPushDataLow1
 	bit #PAD_LOW_DOWN				; check if DOWN button is pressed
-	beq :+							; if DOWN is not pressed we continue
+	beq skipCheckDownPressed		; if DOWN is not pressed we continue
 
 	lda padFirstPushDataLow1		; remove DOWN button press
 	and #%11111011					; so it can be set again
@@ -716,15 +737,56 @@ checkAnimInProgress:
 	and #%11111011
 	sta padPushDataLow1
 
-:
+skipCheckDownPressed:
 
-	;*** TODO Check if kick and currently in a good frame to trigger
-	;*** a new animation
-	;*************************************************************
+	;*** Check if DOWN is released if it's the case we
+	;*** clear down released so it can be triggered when
+	;*** animation is over
+	;************************************************************
 
-	;*** TODO Check if punch and currently in a good frame to trigger
-	;*** a new animation
-	;*************************************************************
+	lda padReleaseDataLow1
+	bit #PAD_LOW_DOWN				; check if DOWN button is released
+	beq skipCheckDownReleased		; if DOWN is not released we continue
+
+	lda padPushDataLow1				; make like if DOWN was still pressed
+	ora #%00000100					; so it can be released later
+	sta padPushDataLow1
+
+skipCheckDownReleased:
+
+	;*** if LEFT or RIGHT are pressed during an animation
+	;*** we and even if it's not the first time we act
+	;*** like as if it was the first time
+	;*******************************************************
+
+	lda padPushDataLow1
+	and #%00000011
+	ora padFirstPushDataLow1
+	sta padFirstPushDataLow1
+
+	;*** Check if kick or punch are currently in a good frame
+	;*** to trigger a new animation
+	;**********************************************************
+
+	lda heroAnimInterruptCounter	; check if we can interrupt the animation
+	cmp #$00						; in case a new buttun is pressed
+	bne skipCheckInterrupt
+
+checkInterruptKickButtonPressed:
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_B					; check if B button is pressed (B is for Kick)
+	beq checkInterruptPunchButtonPressed
+
+	bra checkPadDirection			; Go check with new animation we can trigger
+
+checkInterruptPunchButtonPressed:
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_Y					; check if Y button is pressed (Y is for Punch)
+	beq skipCheckInterrupt
+
+	bra checkPadDirection			; Go check with new animation we can trigger
+
+skipCheckInterrupt:
 
 	jsr animHero
 	jmp endHeroPadCheck
@@ -735,15 +797,9 @@ checkAnimInProgress:
 ;	bit #$04						; jump run animation in progress
 ;	beq :+
 
-	rep #$20
-	.A16
-
-	lda #$0000
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
+	xba
+	lda #$00						; clear high byte of A register
+	xba
 
 	lda animationJumpFrameCounter	; set y offset for the jump
 	inc
@@ -767,6 +823,7 @@ checkAnimInProgress:
 
 	jmp endHeroPadCheck
 :
+checkPadDirection:
 
 	;*** Set the good mirror mode for hero sprite ***
 	;************************************************

@@ -354,6 +354,7 @@ heroFall2:							; 8 sprite blocks
 ;******************************************************************************
 ;*** Animation frames *********************************************************
 ;******************************************************************************
+;*** number of frames after witch the animation can be stopped				***
 ;*** number of frames                                                       ***
 ;*** metasprite definition address                                          ***
 ;******************************************************************************
@@ -364,11 +365,13 @@ heroFall2:							; 8 sprite blocks
 ;******************************************************************************
 
 heroStand:
+	.byte $ff
 	.byte $01
 	.word .LOWORD(heroStand1)
 	.byte $ff
 
 heroWalk:
+	.byte $ff
 	.byte $08
 	.word .LOWORD(heroWalk1)
 	.byte $08
@@ -380,11 +383,13 @@ heroWalk:
 	.byte $00
 
 heroDownStand:
+	.byte $ff
 	.byte $01
 	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
 heroDownKick:
+	.byte $06
 	.byte $04
 	.word .LOWORD(heroDownKick1)
 	.byte $04
@@ -396,32 +401,35 @@ heroDownKick:
 	.byte $ff
 
 heroDownPunch:
-	.byte $08
+	.byte $06
+	.byte $04
 	.word .LOWORD(heroDownPunch1)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch2)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch3)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch2)
 	.byte $01
 	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
 heroDownPunchAgain:
-	.byte $08
+	.byte $06
+	.byte $04
 	.word .LOWORD(heroDownPunch1)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch2)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch3)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroDownPunch2)
 	.byte $01
 	.word .LOWORD(heroDownStand1)
 	.byte $ff
 
 heroStandKick:
+	.byte $06
 	.byte $04
 	.word .LOWORD(heroStandKick1)
 	.byte $04
@@ -433,32 +441,35 @@ heroStandKick:
 	.byte $ff
 
 heroStandPunch:
-	.byte $08
+	.byte $06
+	.byte $04
 	.word .LOWORD(heroStandPunch1)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch2)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch3)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch2)
 	.byte $01
 	.word .LOWORD(heroStand1)
 	.byte $ff
 
 heroStandPunchAgain:
-	.byte $08
+	.byte $06
+	.byte $04
 	.word .LOWORD(heroStandPunch1)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch2)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch3)
-	.byte $08
+	.byte $04
 	.word .LOWORD(heroStandPunch2)
 	.byte $01
 	.word .LOWORD(heroStand1)
 	.byte $ff
 
 heroJump:
+	.byte $ff
 	.byte $04
 	.word .LOWORD(heroJump1)
 	.byte $05
@@ -474,6 +485,7 @@ heroJump:
 	.byte $ff
 
 heroJumpRun:
+	.byte $ff
 	.byte $04
 	.word .LOWORD(heroJumpRun2)
 	.byte $05
@@ -489,11 +501,13 @@ heroJumpRun:
 	.byte $ff
 
 heroGrabbed:
+	.byte $ff
 	.byte $01
 	.word .LOWORD(heroGrabbed1)		; TODO does heroGrabbed1 have a function ?
 	.byte $ff
 
 heroFall:
+	.byte $ff
 	.byte $05
 	.word .LOWORD(heroGrabbed1)
 	.byte $08
