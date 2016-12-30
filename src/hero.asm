@@ -498,7 +498,9 @@ noLoop:
 
 	inx
 
-	; calculate hit offset
+	;*** calculate hit offset
+	;***************************
+
 	lda heroFlag
 	bit HERO_STATUS_MIRROR_FLAG
 	bne calculateMirrorHitOffset
@@ -516,7 +518,7 @@ calculateMirrorHitOffset:
 
 :	inx
 :	inx								; increment offset to go to tiles definition
-	ldy heroXOffset					; x Pos
+	ldy heroXOffset					; Y register contains heroXOffset
 	jsr setHeroOAM
 
 	jsr OAMDataUpdated
@@ -646,23 +648,6 @@ noTransfer:
 ;*******************************************************************************
 ;*** reactHero *****************************************************************
 ;*******************************************************************************
-;*** X contains pad like data                                                ***
-;*******************************************************************************
-
-; check that hero is not catched
-; 	check if UP is pressed and not in a jump
-; 	else check if we are on a jump
-; 	else check if DOWN
-; 		check if B (kick) -> HERO_DOWN_KICK
-; 		else check if X (Punch) -> HERO_DOWN_PUNCH
-;       else HERO_DOWN
-;   else check if B (kick) -> HERO_KICK
-;   else check if X (punch) -> HERO_PUNCH
-;   else check if RIGHT -> HERO_WALK
-;   else check if LEFT -> HERO_LEFT
-
-; if hero is catched
-; finish anim and only handle LEFT/RIGHT to get out
 
 .proc reactHero
 	phy
@@ -1000,8 +985,10 @@ checkIfLeftOrRight:
 
 levelScrollLeft:
 
-	; TODO need to check boundaries of hero and level
-	; check heroXOffset
+	;*** TODO need to check boundaries of hero and level
+	;*** check heroXOffset
+	;******************************************************
+
 	lda #LEVEL_SCROLL_LEFT
 	sta scrollDirection
 	jsr scrollLevel
@@ -1044,24 +1031,18 @@ endHeroPadCheck:
 	phy
 	phb
 
-	rep #$20
-	.A16
-
-	lda #$0000
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
+	xba								; clear high byte of A register
+	lda #$00
+	xba
 
 	ldy heroAnimAddr
 	cpy #.LOWORD(heroFall)
-	beq :+										; hero is already falling
+	beq :+							; hero is already falling
 
 	ldy #.LOWORD(heroFall)
 	sty heroAnimAddr
 	ldy #$0000
-	stz animFrameIndex							; reset animation indexes and counter
+	stz animFrameIndex				; reset animation indexes and counter
 	stz animFrameCounter
 	stz animationJumpFrameCounter
 
@@ -1069,11 +1050,14 @@ endHeroPadCheck:
 	cmp #$1d
 	bne :+
 
-	jsr clearHeroSprite							; clear hero sprite
+	jsr clearHeroSprite				; clear hero sprite
 	lda livesCounter
 	dec
-	jsr setLiveCounter							; update live counter
-	; TODO  restart level
+	jsr setLiveCounter				; update live counter
+
+	;*** TODO  restart level
+	;**************************
+
 	bra :+++
 
 :	inc
@@ -1081,13 +1065,13 @@ endHeroPadCheck:
 
 	lda heroFlag
 	bit #HERO_STATUS_MIRROR_FLAG
-	bne mirrorMode				; jmp to correct blockLoop code (mirror/normal)
+	bne mirrorMode					; jmp to correct blockLoop code (mirror/normal)
 
 normalMode:
 	lda animationJumpFrameCounter
 	tax
 	lda heroXOffset
-	pha											; save original X Offset
+	pha								; save original X Offset
 	sec
 	sbc heroFallXOffset,X
 	sta heroXOffset
