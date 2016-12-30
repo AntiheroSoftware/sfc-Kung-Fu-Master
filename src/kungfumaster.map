@@ -25,7 +25,7 @@ score.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK4             Offs=0054A0  Size=001600  Align=00001  Fill=0000
 hero.o:
-    CODE              Offs=000976  Size=000528  Align=00001  Fill=0000
+    CODE              Offs=000976  Size=000520  Align=00001  Fill=0000
     RODATA            Offs=00008A  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0000E1  Size=000007  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -33,7 +33,7 @@ hero.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK2             Offs=000000  Size=0070A4  Align=00001  Fill=0000
 enemy.o:
-    CODE              Offs=000E9E  Size=000693  Align=00001  Fill=0000
+    CODE              Offs=000E96  Size=000693  Align=00001  Fill=0000
     RODATA            Offs=00008A  Size=000004  Align=00001  Fill=0000
     BSS               Offs=0000E8  Size=00009B  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -42,28 +42,28 @@ enemy.o:
     BANK1             Offs=005840  Size=00222F  Align=00001  Fill=0000
     BANK3             Offs=000000  Size=008000  Align=00001  Fill=0000
 enemyStrategy.o:
-    CODE              Offs=001531  Size=000038  Align=00001  Fill=0000
+    CODE              Offs=001529  Size=000038  Align=00001  Fill=0000
     RODATA            Offs=00008E  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000183  Size=000002  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 hit.o:
-    CODE              Offs=001569  Size=0000E4  Align=00001  Fill=0000
+    CODE              Offs=001561  Size=0000E4  Align=00001  Fill=0000
     RODATA            Offs=00008E  Size=000018  Align=00001  Fill=0000
     BSS               Offs=000185  Size=00004B  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 state.o:
-    CODE              Offs=00164D  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=001645  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0001D0  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
-    CODE              Offs=00164D  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=001645  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0001D0  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -73,28 +73,28 @@ state.o:
     ROMINFO           Offs=000000  Size=000030  Align=00001  Fill=0000
     VECTORS           Offs=000000  Size=00001C  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(init.o):
-    CODE              Offs=00164D  Size=0000F3  Align=00001  Fill=0000
+    CODE              Offs=001645  Size=0000F3  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0001D0  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(event.o):
-    CODE              Offs=001740  Size=0000CE  Align=00001  Fill=0000
+    CODE              Offs=001738  Size=0000CE  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0001D0  Size=000083  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(pad.o):
-    CODE              Offs=00180E  Size=00015D  Align=00001  Fill=0000
+    CODE              Offs=001806  Size=00015D  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000253  Size=000012  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000015  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(sprite.o):
-    CODE              Offs=00196B  Size=000074  Align=00001  Fill=0000
+    CODE              Offs=001963  Size=000074  Align=00001  Fill=0000
     RODATA            Offs=0000A6  Size=000000  Align=00001  Fill=0000
     BSS               Offs=000265  Size=000221  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -111,8 +111,8 @@ NULL                  000000  000000  000000  00001
 ZEROPAGE              000000  000014  000015  00001
 BSS                   000200  000685  000486  00001
 STARTUP               008000  00803A  00003B  00001
-CODE                  00803B  009A19  0019DF  00001
-RODATA                009A1A  009ABF  0000A6  00001
+CODE                  00803B  009A11  0019D7  00001
+RODATA                009A12  009AB7  0000A6  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 BANK1                 018000  01FA6E  007A6F  00001
@@ -129,26 +129,26 @@ EnemyArrayOAMSlotOffset   000359  LA    EnemyArrayOffsetFramecounter 000321  LA
 EnemyArrayXOffset         00033D RLA    EnemyArrayYOffset         00032F RLA    
 EnemyCurrentArrayIndexByte 00000F  LZ    EnemyCurrentArrayIndexWord 000011  LZ    
 EnemyCurrentXOffset       000014  LZ    EnemyCurrentYOffset       000013  LZ    
-EnemyTempXOffsetHigh      0002E8  LA    OAMDataUpdated            009A0C RLA    
+EnemyTempXOffsetHigh      0002E8  LA    OAMDataUpdated            009A04 RLA    
 _IRQHandler               008391 RLA    _NMIHandler               0083B8 RLA    
 __ROMINFO_FILEOFFS__      007FB0  EA    __ROMINFO_LAST__          00FFE0  LA    
 __ROMINFO_SIZE__          000034  EA    __ROMINFO_START__         00FFB0  LA    
 __STARTUP__               000001 REA    __VECTORS_FILEOFFS__      007FE4  EA    
 __VECTORS_LAST__          010000  LA    __VECTORS_SIZE__          00001C  EA    
 __VECTORS_START__         00FFE4  LA    _main                     00803B RLA    
-_preInit                  0083BF RLA    addEnemy                  00905D RLA    
-addEvent                  0097A7 RLA    animEnemy                 00927F  LA    
+_preInit                  0083BF RLA    addEnemy                  009055 RLA    
+addEvent                  00979F RLA    animEnemy                 009277  LA    
 animHero                  008AE9  LA    animInProgress            000002  LZ    
-clearEnemy                0090DF  LA    clearFirstPushPad1        00988A  LA    
-clearFirstPushPad2        009893  LA    clearFirstPushPad3        00989C  LA    
-clearFirstPushPad4        0098A5  LA    clearHeroSprite           008A20  LA    
-clearOAM                  0099A6 RLA    copyOAM                   0099D5 RLA    
+clearEnemy                0090D7  LA    clearFirstPushPad1        009882  LA    
+clearFirstPushPad2        00988B  LA    clearFirstPushPad3        009894  LA    
+clearFirstPushPad4        00989D  LA    clearHeroSprite           008A20  LA    
+clearOAM                  00999E RLA    copyOAM                   0099CD RLA    
 doUpdateScore             0002CE  LA    enemyFallAnimAddress      01F8EC  LA    
-enemyFallYOffset          01F8B0  LA    enemyGrabFall             0094D9  LA    
-enemyStrategyGrab         009577 RLA    enemyStrategyInit         00956C RLA    
+enemyFallYOffset          01F8B0  LA    enemyGrabFall             0094D1  LA    
+enemyStrategyGrab         00956F RLA    enemyStrategyInit         009564 RLA    
 energyPlayer              0002D9 RLA    eventsTable               0003D0  LA    
-fallHero                  008E3A  LA    findEmptySlotEnemy        0090C5 RLA    
-getEventCounter           00983D RLA    grabbingFall1             01F9ED  LA    
+fallHero                  008E32  LA    findEmptySlotEnemy        0090BD RLA    
+getEventCounter           009835 RLA    grabbingFall1             01F9ED  LA    
 grabbingGrab              01FA43  LA    grabbingHitHighFall       01FA51  LA    
 grabbingHitLowFall        01FA65  LA    grabbingHitMidFall        01FA5B  LA    
 grabbingShakeFall         01FA47  LA    grabbingWalk              01FA29  LA    
@@ -158,12 +158,12 @@ heroDownPunch1            02ED4D  LA    heroDownPunch3            02ED86  LA
 heroFlag                  00000C RLZ    heroHitOffset             000009 RLZ    
 heroHitType               00000B RLZ    heroHitZone               00000A RLZ    
 heroStandKick2            02EDC7  LA    heroXOffset               000007 RLZ    
-highByte                  01F880  LA    hitAdd                    0095B9 RLA    
-hitInit                   0095A4 RLA    hitProcess                009656 RLA    
-hitRemove                 00963D  LA    initEnemySprite           008ED9 RLA    
-initEvents                00977B RLA    initHeroSprite            0089B1 RLA    
-initLevel                 00843C RLA    initPad                   009849 RLA    
-initScore                 00869F RLA    initSnes                  009688 RLA    
+highByte                  01F880  LA    hitAdd                    0095B1 RLA    
+hitInit                   00959C RLA    hitProcess                00964E RLA    
+hitRemove                 009635  LA    initEnemySprite           008ED1 RLA    
+initEvents                009773 RLA    initHeroSprite            0089B1 RLA    
+initLevel                 00843C RLA    initPad                   009841 RLA    
+initScore                 00869F RLA    initSnes                  009680 RLA    
 livesCounter              0002DD RLA    oamData                   000465 RLA    
 padFirstPushData1         000455  LA    padFirstPushDataHigh1     000456  LA    
 padFirstPushDataLow1      000455 RLA    padPushData1              000453 RLA    
@@ -178,18 +178,18 @@ padReleaseData4           000463  LA    padReleaseDataHigh1       000458  LA
 padReleaseDataHigh2       00045C  LA    padReleaseDataHigh3       00045F  LA    
 padReleaseDataHigh4       000463  LA    padReleaseDataLow1        000457 RLA    
 padReleaseDataLow2        00045B  LA    padReleaseDataLow3        000460  LA    
-padReleaseDataLow4        000464  LA    processEvents             0097D6 RLA    
-reactEnemy                0092F4 RLA    reactEnemyGrab            00933F  LA    
-reactHero                 008C33 RLA    readPad1                  0098AE RLA    
-readPad2                  0098EC  LA    readPad3                  00992A  LA    
-readPad4                  009968  LA    removeEvent               009826  LA    
+padReleaseDataLow4        000464  LA    processEvents             0097CE RLA    
+reactEnemy                0092EC RLA    reactEnemyGrab            009337  LA    
+reactHero                 008C33 RLA    readPad1                  0098A6 RLA    
+readPad2                  0098E4  LA    readPad3                  009922  LA    
+readPad4                  009960  LA    removeEvent               00981E  LA    
 scoreEvent                008920  LA    scoreMapData              00020E  LA    
 scorePlayer1              0002D0  LA    scrollDirection           00020B RLA    
 scrollLevel               008533 RLA    scrollValue               000209  LA    
-setEnemyOAM               009105  LA    setEnergyPlayer           00882F RLA    
+setEnemyOAM               0090FD  LA    setEnergyPlayer           00882F RLA    
 setHeroOAM                008A41  LA    setLiveCounter            0088FB RLA    
 setMirrorSpriteMode       008C21  LA    setNormalSpriteMode       008C2A  LA    
-setShakingFlag            008EB4  LA    splashScreen              0083D6  LA    
+setShakingFlag            008EAC  LA    splashScreen              0083D6  LA    
 spriteCounter             0002E1 RLA    timeCounter               0002DB  LA    
 transferHeroSpriteDataEvent 008BCE RLA    updateEnergyPlayer        008822 RLA    
 updateScorePlayer1        0087A5 RLA    updateScorePlayer2        0087D4  LA    
@@ -243,24 +243,24 @@ initHeroSprite            0089B1 RLA    clearHeroSprite           008A20  LA
 setHeroOAM                008A41  LA    animHero                  008AE9  LA    
 transferHeroSpriteDataEvent 008BCE RLA    setMirrorSpriteMode       008C21  LA    
 setNormalSpriteMode       008C2A  LA    reactHero                 008C33 RLA    
-fallHero                  008E3A  LA    setShakingFlag            008EB4  LA    
-initEnemySprite           008ED9 RLA    addEnemy                  00905D RLA    
-findEmptySlotEnemy        0090C5 RLA    clearEnemy                0090DF  LA    
-setEnemyOAM               009105  LA    animEnemy                 00927F  LA    
-reactEnemy                0092F4 RLA    reactEnemyGrab            00933F  LA    
-enemyGrabFall             0094D9  LA    enemyStrategyInit         00956C RLA    
-enemyStrategyGrab         009577 RLA    hitInit                   0095A4 RLA    
-hitAdd                    0095B9 RLA    hitRemove                 00963D  LA    
-hitProcess                009656 RLA    initSnes                  009688 RLA    
-initEvents                00977B RLA    addEvent                  0097A7 RLA    
-processEvents             0097D6 RLA    removeEvent               009826  LA    
-getEventCounter           00983D RLA    initPad                   009849 RLA    
-clearFirstPushPad1        00988A  LA    clearFirstPushPad2        009893  LA    
-clearFirstPushPad3        00989C  LA    clearFirstPushPad4        0098A5  LA    
-readPad1                  0098AE RLA    readPad2                  0098EC  LA    
-readPad3                  00992A  LA    readPad4                  009968  LA    
-clearOAM                  0099A6 RLA    copyOAM                   0099D5 RLA    
-OAMDataUpdated            009A0C RLA    __ROMINFO_START__         00FFB0  LA    
+fallHero                  008E32  LA    setShakingFlag            008EAC  LA    
+initEnemySprite           008ED1 RLA    addEnemy                  009055 RLA    
+findEmptySlotEnemy        0090BD RLA    clearEnemy                0090D7  LA    
+setEnemyOAM               0090FD  LA    animEnemy                 009277  LA    
+reactEnemy                0092EC RLA    reactEnemyGrab            009337  LA    
+enemyGrabFall             0094D1  LA    enemyStrategyInit         009564 RLA    
+enemyStrategyGrab         00956F RLA    hitInit                   00959C RLA    
+hitAdd                    0095B1 RLA    hitRemove                 009635  LA    
+hitProcess                00964E RLA    initSnes                  009680 RLA    
+initEvents                009773 RLA    addEvent                  00979F RLA    
+processEvents             0097CE RLA    removeEvent               00981E  LA    
+getEventCounter           009835 RLA    initPad                   009841 RLA    
+clearFirstPushPad1        009882  LA    clearFirstPushPad2        00988B  LA    
+clearFirstPushPad3        009894  LA    clearFirstPushPad4        00989D  LA    
+readPad1                  0098A6 RLA    readPad2                  0098E4  LA    
+readPad3                  009922  LA    readPad4                  009960  LA    
+clearOAM                  00999E RLA    copyOAM                   0099CD RLA    
+OAMDataUpdated            009A04 RLA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
 __VECTORS_LAST__          010000  LA    highByte                  01F880  LA    
 enemyFallYOffset          01F8B0  LA    enemyFallAnimAddress      01F8EC  LA    

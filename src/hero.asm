@@ -351,8 +351,9 @@ endFillLoop:
 ;******************************************************************************
 ;*** animHero *****************************************************************
 ;******************************************************************************
-;*** heroAnimAddr                                                           ***
-;*** heroXOffset                                                            ***
+;*** No register are used													***
+;*** This function use heroAnimAddr, animFrameCounter, animFrameIndex		***
+;*** and some more                                                          ***
 ;******************************************************************************
 
 .proc animHero
@@ -730,12 +731,9 @@ heroIsNotGrabbed:
 	bit #PAD_LOW_DOWN				; check if DOWN button is pressed
 	beq skipCheckDownPressed		; if DOWN is not pressed we continue
 
-	lda padFirstPushDataLow1		; remove DOWN button press
-	and #%11111011					; so it can be set again
-	sta padFirstPushDataLow1		; later ...
-	lda padPushDataLow1
-	and #%11111011
-	sta padPushDataLow1
+	lda padPushDataLow1				; we leave first push DOWN button
+	and #%11111011					; but reset push data so it can
+	sta padPushDataLow1				; trigger first push DOWN later
 
 skipCheckDownPressed:
 
@@ -792,10 +790,10 @@ skipCheckInterrupt:
 	jmp endHeroPadCheck
 
 :	bit #$02						; jump animation in progress
-	beq :+
+	beq checkPadDirection
 
 ;	bit #$04						; jump run animation in progress
-;	beq :+
+;	beq checkPadDirection
 
 	xba
 	lda #$00						; clear high byte of A register
@@ -822,7 +820,7 @@ skipCheckInterrupt:
 	sta heroYOffset
 
 	jmp endHeroPadCheck
-:
+
 checkPadDirection:
 
 	;*** Set the good mirror mode for hero sprite ***
@@ -861,12 +859,43 @@ checkPadDirection:
 
 :
 
-	;*** DOWN ***
-	;************
 
-	lda padFirstPushDataLow1
+checkIfDownRelease:
+
+	;*** DOWN release we stand up
+	;*******************************
+
+    lda padReleaseDataLow1
 	bit #PAD_LOW_DOWN
-	beq :+
+	beq checkIfDownFirstTime
+
+	bit #(PAD_LOW_B | PAD_LOW_Y)
+	bne checkIfKickOrPunch
+
+	ldx #.LOWORD(heroStand)
+	stx heroAnimAddr
+	stz animFrameIndex
+	stz animFrameCounter
+	jsr animHero
+	jmp endHeroPadCheck
+
+checkIfDownFirstTime:
+
+	;*** DOWN first time
+	;**********************
+
+	lda padFirstPushDataLow1		; Check if DOWN is pressed for the first time
+	bit #PAD_LOW_DOWN
+	beq checkIfStillDown
+
+	;*** check if KICK or PUNCH is pressed too
+	;********************************************
+
+	bit #(PAD_LOW_B | PAD_LOW_Y)
+	bne checkIfDownKickOrPunch
+
+	;*** no action, we just stand down
+	;************************************
 
 	ldx #.LOWORD(heroDownStand)
 	stx heroAnimAddr
@@ -875,16 +904,22 @@ checkPadDirection:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:   lda padPushDataLow1
+checkIfStillDown:
+
+    lda padPushDataLow1				; Check if is DOWN is still pressed
 	bit #PAD_LOW_DOWN
-	beq :++
+	beq checkIfKickOrPunch
+
+checkIfDownKickOrPunch:
 
 	;*** We are still down check for KICK or PUNCH ***
 	;*************************************************
 
+checkIfDownKick:
+
 	lda padFirstPushDataLow1
 	bit #PAD_LOW_B
-	beq :+
+	beq checkIfDownPunch
 
 	ldx #.LOWORD(heroDownKick)
 	stx heroAnimAddr
@@ -895,9 +930,11 @@ checkPadDirection:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:	lda padFirstPushDataLow1
+checkIfDownPunch:
+
+ 	lda padFirstPushDataLow1
 	bit #PAD_LOW_Y
-	beq :+
+	beq downCheckFinished
 
 	ldx #.LOWORD(heroDownPunch)
 	stx heroAnimAddr
@@ -908,28 +945,19 @@ checkPadDirection:
 	jsr animHero
 	jmp endHeroPadCheck
 
-	;*** DOWN release we stand up ***
-	;********************************
-
-:   lda padReleaseDataLow1
-	bit #PAD_LOW_DOWN
-	beq :+
-
-	ldx #.LOWORD(heroStand)
-	stx heroAnimAddr
-	stz animFrameIndex
-	stz animFrameCounter
-	jsr animHero
+downCheckFinished:
 	jmp endHeroPadCheck
 
-:
+checkIfKickOrPunch:
 
-	;*** KICK OR PUNCH ***
-	;*********************
+	;*** KICK OR PUNCH
+	;********************
+
+checkIfKick:
 
 	lda padFirstPushDataLow1
 	bit #PAD_LOW_B
-	beq :+
+	beq checkIfPunch
 
 	ldx #.LOWORD(heroStandKick)
 	stx heroAnimAddr
@@ -940,9 +968,11 @@ checkPadDirection:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:	lda padFirstPushDataLow1
+checkIfPunch:
+
+	lda padFirstPushDataLow1
 	bit #PAD_LOW_Y
-	beq :+
+	beq checkIfLeftOrRight
 
 	ldx #.LOWORD(heroStandPunch)
 	stx heroAnimAddr
@@ -956,37 +986,40 @@ checkPadDirection:
 	;*** LEFT or RIGHT ***
 	;*********************
 
-	lda padFirstPushDataLow1		; check it's first time that we push LEFT or RIGHT
-	bit #PAD_LOW_RIGHT
-	bne :+							; if we push RIGHT we set heroAnimAddr
-	bit #PAD_LOW_LEFT
-	beq :++							; if we don't push LEFT for the first time, we check for next test
-									; if we push LEFT for the first time, execute next line
-:	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
+checkIfLeftOrRight:
+
+	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
 	stx heroAnimAddr
 
-:	lda padPushDataLow1				; check if we push LEFT or RIGHT
+	lda padPushDataLow1				; check if we push LEFT or RIGHT
 	bit #PAD_LOW_RIGHT
-	bne :+							; if we push RIGHT we call animHero
+	bne levelScrollRight			; if we push RIGHT we call animHero
 	bit #PAD_LOW_LEFT
-	beq noLevelScroll				; if we don't push LEFT, we continue
+	beq levelNoScroll				; if we don't push LEFT, we continue
 									; if we push LEFT, execute next line
+
+levelScrollLeft:
 
 	; TODO need to check boundaries of hero and level
 	; check heroXOffset
 	lda #LEVEL_SCROLL_LEFT
 	sta scrollDirection
 	jsr scrollLevel
-	bra :++
+	bra animate
 
-:	lda #LEVEL_SCROLL_RIGHT
+levelScrollRight:
+
+	lda #LEVEL_SCROLL_RIGHT
 	sta scrollDirection
 	jsr scrollLevel
 
-:	jsr animHero					; display next animation frame
+animate:
+
+	jsr animHero					; display next animation frame
 	bra endHeroPadCheck
 
-noLevelScroll:
+levelNoScroll:
+
 	lda #LEVEL_SCROLL_NONE
 	sta scrollDirection
 
