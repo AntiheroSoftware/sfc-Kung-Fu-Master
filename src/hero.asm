@@ -44,6 +44,7 @@
 			.export heroDownPunch3
 			.export animInProgress
 			.export heroAnimInterruptCounter
+			.export heroTransferAddr
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -461,7 +462,7 @@ nextFrameContinue:
 
 forceRefreshReset:
 	lda #$00
-	sta forceRefresh
+	sta forceRefresh				; reset force refresh
 
 noLoop:
     lda animFrameIndex
@@ -471,7 +472,7 @@ noLoop:
 	rep #$20
 	.A16
 
-	lda (heroAnimAddr),y
+	lda (heroAnimAddr),y			; get adress of the frame to display
 	tax
 
 	rep #$10
@@ -527,7 +528,7 @@ calculateMirrorHitOffset:
 	.A16
 
 	ldy #$0000
-	lda ($01,s),y
+	lda ($01,s),y					; get adress of tile data for the frame to display
 	tax
 
 	rep #$10
