@@ -35,11 +35,9 @@
             .export SPC700_Driver
             .export SPC700_Driver_Size
             .export Song_Dst_Pointer
-            .export Song_01
-            .export Song_01_Size
-
-            .export spc_load_data
-
+			.export Song_Bank_Table
+			.export Song_Offset_Table
+			.export Song_Size_Table
 
 ;.define DISABLE_SOUND
 
@@ -123,27 +121,50 @@ gss_sfxNumber:		.res 1
 gss_sfxVolume:		.res 1
 gss_sfxPan:			.res 1
 
-.segment "BANK7"
+.macro _gssDataGenerator path, numberOfSongs, segmentName
 
-SPC700_Driver:
-	.incbin "../ressource/music/spc700.bin", 2
+.segment segmentName
 
-Song_01:
-	.incbin "../ressource/music/music_1.bin", 2
+	SPC700_Driver:
+    	.incbin .sprintf("%s/spc700.bin", path), 2
+
+	.repeat numberOfSongs, index
+    .ident(.sprintf("Song_%02d", index+1)):
+    	.incbin .sprintf("%s/music_%d.bin", path, index+1), 2
+	.endrepeat
 
 .segment "RODATA"
 
-SPC700_Driver_Size:
-	.incbin "../ressource/music/spc700.bin", 0, 1
-	.incbin "../ressource/music/spc700.bin", 1, 1
+	SPC700_Driver_Size:
+    	.incbin .sprintf("%s/spc700.bin", path), 0, 1
+    	.incbin .sprintf("%s/spc700.bin", path), 1, 1
 
-Song_Dst_Pointer:
-	.incbin "../ressource/music/spc700.bin", 14, 1
-	.incbin "../ressource/music/spc700.bin", 15, 1
+    Song_Dst_Pointer:
+    	.incbin .sprintf("%s/spc700.bin", path), 14, 1
+    	.incbin .sprintf("%s/spc700.bin", path), 15, 1
 
-Song_01_Size:
-	.incbin "../ressource/music/music_1.bin", 0, 1
-	.incbin "../ressource/music/music_1.bin", 1, 1
+    Song_Bank_Table:
+		.repeat numberOfSongs, index
+			.byte .BANKBYTE(.ident(.sprintf("Song_%02d", index+1)))
+			.byte $00
+		.endrepeat
+
+    Song_Offset_Table:
+    	.repeat numberOfSongs, index
+			.word .LOWORD(.ident(.sprintf("Song_%02d", index+1)))
+		.endrepeat
+
+    Song_Size_Table:
+    	.repeat numberOfSongs, index
+			.incbin .sprintf("%s/music_%d.bin", path, index+1), 0, 1
+        	.incbin .sprintf("%s/music_%d.bin", path, index+1), 1, 1
+		.endrepeat
+
+.segment "CODE"
+
+.endmacro
+
+_gssDataGenerator "../ressource/music", 1, "BANK7"
 
 .segment "CODE"
 
@@ -196,9 +217,14 @@ Song_01_Size:
 
 	sei								; disable interrupts
 
-	php								; preserve processor status
+									; preserve processor status
+	phx
+	pha
+	php
 
 	_A16
+
+	pha
 
 	lda #SCMD_LOAD
 	sta	gss_command
@@ -207,11 +233,16 @@ Song_01_Size:
 
 	_A16
 
-	lda #.BANKBYTE(Song_01)
+	pla
+	and #$00ff
+	asl
+	tax
+
+	lda Song_Bank_Table,X
 	sta gss_loadBank
-	lda	#.LOWORD(Song_01)
+	lda	Song_Offset_Table,X
 	sta gss_loadOffset
-	lda	Song_01_Size
+	lda	Song_Size_Table,X
 	sta gss_loadSize
 	lda	Song_Dst_Pointer
 	sta gss_loadDst
@@ -233,7 +264,9 @@ Song_01_Size:
 
 	cli								; reenable interrupts
 
-	plp								; restore processor status
+	plp
+	pla
+	plx
 	rtl
 
 .endproc

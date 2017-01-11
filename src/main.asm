@@ -132,6 +132,7 @@ spriteTrickIRQValue:
 
 	jsl gss_init
 	jsl gss_setStereo
+	lda #$00
 	jsl gss_playTrack
 
 	setINIDSP $0F   				; Enable screen full brightness
