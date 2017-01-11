@@ -19,6 +19,7 @@
             .include	"includes/level.inc"
             .include	"includes/score.inc"
             .include	"includes/hit.inc"
+            .include	"includes/snesgss.inc"
 
             .forceimport	__STARTUP__
 
@@ -124,6 +125,15 @@ spriteTrickIRQValue:
 
 	lda #$01
 	sta controlValue
+
+	;**************************************************************************
+	;*** test SNESGSS *********************************************************
+	;**************************************************************************
+
+	jsl gss_init
+	jsl gss_setStereo
+	lda #$00
+	jsl gss_playTrack
 
 	setINIDSP $0F   				; Enable screen full brightness
 
