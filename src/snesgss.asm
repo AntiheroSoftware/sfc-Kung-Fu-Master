@@ -177,9 +177,9 @@ _gssDataGenerator "../ressource/music", 1, "BANK7"
 
 .proc gss_init
 
-	sei								; disable interrupts
-
 	php								; preserve processor status
+
+	sei								; disable interrupts
 
 	_A16
 
@@ -215,12 +215,11 @@ _gssDataGenerator "../ressource/music", 1, "BANK7"
 
 .proc gss_playTrack
 
-	sei								; disable interrupts
-
-									; preserve processor status
 	phx
 	pha
-	php
+	php								; preserve processor status
+
+	sei								; disable interrupts
 
 	_A16
 
