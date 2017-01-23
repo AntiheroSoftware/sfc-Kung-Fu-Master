@@ -102,6 +102,15 @@ EnemyTempXOffsetHigh:
 EnemyArrayAnimAddress:
  	.res 2 * ENEMY_SPRITE_NUMBER
 
+EnemyArrayOAMSlotOffset:
+	.res 2 * ENEMY_SPRITE_NUMBER
+
+EnemyArrayXOffset:
+	.res 2 * ENEMY_SPRITE_NUMBER
+
+EnemyArrayYOffset:
+	.res 1 * ENEMY_SPRITE_NUMBER
+
 EnemyArrayAnimFrameIndex:
 	.res 1 * ENEMY_SPRITE_NUMBER
 
@@ -110,15 +119,6 @@ EnemyArrayAnimFrameCounter:
 
 EnemyArrayOffsetFramecounter:
 	.res 1 * ENEMY_SPRITE_NUMBER
-
-EnemyArrayYOffset:
-	.res 1 * ENEMY_SPRITE_NUMBER
-
-EnemyArrayXOffset:
-	.res 2 * ENEMY_SPRITE_NUMBER
-
-EnemyArrayOAMSlotOffset:
-	.res 2 * ENEMY_SPRITE_NUMBER
 
 EnemyArrayFlag:
 	.res 1 * ENEMY_SPRITE_NUMBER
