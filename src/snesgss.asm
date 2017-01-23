@@ -121,7 +121,7 @@ gss_sfxNumber:		.res 1
 gss_sfxVolume:		.res 1
 gss_sfxPan:			.res 1
 
-.macro _gssDataGenerator path, numberOfSongs, segmentName
+.macro _GSSDataGenerator path, numberOfSongs, segmentName
 
 .segment segmentName
 
@@ -164,7 +164,7 @@ gss_sfxPan:			.res 1
 
 .endmacro
 
-_gssDataGenerator "../ressource/music", 1, "BANK7"
+_GSSDataGenerator "../ressource/music", 1, "BANK7"
 
 .segment "CODE"
 
@@ -210,7 +210,7 @@ _gssDataGenerator "../ressource/music", 1, "BANK7"
 ;*****************************************************************************************
 ;*** gss_playTrack ***********************************************************************
 ;*****************************************************************************************
-;*** FIXME currently only play 1 song                                                  ***
+;*** A register contains number of song to play                                        ***
 ;*****************************************************************************************
 
 .proc gss_playTrack
