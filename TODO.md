@@ -1,6 +1,7 @@
 IN PROGRESS
 ===========
 
+* refactor enemy data struct for easy indexing
 * implement first draft of upcoming grabbing enemies
 
 BUGS
@@ -17,6 +18,11 @@ REFACTORING
 
 TODO
 ====
+
+* use superfamicheck
+* use superfamiconv
+
+* put snesgss code in sfclib
 
 * check gfx for hero grabbed
 * review sprite gfx for enemies to optimise and have full enemy gfx
