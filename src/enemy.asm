@@ -109,19 +109,22 @@ EnemyArrayXOffset:
 	.res 2 * ENEMY_SPRITE_NUMBER
 
 EnemyArrayYOffset:
-	.res 1 * ENEMY_SPRITE_NUMBER
-
+	.res 1
 EnemyArrayAnimFrameIndex:
-	.res 1 * ENEMY_SPRITE_NUMBER
+	.res 1
+	.res 2 * ENEMY_SPRITE_NUMBER-1
 
 EnemyArrayAnimFrameCounter:
-	.res 1 * ENEMY_SPRITE_NUMBER
-
+	.res 1
 EnemyArrayOffsetFramecounter:
-	.res 1 * ENEMY_SPRITE_NUMBER
+	.res 1
+	.res 2 * ENEMY_SPRITE_NUMBER-1
 
 EnemyArrayFlag:
-	.res 1 * ENEMY_SPRITE_NUMBER
+	.res 1
+EnemyArrayDummy:
+	.res 1
+	.res 2 * ENEMY_SPRITE_NUMBER-1
 
 .segment "CODE"
 
@@ -154,27 +157,27 @@ EnemyArrayFlag:
 	VRAMLoad enemySpriteBank3Tiles, SPRITE_TILE_ZONE3_ADDR, $2000
 	VRAMLoad enemySpriteBank4Tiles, SPRITE_TILE_ZONE4_ADDR, $2000
 
-	lda #$00
-	ldx #$0000
-	ldy #$0000
+	ldx #$0000						; index for enemy struct
+	ldy #$0000						; counter for number of sprite
 
 initArrayLoop:
-	cpx #ENEMY_SPRITE_NUMBER
+	cpy #ENEMY_SPRITE_NUMBER
 	beq endInitArrayLoop
-
-    sta EnemyArrayAnimFrameIndex,X
-    sta EnemyArrayAnimFrameCounter,X
-    sta EnemyArrayOffsetFramecounter,X
-    sta EnemyArrayOAMSlotOffset,X
-
-    sta EnemyArrayAnimAddress,Y
-    sta EnemyArrayXOffset,Y
-	iny
-	sta EnemyArrayAnimAddress,Y
-	sta EnemyArrayXOffset,Y
 
 	lda #ENEMY_STATUS_MIRROR_FLAG
 	sta EnemyArrayFlag,X
+
+    stz EnemyArrayAnimFrameIndex,X
+    stz EnemyArrayAnimFrameCounter,X
+    stz EnemyArrayOffsetFramecounter,X
+
+	stz EnemyArrayOAMSlotOffset,X
+    stz EnemyArrayAnimAddress,X
+    stz EnemyArrayXOffset,X
+	inx								; increment index of enemy struct to clear high byte
+	stz EnemyArrayOAMSlotOffset,X
+	stz EnemyArrayAnimAddress,X
+	stz EnemyArrayXOffset,X
 
 	inx
 	iny
@@ -182,11 +185,26 @@ initArrayLoop:
 
 endInitArrayLoop:
 
+	;*** add an enemy for test ***
+	;*****************************
+
 	lda #$00						; set enemy type
 	ora #ENEMY_STATUS_TYPE_GRAB		; grab
 	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	jsr findEmptySlotEnemy			; Load X with a free enemy slot ( 0 - 13 )
 	jsr addEnemy
+
+	;*** add a second enemy for test ***
+	;***********************************
+
+	jsr findEmptySlotEnemy
+	jsr addEnemy
+
+	;*** then clear it ***
+	;*********************
+
+	ldx #$0001
+	jsr clearEnemy
 
 	plb
 	plp
@@ -212,9 +230,14 @@ endInitArrayLoop:
 	stz EnemyCurrentYOffset
 	stz EnemyCurrentXOffset
 
+	;*** TODO
+	;*** check if we can simplify _EnemyDataIndexSetFromXIndex
+	;*** seems to double init a lot of things with initEnemySprite
+	;*****************************************************************
+
 	_EnemyDataIndexSetFromXIndex
 
-	ldx EnemyCurrentArrayIndexByte
+	ldx EnemyCurrentArrayIndexWord
 	ora #ENEMY_STATUS_ACTIVE_FLAG
 	sta EnemyArrayFlag,X
 	stz EnemyArrayAnimFrameIndex,X
@@ -222,13 +245,10 @@ endInitArrayLoop:
 	stz EnemyArrayOffsetFramecounter,X
 
 	bit #ENEMY_STATUS_TYPE_GRAB
-	beq check_knife
+	beq check_knife					; if it's not a grab enemy check for knife
 
-	ldy EnemyCurrentArrayIndexByte
 	lda #$80						; set static Y offset for enemy
-	sta EnemyArrayYOffset,Y
-
-	ldx EnemyCurrentArrayIndexWord
+	sta EnemyArrayYOffset,X
 
 	rep #$20
 	.A16
@@ -250,8 +270,8 @@ grab_mirror_init:
 
 grab_end_init:
 
-	tya
-	asl
+	txa
+	;asl							; removed cause X is not index slot but already *2
 	asl
 	asl								; index slot * 8
 	asl
@@ -286,16 +306,17 @@ check_end:
 ;******************************************************************************
 
 .proc findEmptySlotEnemy
-	php
 	pha
+	php
 
 	ldx #$0000
 search:
 	lda EnemyArrayFlag,X
 	and #ENEMY_STATUS_ACTIVE_FLAG
 	beq return
-	cpx #ENEMY_SPRITE_NUMBER-1
+	cpx #(ENEMY_SPRITE_NUMBER-1)*2
 	beq notFound
+	inx
 	inx
 	bra search
 
@@ -304,8 +325,15 @@ notFound:
 
 return:
 
-	pla
+	rep #$20
+	.A16
+
+	txa
+	lsr
+	tax
+
 	plp
+	pla
 	rts
 .endproc
 
@@ -320,12 +348,15 @@ return:
 	phx
 	pha
 
-	lda #$00
-	sta EnemyArrayFlag,X
+	_EnemyDataIndexSetFromXIndex
 
 	ldx EnemyCurrentArrayIndexWord
+
+	lda #$00
+	sta EnemyArrayFlag,X			; clear activity flag
+
 	ldy EnemyArrayOAMSlotOffset,X
-	tyx
+	tyx								; set OAM Offset for that sprite in X
 
 	ldy #$0000
 
@@ -334,7 +365,7 @@ clearLoop:
 	beq endClearLoop
 
 	lda #$e0
-	sta oamData+1,x                 ; V (Y) pos of the sprite
+	sta oamData+1,X                 ; V (Y) pos of the sprite
 
 	inx
 	inx
