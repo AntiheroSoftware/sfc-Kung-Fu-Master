@@ -79,43 +79,12 @@ ENEMY_MIRROR_GRAB_DISTANCE_GRAB 	= $04
     pla
 .endmacro
 
-.macro _EnemyDataLDA variableName
-    phx
-    .if    (.xmatch(EnemyArrayAnimFrameIndex, {variableName}) \
-            .or .xmatch(EnemyArrayAnimFrameCounter, {variableName}) \
-            .or .xmatch(EnemyArrayOffsetFramecounter, {variableName}) \
-            .or .xmatch(EnemyArrayFlag, {variableName}))
-    ldx EnemyCurrentArrayIndexByte
-    lda variableName,X
-    .else
-        .error "_EnemyDataLDA: that variable don't exist"
-    .endif
-    plx
-.endmacro
-
-.macro _EnemyDataLDX variableName
-    phy
-    .if    (.xmatch(EnemyArrayAnimAddress, {variableName}) \
-            .or .xmatch(EnemyArrayXOffset, {variableName}) \
-            .or .xmatch(EnemyArrayOAMSlotOffset, {variableName}))
-    ldy EnemyCurrentArrayIndexWord
-    ldx variableName,Y
-    .else
-        .error "_EnemyDataLDX: that variable don't exist"
-    .endif
-    ply
-.endmacro
-
 .macro _ResetEnemyShakingCounter
 
     lda EnemyArrayFlag,X
     and #<.BITNOT(ENEMY_STATUS_SHAKE_COUNT_MASK)
     ora #ENEMY_STATUS_SHAKE_COUNT_INIT
     sta EnemyArrayFlag,X
-
-.endmacro
-
-.macro _GetEnemyShakingCounter
 
 .endmacro
 

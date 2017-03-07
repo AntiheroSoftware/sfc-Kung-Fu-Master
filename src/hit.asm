@@ -21,7 +21,7 @@
             .export hitRemove
 
 HIT_NUMBER 	= 15
-HIT_TIMER 	= 10
+HIT_TIMER 	= 10					; number of frames for hit info to stay
 
 HIT_ACTIVE_MASK = %10000000
 HIT_TIMER_MASK 	= %01111111
@@ -29,19 +29,22 @@ HIT_TIMER_MASK 	= %01111111
 .segment "BSS"
 
 hitFlag:
-	.res 1 * HIT_NUMBER
-
+	.res 1
 hitValue:
-	.res 1 * HIT_NUMBER
+	.res 1
+	.res 2 * HIT_NUMBER-1
 
 hitOAMVOffset:
-	.res 1 * HIT_NUMBER
-
+	.res 1
 hitOAMOffsetHigh:
-	.res 1 * HIT_NUMBER
+	.res 1
+	.res 2 * HIT_NUMBER-1
 
 hitOAMOffsetLow:
-	.res 1 * HIT_NUMBER
+	.res 1
+hitDummy:
+	.res 1
+	.res 2 * HIT_NUMBER-1
 
 .segment "CODE"
 
@@ -74,18 +77,15 @@ hitOAMOffsetLow:
 ;******************************************************************************
 ;*** hitAdd *******************************************************************
 ;******************************************************************************
-;*** Use EnemyCurrentXOffset and EnemyCurrentYOffset to determine pos of    ***
-;*** the hit.																***
-;*** Also use heroAnimAddr to determine wich kind of hit it is.				***
 ;*** A register contains enemyFlag 											***
 ;*** X register contains enemy number/offset								***
 ;******************************************************************************
 
 .proc hitAdd
-	php
 	phy
 	phx
 	pha
+	php
 
 	pha 							; save enemy flag
 
@@ -99,13 +99,14 @@ hitOAMOffsetLow:
 	.A16
 
 	txa
-	inc
-	asl
-	asl
-	asl
-	dec
-	asl
-	asl
+	lsr	; /2
+	inc ; +1
+	asl ; *2
+	asl	; -> *4
+	asl ; -> *8
+	dec ; -1
+	asl ; *2
+	asl ; -> *4
 
 	tay
 
@@ -168,18 +169,6 @@ kick:
 	sta oamData+1,Y
 	sta hitOAMVOffset,X
 
-	rep #$20
-	.A16
-
-	txa
-	asl
-	tax
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-
 	lda EnemyArrayXOffset,X
 	clc
 	adc #13
@@ -202,10 +191,10 @@ kick:
 
 end:
 
+	plp
 	pla
 	plx
 	ply
-	plp
 	rts
 .endproc
 
@@ -275,7 +264,8 @@ noRemove:
 
 skip:
 	inx
-	cpx #(HIT_NUMBER-1)
+	inx
+	cpx #((HIT_NUMBER-1)*2)
 	bne :-
 
 	plx

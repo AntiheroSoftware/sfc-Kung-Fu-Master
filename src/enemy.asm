@@ -203,7 +203,7 @@ endInitArrayLoop:
 	;*** then clear it ***
 	;*********************
 
-	ldx #$0001
+	ldx #$0002
 	jsr clearEnemy
 
 	plb
@@ -340,17 +340,19 @@ return:
 ;******************************************************************************
 ;*** clearEnemy ***************************************************************
 ;******************************************************************************
-;*** slot (X)													     		***
+;*** Offset of enemy data (X register)							     		***
 ;******************************************************************************
 
 .proc clearEnemy
 	phy
 	phx
 	pha
+	php
 
-	_EnemyDataIndexSetFromXIndex
-
-	ldx EnemyCurrentArrayIndexWord
+	rep #$10
+	sep #$20
+	.A8
+	.I16
 
 	lda #$00
 	sta EnemyArrayFlag,X			; clear activity flag
@@ -378,6 +380,7 @@ clearLoop:
 
 endClearLoop:
 
+	plp
 	pla
 	plx
 	ply
@@ -387,30 +390,24 @@ endClearLoop:
 ;******************************************************************************
 ;*** setEnemyOAM ennemies with hdma trick *************************************
 ;******************************************************************************
-;*** index of slot  (A register)                                            ***
-;*** dataAddr   (X register)                                                ***
+;*** data Address of metasprite (X register)                                ***
+;*** offset of enemy data       (Y register)                                ***
 ;******************************************************************************
 
 .proc setEnemyOAM
     php
 
-	txy								; save dataAddr
-
     rep #$20
 	.A16
 
-	and #$00ff
-	asl								; index * 2
-	tax								; set OAM offset table
-	pha								; push/save index of slot
+	phy								; push/save index of slot
 
-	lda EnemyArrayXOffset,X
+	lda EnemyArrayXOffset,Y
 	pha								; push/save XOffset
 
-	phy								; push/save dataAddr
+	phx								; push/save dataAddr
 
-	ldy EnemyArrayOAMSlotOffset,X
-	tyx
+	ldx EnemyArrayOAMSlotOffset,Y
 
 	lda #$0000						; reset accumulator
 
@@ -421,22 +418,21 @@ endClearLoop:
 
 	ldy #$0000						; index in metaprite table
 
-    lda #$00
-	sta spriteCounter				; reset spriteCounter
-	sta EnemyTempXOffsetHigh		; reset EnemyTempXOffsetHigh
+	stz spriteCounter				; reset spriteCounter
+	stz EnemyTempXOffsetHigh		; reset EnemyTempXOffsetHigh
 
 lineLoop:							; loop for each line
-    lda ($01,s),y					; load number block for this line
+    lda ($01,s),Y					; load number block for this line
     and #ENEMY_MS_BLOCK_NUMBER_MASK
     cmp #$00
     bne continueLineLoop			; if no block it's the end
 	jmp endLineLoop
 continueLineLoop:
-	lda ($01,s),y					; load number block for this line + status
+	lda ($01,s),Y					; load number block for this line + status
     pha								; save it to the stack
 
     iny								; load Y Pos for that line
-    lda ($02,s),y					; save it to the stack
+    lda ($02,s),Y					; save it to the stack
     clc
     ;adc heroYOffset				; TODO make a global for enemy Y offset
     adc #$80
@@ -461,11 +457,28 @@ skipLineLoop:
 :
 	pha
 
-	_EnemyDataLDA EnemyArrayFlag		; check direction of enemy from EnemyArrayFlag
+	phy								; save Y value
+
+	rep #$20
+	.A16
+
+	lda $09,s						; get enemy offset value from stack
+	tay								; ut it in Y register
+
+	sep #$20
+	.A8
+
+	lda EnemyArrayFlag,Y			; check direction of enemy from EnemyArrayFlag
+
+	ply								; restore Y value
+
 	and #ENEMY_STATUS_MIRROR_FLAG
 	cmp #$00
 	beq blockLoop					; jmp to correct blockLoop code (normal)
 	jmp blockLoopMirror				; jmp to correct blockLoop code (mirror)
+
+	;*** normal mode blockLoop ***
+	;*****************************
 
 blockLoop:
 	lda $02,s						; load blockNumber
@@ -481,12 +494,12 @@ blockLoop:
 	cmp #$00
 	beq :+
 
-	lda ($03,s),y					; load X pos for that
+	lda ($03,s),Y					; load X pos for that
 	sec
 	sbc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
-	sta oamData,x                   ; H (X) pos of the sprite
+	sta oamData,X                   ; H (X) pos of the sprite
 
 	bcs :++							; check and branch if carry is set
 
@@ -497,16 +510,16 @@ blockLoop:
 
 	bra :+++
 
-:	lda ($03,s),y					; load X pos for that
+:	lda ($03,s),Y					; load X pos for that
 	sec
 	sbc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
-	sta oamData,x                   ; H (X) pos of the sprite
+	sta oamData,X                   ; H (X) pos of the sprite
 
 	bcc :+							; check and branch if carry is clear
 
-	lda ($03,s),y
+	lda ($03,s),Y
 	sec
 	sbc EnemyCurrentXOffset
 	cmp #$e0						; allow metasprite offset of -31
@@ -523,12 +536,12 @@ blockLoop:
 	sta EnemyTempXOffsetHigh
 
 :	lda $01,s
-	sta oamData+1,x                 ; V (Y) pos of the sprite
+	sta oamData+1,X                 ; V (Y) pos of the sprite
 
 	iny								; skip mirror xOffset
 	iny
 	lda ($03,s),y
-	sta oamData+2,x                 ; Tile number
+	sta oamData+2,X                 ; Tile number
 
 	lda $02,s
 	lsr
@@ -540,7 +553,7 @@ blockLoop:
 	lda metaspriteStatusNormal,y
 	ply
 
-	sta oamData+3,x
+	sta oamData+3,X
 	inx
 	inx
 	inx
@@ -549,6 +562,9 @@ blockLoop:
 	inc	spriteCounter
 
 	bra blockLoop
+
+	;*** mirror mode blockLoop ***
+	;*****************************
 
 blockLoopMirror:
 	lda $02,s						; load blockNumber
@@ -564,12 +580,12 @@ blockLoopMirror:
 	cmp #$00
 	beq :+
 
-	lda ($03,s),y					; load X pos for that
+	lda ($03,s),Y					; load X pos for that
 	clc
 	adc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
-	sta oamData,x                   ; H (X) pos of the sprite
+	sta oamData,X                   ; H (X) pos of the sprite
 
 	bcs :++							; check and branch if carry is set
 
@@ -580,16 +596,16 @@ blockLoopMirror:
 
 	bra :+++
 
-:	lda ($03,s),y					; load X pos for that
+:	lda ($03,s),Y					; load X pos for that
 	clc
 	adc EnemyCurrentXOffset
 	clc
 	adc $05,s                		; add saved Global X Pos
-	sta oamData,x                   ; H (X) pos of the sprite
+	sta oamData,X                   ; H (X) pos of the sprite
 
 	bcc :+							; check and branch if carry is clear
 									; sprite might be overflow
-	lda ($03,s),y
+	lda ($03,s),Y
 	clc
 	adc EnemyCurrentXOffset
 	cmp #$e0						; allow metasprite offset of -31
@@ -605,11 +621,11 @@ blockLoopMirror:
 	sta EnemyTempXOffsetHigh
 
 :	lda $01,s
-	sta oamData+1,x                 ; V (Y) pos of the sprite
+	sta oamData+1,X                 ; V (Y) pos of the sprite
 
 	iny
 	lda ($03,s),y
-	sta oamData+2,x                 ; Tile number
+	sta oamData+2,X                 ; Tile number
 
 	lda $02,s
 	lsr
@@ -618,10 +634,10 @@ blockLoopMirror:
 	lsr
 	phy
 	tay
-	lda metaspriteStatusMirror,y
+	lda metaspriteStatusMirror,Y
 	ply
 
-	sta oamData+3,x
+	sta oamData+3,X
 	inx
 	inx
 	inx
@@ -647,7 +663,7 @@ fillLoop:
     beq endFillLoop
 
     lda #$e0
-    sta oamData+1,x                 ; V (Y) pos of the sprite
+    sta oamData+1,X                 ; V (Y) pos of the sprite
 
     lda EnemyTempXOffsetHigh
 	lsr
@@ -690,7 +706,7 @@ endFillLoop:
 ;******************************************************************************
 ;*** animEnemy ****************************************************************
 ;******************************************************************************
-;*** index of slot  (A register)                                            ***
+;*** X is offset of enemyData												***
 ;******************************************************************************
 
 .proc animEnemy
@@ -700,91 +716,80 @@ endFillLoop:
     phy
     php
 
-    rep #$20
-	.A16
+	ldy EnemyArrayAnimAddress,X
+	sty EnemyCurrentAnimAddress			; set current anim address
 
-	and #$00ff
-	tax								; save index of slot
-	asl								; index of slot * 2
-	tay
-	lda EnemyArrayAnimAddress,Y
-	sta EnemyCurrentAnimAddress		; set current anim address
-
-	lda #$0000
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-
-	phb
+	phb									; save data bank
 	lda #ENEMY_DATA_BANK
 	pha
-	plb
+	plb									; set 'enemy' data bank
 
     lda EnemyArrayAnimFrameIndex,X
     tay
     lda EnemyArrayAnimFrameCounter,X
-    cmp #$00 						; first time we do that animation
+    cmp #$00 							; first time we do that animation
     beq firstFrame
 
     dec
-    cmp (EnemyCurrentAnimAddress),Y ; we did all frames for that index
+    cmp (EnemyCurrentAnimAddress),Y 	; we did all frames for that index
     beq nextFrame
 
     inc EnemyArrayAnimFrameCounter,X
-    bra noLoop						; TODO check if better way to do this
-    								; force refresh if xPos or anim is changed
-;    bra endAnim
+
+    ;*** TODO
+    ;*** check if xpos has changed or anim has changed ***
+    ;*****************************************************
+
+	bra noLoop							; force refresh if xPos or anim is changed
+    ;bra endAnim
 
 firstFrame:
-	lda #$01
+	lda #$01							; init for first time we do that animation
 	sta EnemyArrayAnimFrameCounter,X
 	lda #$00
 	sta EnemyArrayAnimFrameIndex,X
 	bra nextFrameContinue
 
 nextFrame:
-
     lda #$01
-    sta EnemyArrayAnimFrameCounter,X
+    sta EnemyArrayAnimFrameCounter,X	; reset anim frame counter
 
     lda EnemyArrayAnimFrameIndex,X
-    inc
-    inc
-    inc
-    sta EnemyArrayAnimFrameIndex,X
+    inc									; skip address high
+    inc									; skip address low
+    inc									; skip counter
+    sta EnemyArrayAnimFrameIndex,X		; update anim frame index
 
 nextFrameContinue:
     tay
-    lda (EnemyCurrentAnimAddress),y
+    lda (EnemyCurrentAnimAddress),Y
     cmp #$00
     bne noLoop
 
-    lda #$00
+    lda #$00							; we are in a loop / reset the anim frame index
     sta EnemyArrayAnimFrameIndex,X
+
+    ;*** TODO
+    ;*** check if new frame is different than previous one in loop ***
+    ;*****************************************************************
 
 noLoop:
 
-	txa
-	pha								; push index slot (0-13)
-
     lda EnemyArrayAnimFrameIndex,X
 	tay
-	iny
+	iny									; skip counter
 
 	rep #$20
 	.A16
 
-	lda (EnemyCurrentAnimAddress),Y	; dataAddr
-	tax
+	lda (EnemyCurrentAnimAddress),Y		; data address
+	txy									; offset in Y
+	tax									; data address in X
 
 	rep #$10
 	sep #$20
 	.A8
 	.I16
-
-	pla
 
     jsr setEnemyOAM
 
@@ -792,7 +797,7 @@ noLoop:
 
 endAnim:
 
-	plb
+	plb								; restore data bank
     plp
     ply
     plx
@@ -805,7 +810,7 @@ endAnim:
 ;******************************************************************************
 ;*** reactEnemy ***************************************************************
 ;******************************************************************************
-;*** index of slot  (A register)                                            ***
+;*** No parameters                                                          ***
 ;******************************************************************************
 
 ; check for collision ???
@@ -818,17 +823,13 @@ endAnim:
 	phy
 	php
 
-	xba
-	lda	#$00
-	xba								; reset high byte of A
-
-	ldx #$0000
-	ldy #$0000
+	ldx #$0000						; index for enemy data structure
+	ldy #$0000						; sprite counter
 
 	_ResetHeroGrabFlag
 
 reactLoop:
-	cpx #ENEMY_SPRITE_NUMBER
+	cpy #ENEMY_SPRITE_NUMBER
 	beq endReactLoop
 
 	lda EnemyArrayFlag,X
@@ -839,8 +840,8 @@ reactCheckGrab:
 	bit #ENEMY_STATUS_TYPE_GRAB
 	beq reactCheckKnife
 
-	stx EnemyCurrentArrayIndexByte
-	sty EnemyCurrentArrayIndexWord
+	;sty EnemyCurrentArrayIndexByte
+	;stx EnemyCurrentArrayIndexWord
 
 	jsr reactEnemyGrab
 	bra skipReact
@@ -861,7 +862,7 @@ reactCheckMidget:
 
 skipReact:
 	inx								; update indexes
-	iny
+	inx
 	iny
 	bra reactLoop
 
@@ -878,8 +879,7 @@ endReactLoop:
 ;*** reactEnemyGrab ***********************************************************
 ;******************************************************************************
 ;*** A contains enemyFlag                                                   ***
-;*** X contains enemy index	for byte ???									***
-;*** Y contains enemy index for word ???									***
+;*** X contains enemy data struct index    									***
 ;******************************************************************************
 
 .proc reactEnemyGrab
@@ -927,7 +927,7 @@ heroShake:
 	dec									; decrement shake count value
 	_setEnemyShakingCounter
 
-	_EnemyDataLDA EnemyArrayAnimFrameCounter
+	lda EnemyArrayAnimFrameCounter,X
 	cmp #$04							; check if enemy anim frame counter is equal to 4
 	beq heroShakeContinue
 	cmp #$08							; check if enemy anim frame counter is equal to 8
@@ -941,13 +941,14 @@ heroShakeContinue:
 	jsr updateEnergyPlayer
 	jsr setEnergyPlayer
 
-	jmp end
+	jmp end								; do the anim part to increment EnemyArrayAnimFrameCounter
+	;jmp skipAnim
 
 heroDontShake:
 
 	pla
 
-	_EnemyDataLDA EnemyArrayAnimFrameCounter
+	lda EnemyArrayAnimFrameCounter,X
 	cmp #$04							; check if enemy anim frame counter is equal to 4
 	beq heroDontShakeContinue
 	cmp #$08							; check if enemy anim frame counter is equal to 8
@@ -961,10 +962,12 @@ heroDontShakeContinue:
 	jsr updateEnergyPlayer
 	jsr setEnergyPlayer
 
-	jmp end
+	jmp end								; do the anim part to increment EnemyArrayAnimFrameCounter
+	;jmp skipAnim
 
 heroNoEnergyLose:
-	jmp end
+	jmp end								; do the anim part to increment EnemyArrayAnimFrameCounter
+	;jmp skipAnim
 
 branchToFall:
 	jmp fall
@@ -983,7 +986,7 @@ notGrabbing:
 normalMode:
 	lda heroXOffset
 	sec
-	sbc EnemyArrayXOffset,Y					; calculate distance between enemy and hero
+	sbc EnemyArrayXOffset,X					; calculate distance between enemy and hero
 
 	;*** Check for hit ***
 	;*********************
@@ -1021,8 +1024,8 @@ normalMode:
 	rep #$20
 	.A16
 
-	lda #.LOWORD(grabbingGrab)
-	sta EnemyArrayAnimAddress,Y
+	lda #.LOWORD(grabbingGrab)				; set grab animation
+	sta EnemyArrayAnimAddress,X
 
 	rep #$10
 	sep #$20
@@ -1040,7 +1043,7 @@ normalModeLiftArmCheck:
 	bpl normalModeGoRight
 
 	lda #.LOWORD(grabbingArmUpWalk)				; we don't reset the animation indexes and counter
-	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
+	sta EnemyArrayAnimAddress,X					; so animation is fluid in the walk process
 
 normalModeGoRight:
 	lda scrollDirection
@@ -1051,15 +1054,15 @@ normalModeGoRight:
 	cmp #LEVEL_SCROLL_RIGHT
 	beq :++
 
-	lda EnemyArrayXOffset,Y						; go right double speed
+	lda EnemyArrayXOffset,X						; go right double speed
 	inc
 	inc
-	sta EnemyArrayXOffset,Y						; increment enemy X Offset
+	sta EnemyArrayXOffset,X						; increment enemy X Offset
 	bra :++
 
-:	lda EnemyArrayXOffset,Y						; go right
+:	lda EnemyArrayXOffset,X						; go right
 	inc
-	sta EnemyArrayXOffset,Y						; increment enemy X Offset
+	sta EnemyArrayXOffset,X						; increment enemy X Offset
 
 :	jmp end
 
@@ -1070,7 +1073,7 @@ normalModeGoRight:
 	.A8
 
 mirrorMode:
-	lda EnemyArrayXOffset,Y
+	lda EnemyArrayXOffset,X
 	sec
 	sbc heroXOffset
 	;and #$ff									; calculate distance between enemy and hero
@@ -1112,7 +1115,7 @@ mirrorMode:
 	.A16
 
 	lda #.LOWORD(grabbingGrab)
-	sta EnemyArrayAnimAddress,Y
+	sta EnemyArrayAnimAddress,X
 
 	rep #$10
 	sep #$20
@@ -1130,7 +1133,7 @@ mirrorModeLiftArmCheck:
 	bpl mirrorModeGoLeft
 
 	lda #.LOWORD(grabbingArmUpWalk)				; we don't reset the animation indexes and counter
-	sta EnemyArrayAnimAddress,Y					; so animation is fluid in the walk process
+	sta EnemyArrayAnimAddress,X					; so animation is fluid in the walk process
 
 mirrorModeGoLeft:
 	lda scrollDirection
@@ -1141,15 +1144,15 @@ mirrorModeGoLeft:
 	cmp #LEVEL_SCROLL_LEFT
 	beq :++
 
-	lda EnemyArrayXOffset,Y						; go left double speed
+	lda EnemyArrayXOffset,X						; go left double speed
 	dec
 	dec
-	sta EnemyArrayXOffset,Y						; decrement enemy X Offset
+	sta EnemyArrayXOffset,X						; decrement enemy X Offset
 	bra :++
 
-:	lda EnemyArrayXOffset,Y						; go left
+:	lda EnemyArrayXOffset,X						; go left
 	dec
-	sta EnemyArrayXOffset,Y						; decrement enemy X Offset
+	sta EnemyArrayXOffset,X						; decrement enemy X Offset
 
 :	bra end
 
@@ -1182,37 +1185,31 @@ skipAnim:
 ;******************************************************************************
 
 .proc enemyGrabFall
-;	pha
-;	phx
-;	phy
-;	php
 
-	phb
-	pha
+	phb								; save current data bank
+	pha								; save current enemy flag
 
 	lda #ENEMY_DATA_BANK
 	pha
-	plb
+	plb								; set data bank
 
-	pla
+	pla								; restore current enemy flag
 
 	rep #$20
 	.A16
 
 	and #$0007
-	phx
 	asl
-	tax
+	tay
 
-	lda EnemyArrayAnimAddress,Y
-	cmp enemyFallAnimAddress,X
+	lda EnemyArrayAnimAddress,X
+	cmp enemyFallAnimAddress,Y
 	beq :+
 
-	lda enemyFallAnimAddress,X
-	sta EnemyArrayAnimAddress,Y
+	lda enemyFallAnimAddress,Y
+	sta EnemyArrayAnimAddress,X
 
-	plx
-	plb
+	plb								; restore data bank
 
 	lda #$0000
 	rep #$10
@@ -1228,8 +1225,7 @@ skipAnim:
 
 	bra :++
 
-:	plx
-	plb
+:	plb
 
 	.A16
 	lda #$0000
@@ -1237,6 +1233,7 @@ skipAnim:
 	sep #$20
 	.A8
 	.I16
+
 :	lda EnemyArrayOffsetFramecounter,X
 	cmp #$1d
 	bne :+
@@ -1248,10 +1245,10 @@ skipAnim:
 	inc
 	sta EnemyArrayOffsetFramecounter,X
 
-	phb
+	phb								; save current data bank
 	lda #ENEMY_DATA_BANK
 	pha
-	plb
+	plb								; set data bank
 
 	lda EnemyArrayOffsetFramecounter,X
 
@@ -1263,7 +1260,7 @@ skipAnim:
 	sta EnemyCurrentXOffset
 	plx
 
-	plb
+	plb								; restore data bank
 
 	; TODO set enemy X offset
 
@@ -1273,11 +1270,6 @@ skipAnim:
 
 	stz EnemyCurrentYOffset
 	stz EnemyCurrentXOffset
-
-;	plp
-;	ply
-;	plx
-;	pla
 
 	rts
 .endproc
