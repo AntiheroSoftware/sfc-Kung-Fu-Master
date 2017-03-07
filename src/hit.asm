@@ -182,7 +182,7 @@ kick:
 	rep #$20
 	.A16
 
-	lda #$0000						; fix a register high byte TODO fix this
+	lda #$0000						; reset A register high byte
 
 	rep #$10
 	sep #$20
