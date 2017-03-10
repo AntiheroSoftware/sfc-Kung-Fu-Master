@@ -383,8 +383,14 @@ exit:
 .proc _IRQHandler
 	pha
 	phx
-
+	php
 	phb
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
 	lda #MAIN_DATA_BANK
 	pha
 	plb
@@ -406,10 +412,9 @@ exit:
 	sta $4209
 
 	plb
-
+	plp
 	plx
 	pla
-
 	rts
 .endproc
 
