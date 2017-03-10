@@ -322,6 +322,7 @@ search:
 
 notFound:
 	ldx #$ffff
+	bra exit
 
 return:
 
@@ -331,6 +332,8 @@ return:
 	txa
 	lsr
 	tax
+
+exit:
 
 	plp
 	pla
