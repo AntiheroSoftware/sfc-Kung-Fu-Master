@@ -118,6 +118,9 @@ spriteTrickIRQValue:
 	.A8
 	.I16
 
+	lda #$01
+	sta $420d
+
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
 
 	jsr initEvents
@@ -130,10 +133,10 @@ spriteTrickIRQValue:
 	;*** test SNESGSS *********************************************************
 	;**************************************************************************
 
-	jsl gss_init
-	jsl gss_setStereo
-	lda #$00
-	jsl gss_playTrack
+	;jsl gss_init
+	;jsl gss_setStereo
+	;lda #$00
+	;jsl gss_playTrack
 
 	setINIDSP $0F   				; Enable screen full brightness
 

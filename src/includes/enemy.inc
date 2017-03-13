@@ -11,7 +11,7 @@
 
 .ENDIF
 
-ENEMY_DATA_BANK = $01
+ENEMY_DATA_BANK = $81
 
 ; First 3 bits of Flag reserved for shaking counter if it's a grab enemy
 

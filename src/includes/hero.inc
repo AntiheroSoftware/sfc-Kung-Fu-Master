@@ -24,7 +24,7 @@ HERO_FLAG_HIT_NONE             = %00000000
 HERO_FLAG_HIT_KICK             = %00000001
 HERO_FLAG_HIT_PUNCH            = %00000010
 
-SPRITE_DATA_BANK 	= $02
+SPRITE_DATA_BANK 	= $82
 
 .macro _ResetHeroGrabFlag
 
