@@ -38,6 +38,8 @@
 			.export Song_Bank_Table
 			.export Song_Offset_Table
 			.export Song_Size_Table
+			.export spc_command
+			.export spc_load_data
 
 ;.define DISABLE_SOUND
 

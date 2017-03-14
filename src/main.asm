@@ -118,9 +118,6 @@ spriteTrickIRQValue:
 	.A8
 	.I16
 
-	lda #$01
-	sta $420d
-
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
 
 	jsr initEvents
@@ -130,13 +127,19 @@ spriteTrickIRQValue:
 	sta controlValue
 
 	;**************************************************************************
-	;*** test SNESGSS *********************************************************
+	;*** SNESGSS music play ***************************************************
 	;**************************************************************************
 
-	;jsl gss_init
-	;jsl gss_setStereo
-	;lda #$00
-	;jsl gss_playTrack
+	jsl gss_init
+	jsl gss_setStereo				; TODO buggy if called when in fastrom mode
+	lda #$00
+	jsl gss_playTrack
+
+	;*** Enable fastrom after music set ***
+	;**************************************
+
+	lda #$01
+    sta $420d
 
 	setINIDSP $0F   				; Enable screen full brightness
 

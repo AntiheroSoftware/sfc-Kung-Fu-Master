@@ -17,7 +17,7 @@
             .export 	enemyStrategyInit
             .export 	enemyStrategyGrab
 
-ENEMY_GRAB_INTERVAL = 100
+ENEMY_GRAB_INTERVAL = 50
 
 .segment "ZEROPAGE"
 

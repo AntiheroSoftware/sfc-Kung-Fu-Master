@@ -6,6 +6,8 @@ IN PROGRESS
 BUGS
 ====
 
+* some grab enemy have their hands up since the beginning
+* snesgss is buggy with fastrom (spc_command seems faulty)
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
@@ -36,11 +38,10 @@ TODO
 
 * implement state engine for game
 
-* switch to fastrom ?
-
 DONE
 ====
 
+* ~~switch to fastrom~~ fixed 13/03/17
 * ~~refactor enemy data struct for easy indexing~~ fixed 07/03/17
 * ~~On level start there is somehow partly messed gfx and partly loaded frame~~ fixed 03/11/16
 * ~~fix palette problems with spriteFull (more than 16 colors) Might need to have a custom tool for that~~ fixed 14/11/16
