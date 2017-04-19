@@ -63,13 +63,17 @@
             .export enemyFallYOffset
             .export enemyFallAnimAddress
 
-
 SPRITE_TILE_BASE_ADDR = $2000
 
 SPRITE_TILE_ZONE1_ADDR	= $3000
 SPRITE_TILE_ZONE2_ADDR	= $4000
 SPRITE_TILE_ZONE3_ADDR	= $5000
 SPRITE_TILE_ZONE4_ADDR	= $6000
+
+;*** Therorical enemy max is 7 due to 34 8x8 sprite limitation per line
+;*** Max 6 grab enemy grab on screen
+;*** Max 2 knife enemy on screen
+;*** Max 2 midget enemy on screen
 
 ENEMY_SPRITE_NUMBER = 14
 
