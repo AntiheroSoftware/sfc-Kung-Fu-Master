@@ -33,6 +33,9 @@
 SPLASH_TILE_ADDR	= $0000
 SPLASH_MAP_ADDR     = $1000
 
+LETTER_TILE_ADDR	= $0000
+LETTER_MAP_ADDR     = $1000
+
 MAIN_DATA_BANK = $00
 
 .segment "BANK1"
@@ -65,13 +68,13 @@ titleScreenPal:
     .incbin "../ressource/titleScreen.clr"
 
 letterHandTiles:
-	.incbin "../ressource/letterHand.pic"
+	.incbin "../ressource/letterHandBlank.pic"
 
 letterHandMap:
-	.incbin "../ressource/letterHand.map"
+	.incbin "../ressource/letterHandBlank.map"
 
 letterHandPal:
-	.incbin "../ressource/letterHand.clr"
+	.incbin "../ressource/letterHandBlank.clr"
 
 .segment "BSS"
 
@@ -79,7 +82,8 @@ CONTROL_VALUE_NONE				= $00
 CONTROL_VALUE_ANTIHERO_SPLASH	= $01
 CONTROL_VALUE_IREM_SPLASH 		= $02
 CONTROL_VALUE_TITLE_SCREEN 		= $03
-CONTROL_VALUE_GAME_START 		= $04
+CONTROL_VALUE_GAME_START_INTRO 	= $04
+CONTROL_VALUE_GAME_START 		= $05
 
 controlValue:
 	.res 1
@@ -232,7 +236,10 @@ checkForTitleScreen:
 
 	cmp #CONTROL_VALUE_TITLE_SCREEN
 	beq titleScreen
-	jmp waitForVBlank
+	cmp #CONTROL_VALUE_GAME_START
+	bne :+
+	jmp gameStart
+:	jmp waitForVBlank
 
 titleScreen:
 
@@ -263,28 +270,69 @@ titleScreen:
 	ldy #$0001
 	jsr addEvent
 
-	setINIDSP $0f   				; Enable screen full darkness
+	setINIDSP $0f   				; Enable screen full brightness
 
 	lda #CONTROL_VALUE_NONE
 	sta controlValue
-	lda #CONTROL_VALUE_GAME_START
+	lda #CONTROL_VALUE_GAME_START_INTRO
 	sta controlNextValue
 
 infiniteLoop:
 
-checkForGameStart:
+checkForGameStartIntro:
 
 	jsr checkPressStart
 
 	lda controlValue
-	cmp #CONTROL_VALUE_GAME_START
-	beq gameStart
+	cmp #CONTROL_VALUE_GAME_START_INTRO
+	beq gameStartIntro
 
 	ldx padPushData1
 	jsr reactHero
 
 	wai
 	bra infiniteLoop
+
+gameStartIntro:
+
+	lda #$00
+	jsr removeEvent
+
+	lda #$01
+	jsr removeEvent
+
+	setINIDSP $80   				; Enable forced VBlank during DMA transfer
+
+	setBG1SC LETTER_MAP_ADDR, $00
+	setBG12NBA LETTER_TILE_ADDR, $0000
+
+	VRAMLoad letterHandTiles, LETTER_TILE_ADDR, $0A20
+	VRAMLoad letterHandMap, LETTER_MAP_ADDR, $800
+	CGRAMLoad letterHandPal, $00, $20
+
+	lda #$01         ; enable main screen 1 + disable sprite (because title screen was using sprites)
+	sta $212c
+
+	jsr splashScreenInit
+
+	lda #.BANKBYTE(letterIntroScreen)
+	ldx #.LOWORD(letterIntroScreen)
+	ldy #$0000
+	jsr addEvent					; add splash event
+
+	setINIDSP $00   				; Enable screen full darkness
+
+	lda #$00
+	sta controlValue
+	lda #CONTROL_VALUE_GAME_START
+	sta controlNextValue
+	jmp waitForVBlank
+
+checkForGameStart:
+
+	cmp #CONTROL_VALUE_GAME_START
+	beq gameStart
+	jmp checkForGameStart
 
 gameStart:
 
@@ -353,11 +401,6 @@ gameStartInfiniteLoop:
 	wai
 	wai								; Wait for 4 IRQ and NMI to happen
 
-;:	lda $4212
-;	and #$80
-;	beq :-							; if still in V-Blank we wait
-
-
 	bra gameStartInfiniteLoop
 
 waitForVBlank:
@@ -365,6 +408,13 @@ waitForVBlank:
 	jmp infiniteMainLoop
 
 .endproc
+
+;*** Old debugging traces ***
+;****************************
+
+; .export 	_gameStart = _main::gameStart
+; .export 	_checkForGameStart = _main::checkForGameStart
+; .export 	_checkForTitleScreen = _main::checkForTitleScreen
 
 .proc checkPressStart
 
@@ -501,6 +551,80 @@ waitToFadeOut:
 fadeOut:
 
 	ldx #$0100
+	stx splashCounter
+
+doFadeOut:
+
+	lda fadeOutValue
+	sta PPU_INIDSP
+	dec
+	sta fadeOutValue
+	cmp #$ff
+	bne continue
+
+waitMore:
+	jmp continue
+
+exit:
+	lda controlNextValue
+	sta controlValue
+
+	lda #$00                        ; exit event value
+	bra return
+
+continue:
+	lda #$01                        ; continue event value
+
+	ldx splashCounter
+	inx
+	stx splashCounter
+
+return:
+	plx
+	plp
+	rtl
+.endproc
+
+.proc letterIntroScreen
+	php
+	phx
+
+	;tax 							; put A reg containing counter in X reg
+
+	ldx splashCounter
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	cpx #$0540
+	bpl exit
+
+	cpx #$0520
+	bpl waitMore
+
+	cpx #$0500
+	bpl doFadeOut
+
+	cpx #$0010
+	bpl waitToFadeOut
+
+	txa
+	sta PPU_INIDSP
+	bra continue
+
+waitToFadeOut:
+
+	lda padPushData1
+	bit #PAD_START
+	bne fadeOut						; check if START is pressed to fade out
+
+	jmp continue
+
+fadeOut:
+
+	ldx #$0500
 	stx splashCounter
 
 doFadeOut:
