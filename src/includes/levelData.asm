@@ -1,6 +1,6 @@
 LEVEL_TILE_ADDR	    = $0000
 LEVEL_MAP_ADDR      = $1800
-LEVEL_BANK			= $04
+LEVEL_BANK			= $84
 
 .segment "BANK4"
 

@@ -33,5 +33,5 @@ spriteFull: raw/spriteFull.pcx
 score: raw/score.pcx
 	../../Tools/pcx2snes/pcx2snes -n -s8 -c16 -o16 raw/score
 	mv raw/score.pic .
-	mv raw/score.clr ./spriteFull.clr
+	mv raw/score.clr ./score.clr
 

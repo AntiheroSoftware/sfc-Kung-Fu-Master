@@ -87,6 +87,12 @@ enemyFallXOffset:
 	.byte 6, 7, 8, 9, 10, 11, 12, 13
 	.byte 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
 
+enemyFallAnimAddress:
+	.word .LOWORD(grabbingHitHighFall)
+	.word .LOWORD(grabbingShakeFall)
+	.word .LOWORD(grabbingHitMidFall)
+	.word .LOWORD(grabbingHitLowFall)
+
 ;******************************************************************************
 ;*** Sprite definition ********************************************************
 ;******************************************************************************
@@ -130,7 +136,7 @@ grabbingArmUpWalk1:					; 4 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $02
 	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $08
 	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $0c
-	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $0e
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $24
 	.byte	$00
 
 grabbingArmUpWalk2:					; 5 sprite blocks
@@ -157,13 +163,38 @@ grabbingGrab1:						; 5 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $e2
 	.byte	$00
 
+grabbingHitHigh1:					; 4 sprite blocks + hit sprite
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $e6
+	.byte   ENEMY_MS_GRAB_PAL + $01, $05, $0e, $04, $0e	; hit sprite
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $e8
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $0b, $06, $e6
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $13, $fe, $e4
+	.byte	$00
+
+grabbingHitMid1:					; 5 sprite blocks + hit sprite
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $0f, $03, $ea
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $09, $ee
+	.byte   ENEMY_MS_GRAB_PAL + $01, $15, $10, $02, $0e	; hit sprite
+	.byte   ENEMY_MS_GRAB_PAL + $02, $20, $09, $09, $c0
+	.byte 			  					  $18, $f9, $c2
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $0d, $05, $ec
+	.byte	$00
+
+grabbingHitLow1:					; 4 sprite blocks + hit sprite
+	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $0e, $03, $ea
+	.byte   ENEMY_MS_GRAB_PAL + $01, $10, $09, $08, $ec
+	.byte   ENEMY_MS_GRAB_PAL + $01, $20, $09, $09, $ea
+	.byte   ENEMY_MS_GRAB_PAL + $01, $30, $09, $09, $e8
+	.byte   ENEMY_MS_GRAB_PAL + $01, $34, $13, $ff, $0e	; hit sprite
+	.byte	$00
+
 grabbingFall1:						; 7 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $0b, $00, $10, $e0
 	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $1b, $00, $10, $e2
 	.byte 			  					  				   $10, $00, $e4
 	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $02, $2b, $00, $10, $e6
 	.byte 			  					  				   $10, $00, $e8
-	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $32, $17, $07, $ea
+	.byte   ENEMY_MS_GRAB_PAL + ENEMY_MS_UZONE + $01, $32, $17, $f9, $ea
 	.byte 	$00
 
 grabbingFall2:						; 8 sprite blocks
@@ -211,9 +242,36 @@ grabbingGrab:
 	.word .LOWORD(grabbingGrab1)
 	.byte $00
 
-grabbingFall:
+grabbingShakeFall:
 	.byte $05
 	.word .LOWORD(grabbingGrab1)
+	.byte $08
+	.word .LOWORD(grabbingFall1)
+	.byte $11
+	.word .LOWORD(grabbingFall2)
+	.byte $00
+
+grabbingHitHighFall:
+	.byte $05
+	.word .LOWORD(grabbingHitHigh1)
+	.byte $08
+	.word .LOWORD(grabbingFall1)
+	.byte $11
+	.word .LOWORD(grabbingFall2)
+	.byte $00
+
+grabbingHitMidFall:
+	.byte $05
+	.word .LOWORD(grabbingHitMid1)
+	.byte $08
+	.word .LOWORD(grabbingFall1)
+	.byte $11
+	.word .LOWORD(grabbingFall2)
+	.byte $00
+
+grabbingHitLowFall:
+	.byte $05
+	.word .LOWORD(grabbingHitLow1)
 	.byte $08
 	.word .LOWORD(grabbingFall1)
 	.byte $11

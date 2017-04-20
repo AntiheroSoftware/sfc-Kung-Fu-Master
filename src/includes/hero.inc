@@ -5,6 +5,9 @@
     .import     reactHero
     .importzp   heroXOffset
     .importzp   heroFlag
+    .importzp   heroHitOffset
+    .importzp   heroHitZone
+    .importzp   heroHitType
 
 .ENDIF
 
@@ -13,7 +16,15 @@ HERO_STATUS_SHAKING_FLAG 				= %00000010
 HERO_STATUS_LAST_SHAKE_DIRECTION_FLAG 	= %00000100
 HERO_STATUS_GRAB_FLAG 					= %00001000
 
-SPRITE_DATA_BANK 	= $02
+HERO_FLAG_HIT_HIGH             = %00000000
+HERO_FLAG_HIT_MID              = %10000000
+HERO_FLAG_HIT_LOW              = %11000000
+
+HERO_FLAG_HIT_NONE             = %00000000
+HERO_FLAG_HIT_KICK             = %00000001
+HERO_FLAG_HIT_PUNCH            = %00000010
+
+SPRITE_DATA_BANK 	= $82
 
 .macro _ResetHeroGrabFlag
 

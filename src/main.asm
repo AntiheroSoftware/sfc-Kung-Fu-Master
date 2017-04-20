@@ -15,8 +15,11 @@
             .include	"includes/base.inc"
             .include	"includes/hero.inc"
             .include	"includes/enemy.inc"
+            .include	"includes/enemyStrategy.inc"
             .include	"includes/level.inc"
             .include	"includes/score.inc"
+            .include	"includes/hit.inc"
+            .include	"includes/snesgss.inc"
 
             .forceimport	__STARTUP__
 
@@ -60,6 +63,15 @@ titleScreenMap:
 
 titleScreenPal:
     .incbin "../ressource/titleScreen.clr"
+
+letterHandTiles:
+	.incbin "../ressource/letterHand.pic"
+
+letterHandMap:
+	.incbin "../ressource/letterHand.map"
+
+letterHandPal:
+	.incbin "../ressource/letterHand.clr"
 
 .segment "BSS"
 
@@ -113,6 +125,21 @@ spriteTrickIRQValue:
 
 	lda #$01
 	sta controlValue
+
+	;**************************************************************************
+	;*** SNESGSS music play ***************************************************
+	;**************************************************************************
+
+	jsl gss_init
+	jsl gss_setStereo				; buggy if called when in fastrom mode
+	lda #$00
+	jsl gss_playTrack
+
+	;*** Enable fastrom after music set ***
+	;**************************************
+
+	lda #$01
+    sta $420d
 
 	setINIDSP $0F   				; Enable screen full brightness
 
@@ -272,6 +299,8 @@ gameStart:
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnemySprite
+	jsr hitInit
+	jsr enemyStrategyInit
 
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
@@ -313,6 +342,10 @@ gameStartInfiniteLoop:
 	jsr reactHero
 
 	jsr reactEnemy
+
+	jsr hitProcess
+
+	jsr enemyStrategyGrab
 
 	wai
 	wai
@@ -356,8 +389,14 @@ exit:
 .proc _IRQHandler
 	pha
 	phx
-
+	php
 	phb
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
 	lda #MAIN_DATA_BANK
 	pha
 	plb
@@ -379,10 +418,9 @@ exit:
 	sta $4209
 
 	plb
-
+	plp
 	plx
 	pla
-
 	rts
 .endproc
 

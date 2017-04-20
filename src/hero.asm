@@ -27,6 +27,9 @@
 			.export		spriteCounter
 			.export 	heroXOffset
 			.export 	heroFlag
+			.export 	heroHitOffset
+			.export 	heroHitZone
+			.export 	heroHitType
 
 			.export setMirrorSpriteMode
 			.export setNormalSpriteMode
@@ -35,6 +38,13 @@
 			.export setHeroOAM
 			.export animHero
 			.export clearHeroSprite
+			.export heroDownKick2
+			.export heroStandKick2
+			.export heroDownPunch1
+			.export heroDownPunch3
+			.export animInProgress
+			.export heroAnimInterruptCounter
+			.export heroTransferAddr
 
 SPRITE_VRAM 		= $2000
 SPRITE_LINE_SIZE 	= $0400
@@ -68,6 +78,9 @@ animInProgress:						; is there an animation in progress
 heroAnimAddr:						; address of the animation definition
 	.res 2
 
+heroAnimInterruptCounter:			; number of frames after wich animation can be interrupted
+	.res 1							; if a new button have been pressed
+
 heroYOffset:
 	.res 1
 
@@ -75,6 +88,12 @@ heroXOffset:
 	.res 2
 
 heroHitOffset:
+	.res 1
+
+heroHitZone:
+	.res 1
+
+heroHitType:
 	.res 1
 
 heroFlag:							; define status of actual position
@@ -333,8 +352,9 @@ endFillLoop:
 ;******************************************************************************
 ;*** animHero *****************************************************************
 ;******************************************************************************
-;*** heroAnimAddr                                                           ***
-;*** heroXOffset                                                            ***
+;*** No register are used													***
+;*** This function use heroAnimAddr, animFrameCounter, animFrameIndex		***
+;*** and some more                                                          ***
 ;******************************************************************************
 
 .proc animHero
@@ -357,7 +377,7 @@ endFillLoop:
 	rep #$20
 	.A16
 
-	ldx #$0000
+	ldx #$0000						; clear high byte of A register
 	txa
 
 	rep #$10
@@ -366,7 +386,8 @@ endFillLoop:
 	.I16
 
     lda animFrameIndex
-    tay
+    tay								; set index for getting animation frames (counter/address) into Y register
+
     lda animFrameCounter
     cmp #$00                        ; first time we do that animation
 	beq firstFrame
@@ -375,56 +396,73 @@ endFillLoop:
     cmp (heroAnimAddr),y			; we did all frames for that index
     beq nextFrame
 
-	inc animFrameCounter		; disable this to make it manual on testing
+	inc animFrameCounter			; <DEBUG> disable this to make it manual on testing
+	lda heroAnimInterruptCounter	; load and update "AnimInterruptCounter"
+	dec
+	cmp #$ff						; if value is greater than 0 we don't touch it
+	bne :+
+	lda #$00						; else we force to 0
+:	sta heroAnimInterruptCounter	; store the new value
 
     lda forceRefresh
-    cmp #$01
-	beq forceRefreshReset
+    cmp #$01						; check if forceResfresh is needed
+	beq forceRefreshReset			; skip to force refresh
 
-    jmp endAnim
+    jmp endAnim						; we are all done here, we can exit the fonction
 
 firstFrame:
+
+	;*** setup frame counter and index for the beginning of the animation
+	;***********************************************************************
+
+	ldy #$0000
+	lda (heroAnimAddr),Y			; get and set the counter where we will be able
+	sta heroAnimInterruptCounter	; to interrupt the animation
+
 	lda #$01
     sta animFrameCounter
-	lda #$00
+	lda #$01						; set to 1 so we skip "AnimInterruptCounter" info
 	sta animFrameIndex
-	bra nextFrameContinue
+	bra nextFrameContinue			; continue to to handle the frame
 
 nextFrame:
 
     lda #$01
-    sta animFrameCounter
+    sta animFrameCounter			; reset frame counter to 1
 
-    lda animFrameIndex
-    inc
-    inc
-    inc
-    sta animFrameIndex
+    lda animFrameIndex				; load frame index
+    inc								; skip counter
+    inc								; skip high byte of frame address
+    inc								; skip low byte of frame address
+    sta animFrameIndex				; store new frame index
 
 nextFrameContinue:
-    tay
+
+    tay								; set index for getting animation frames into Y register
 
     lda (heroAnimAddr),y			; check if we are in a no loop animation
 	cmp #$ff
 	bne :+
 
+	lda #$01						; we are at the end of the animation
+	sta animFrameIndex				; we reset the counter
 	lda #$00
-	sta animFrameIndex
 	sta animInProgress
-	bra endAnim
+	bra endAnim						; we exit the animation
 
 :   lda (heroAnimAddr),y
     cmp #$00
     bne noLoop
 
+    lda #$01						; we are in a loop
+    sta animFrameIndex				; reset the index
     lda #$00
-    sta animFrameIndex
     sta animInProgress
-    bra noLoop
+    bra noLoop						; ... and continue
 
 forceRefreshReset:
 	lda #$00
-	sta forceRefresh
+	sta forceRefresh				; reset force refresh
 
 noLoop:
     lda animFrameIndex
@@ -434,7 +472,7 @@ noLoop:
 	rep #$20
 	.A16
 
-	lda (heroAnimAddr),y
+	lda (heroAnimAddr),y			; get adress of the frame to display
 	tax
 
 	rep #$10
@@ -442,30 +480,46 @@ noLoop:
 	.A8
 	.I16
 
-	phx								; contains adress of tiles
+	phx								; contains adress of tiles TODO check if really usefull
 
 	inx
 	inx								; increment to go to hit offset definition
 
-	; calculate hit offset
+	lda $820000,X
+	and #$c0
+	clc
+	rol
+	rol
+	rol
+	sta heroHitZone
+
+	lda $820000,X
+	and #$3f
+	sta heroHitType
+
+	inx
+
+	;*** calculate hit offset
+	;***************************
+
 	lda heroFlag
 	bit HERO_STATUS_MIRROR_FLAG
 	bne calculateMirrorHitOffset
 
 calculateNormalHitOffset:
-	lda $0000,X
+	lda $820000,X
 	sta heroHitOffset
 	bra :+
 
 calculateMirrorHitOffset:
 	inx
-	lda $0000,X
+	lda $820000,X
 	sta heroHitOffset
 	bra :++
 
 :	inx
 :	inx								; increment offset to go to tiles definition
-	ldy heroXOffset					; x Pos
+	ldy heroXOffset					; Y register contains heroXOffset
 	jsr setHeroOAM
 
 	jsr OAMDataUpdated
@@ -474,7 +528,7 @@ calculateMirrorHitOffset:
 	.A16
 
 	ldy #$0000
-	lda ($01,s),y
+	lda ($01,s),y					; get adress of tile data for the frame to display
 	tax
 
 	rep #$10
@@ -595,23 +649,6 @@ noTransfer:
 ;*******************************************************************************
 ;*** reactHero *****************************************************************
 ;*******************************************************************************
-;*** X contains pad like data                                                ***
-;*******************************************************************************
-
-; check that hero is not catched
-; 	check if UP is pressed and not in a jump
-; 	else check if we are on a jump
-; 	else check if DOWN
-; 		check if B (kick) -> HERO_DOWN_KICK
-; 		else check if X (Punch) -> HERO_DOWN_PUNCH
-;       else HERO_DOWN
-;   else check if B (kick) -> HERO_KICK
-;   else check if X (punch) -> HERO_PUNCH
-;   else check if RIGHT -> HERO_WALK
-;   else check if LEFT -> HERO_LEFT
-
-; if hero is catched
-; finish anim and only handle LEFT/RIGHT to get out
 
 .proc reactHero
 	phy
@@ -629,19 +666,19 @@ noTransfer:
 	;*********************************
 
 	lda energyPlayer
-	cmp #$00
-	bne :+
-	jsr fallHero
-	jmp endHeroPadCheck
+	cmp #$00						; check if player energy is 0
+	bne heroStillHaveEnergy
+	jsr fallHero					; if so we make it fall
+	jmp endHeroPadCheck				; nothing else to do we skip pad check
 
-:
+heroStillHaveEnergy:
 
 	;*** Is hero grabbed by an enemy ***
 	;***********************************
 
 	_GetHeroGrabFlag
-	cmp #$00
-	beq checkAnimInProgress
+	cmp #$00						; check if hero is grabbed
+	beq heroIsNotGrabbed
 
 	jsr setShakingFlag				; check if we are shaking and set heroFlag
 
@@ -654,7 +691,7 @@ noTransfer:
 	cpx #.LOWORD(heroGrabbed)		; check if current anim is already "heroGrabbed"
 	beq :+
 
-	ldx #.LOWORD(heroGrabbed)
+	ldx #.LOWORD(heroGrabbed)		; set "heroGrabbed" animation
 	stx heroAnimAddr
 	stz animFrameIndex
 	stz animFrameCounter
@@ -662,23 +699,91 @@ noTransfer:
 :	jsr animHero
 	jmp endHeroPadCheck
 
+heroIsNotGrabbed:
+
 	;*** Is there an animation in progress ***
 	;*****************************************
 
-checkAnimInProgress:
 	lda animInProgress
 	bit #$01						; simple animation in progress
-	beq :+
-	
-	; TODO put here check if we need to end animation earlier
-	; TODO check if we are still down after a down animation
-	; TODO check if DOWN was pressed while animation
+	beq :+							; go check if it's a an other type of animation
+
+	;*** Check if DOWN is first pressed if it's the case we
+	;*** clear down first pressed so it can be triggered when
+	;*** animation is over
+	;************************************************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_DOWN				; check if DOWN button is pressed
+	beq skipCheckDownPressed		; if DOWN is not pressed we continue
+
+	lda padPushDataLow1				; we leave first push DOWN button
+	and #%11111011					; but reset push data so it can
+	sta padPushDataLow1				; trigger first push DOWN later
+
+skipCheckDownPressed:
+
+	;*** Check if DOWN is released if it's the case we
+	;*** clear down released so it can be triggered when
+	;*** animation is over
+	;************************************************************
+
+	lda padReleaseDataLow1
+	bit #PAD_LOW_DOWN				; check if DOWN button is released
+	beq skipCheckDownReleased		; if DOWN is not released we continue
+
+	lda padPushDataLow1				; make like if DOWN was still pressed
+	ora #%00000100					; so it can be released later
+	sta padPushDataLow1
+
+skipCheckDownReleased:
+
+	;*** if LEFT or RIGHT are pressed during an animation
+	;*** we and even if it's not the first time we act
+	;*** like as if it was the first time
+	;*******************************************************
+
+	lda padPushDataLow1
+	and #%00000011
+	ora padFirstPushDataLow1
+	sta padFirstPushDataLow1
+
+	;*** Check if kick or punch are currently in a good frame
+	;*** to trigger a new animation
+	;**********************************************************
+
+	lda heroAnimInterruptCounter	; check if we can interrupt the animation
+	cmp #$00						; in case a new buttun is pressed
+	bne skipCheckInterrupt
+
+checkInterruptKickButtonPressed:
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_B					; check if B button is pressed (B is for Kick)
+	beq checkInterruptPunchButtonPressed
+
+	bra checkPadDirection			; Go check with new animation we can trigger
+
+checkInterruptPunchButtonPressed:
+	lda padFirstPushDataLow1
+	bit #PAD_LOW_Y					; check if Y button is pressed (Y is for Punch)
+	beq skipCheckInterrupt
+
+	bra checkPadDirection			; Go check with new animation we can trigger
+
+skipCheckInterrupt:
 
 	jsr animHero
 	jmp endHeroPadCheck
 
 :	bit #$02						; jump animation in progress
-	beq :+
+	beq checkPadDirection
+
+;	bit #$04						; jump run animation in progress
+;	beq checkPadDirection
+
+	xba
+	lda #$00						; clear high byte of A register
+	xba
 
 	lda animationJumpFrameCounter	; set y offset for the jump
 	inc
@@ -689,7 +794,7 @@ checkAnimInProgress:
 	pha								; save heroYOffset
 
 	sec
-	sbc heroJumpOffsetTable,x
+	sbc heroJumpOffsetTable,x		; TODO use right jumprun table if needed
 	sta heroYOffset
 
 	lda #$01
@@ -697,11 +802,12 @@ checkAnimInProgress:
 
 	jsr animHero
 
-	pla								; restore
+	pla								; restore heroYOffset
 	sta heroYOffset
 
 	jmp endHeroPadCheck
-:
+
+checkPadDirection:
 
 	;*** Set the good mirror mode for hero sprite ***
 	;************************************************
@@ -719,8 +825,8 @@ checkAnimInProgress:
 	beq :++++
 
 	lda padPushDataLow1				; check if it's a jum run
-	bit #PAD_LOW_RIGHT				; TODO check why jump table isn't good
-	bne :+							; TODO check for timings
+	bit #PAD_LOW_RIGHT
+	bne :+
 	bit #PAD_LOW_LEFT
 	beq :++
 
@@ -739,12 +845,43 @@ checkAnimInProgress:
 
 :
 
-	;*** DOWN ***
-	;************
 
-	lda padFirstPushDataLow1
+checkIfDownRelease:
+
+	;*** DOWN release we stand up
+	;*******************************
+
+    lda padReleaseDataLow1
 	bit #PAD_LOW_DOWN
-	beq :+
+	beq checkIfDownFirstTime
+
+	bit #(PAD_LOW_B | PAD_LOW_Y)
+	bne checkIfKickOrPunch
+
+	ldx #.LOWORD(heroStand)
+	stx heroAnimAddr
+	stz animFrameIndex
+	stz animFrameCounter
+	jsr animHero
+	jmp endHeroPadCheck
+
+checkIfDownFirstTime:
+
+	;*** DOWN first time
+	;**********************
+
+	lda padFirstPushDataLow1		; Check if DOWN is pressed for the first time
+	bit #PAD_LOW_DOWN
+	beq checkIfStillDown
+
+	;*** check if KICK or PUNCH is pressed too
+	;********************************************
+
+	bit #(PAD_LOW_B | PAD_LOW_Y)
+	bne checkIfDownKickOrPunch
+
+	;*** no action, we just stand down
+	;************************************
 
 	ldx #.LOWORD(heroDownStand)
 	stx heroAnimAddr
@@ -753,16 +890,22 @@ checkAnimInProgress:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:   lda padPushDataLow1
+checkIfStillDown:
+
+    lda padPushDataLow1				; Check if is DOWN is still pressed
 	bit #PAD_LOW_DOWN
-	beq :++
+	beq checkIfKickOrPunch
+
+checkIfDownKickOrPunch:
 
 	;*** We are still down check for KICK or PUNCH ***
 	;*************************************************
 
+checkIfDownKick:
+
 	lda padFirstPushDataLow1
 	bit #PAD_LOW_B
-	beq :+
+	beq checkIfDownPunch
 
 	ldx #.LOWORD(heroDownKick)
 	stx heroAnimAddr
@@ -773,9 +916,11 @@ checkAnimInProgress:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:	lda padFirstPushDataLow1
+checkIfDownPunch:
+
+ 	lda padFirstPushDataLow1
 	bit #PAD_LOW_Y
-	beq :+
+	beq downCheckFinished
 
 	ldx #.LOWORD(heroDownPunch)
 	stx heroAnimAddr
@@ -786,28 +931,19 @@ checkAnimInProgress:
 	jsr animHero
 	jmp endHeroPadCheck
 
-	;*** DOWN release we stand up ***
-	;********************************
-
-:   lda padReleaseDataLow1
-	bit #PAD_LOW_DOWN
-	beq :+
-
-	ldx #.LOWORD(heroStand)
-	stx heroAnimAddr
-	stz animFrameIndex
-	stz animFrameCounter
-	jsr animHero
+downCheckFinished:
 	jmp endHeroPadCheck
 
-:
+checkIfKickOrPunch:
 
-	;*** KICK OR PUNCH ***
-	;*********************
+	;*** KICK OR PUNCH
+	;********************
+
+checkIfKick:
 
 	lda padFirstPushDataLow1
 	bit #PAD_LOW_B
-	beq :+
+	beq checkIfPunch
 
 	ldx #.LOWORD(heroStandKick)
 	stx heroAnimAddr
@@ -818,9 +954,11 @@ checkAnimInProgress:
 	jsr animHero
 	jmp endHeroPadCheck
 
-:	lda padFirstPushDataLow1
+checkIfPunch:
+
+	lda padFirstPushDataLow1
 	bit #PAD_LOW_Y
-	beq :+
+	beq checkIfLeftOrRight
 
 	ldx #.LOWORD(heroStandPunch)
 	stx heroAnimAddr
@@ -834,34 +972,44 @@ checkAnimInProgress:
 	;*** LEFT or RIGHT ***
 	;*********************
 
-	lda padFirstPushDataLow1		; check it's first time that we push LEFT or RIGHT
-	bit #PAD_LOW_RIGHT
-	bne :+							; if we push RIGHT we set heroAnimAddr
-	bit #PAD_LOW_LEFT
-	beq :++							; if we don't push LEFT for the first time, we check for next test
-									; if we push LEFT for the first time, execute next line
-:	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
+checkIfLeftOrRight:
+
+	ldx #.LOWORD(heroWalk)			; set heroWalk address if it's first press
 	stx heroAnimAddr
 
-:	lda padPushDataLow1				; check if we push LEFT or RIGHT
+	lda padPushDataLow1				; check if we push LEFT or RIGHT
 	bit #PAD_LOW_RIGHT
-	bne :+							; if we push RIGHT we call animHero
+	bne levelScrollRight			; if we push RIGHT we call animHero
 	bit #PAD_LOW_LEFT
-	beq endHeroPadCheck				; if we don't push LEFT for the first time, we continue
+	beq levelNoScroll				; if we don't push LEFT, we continue
 									; if we push LEFT, execute next line
 
-	; TODO need to check boundaries of hero and level
-	; check heroXOffset
+levelScrollLeft:
+
+	;*** TODO need to check boundaries of hero and level
+	;*** check heroXOffset
+	;******************************************************
+
 	lda #LEVEL_SCROLL_LEFT
 	sta scrollDirection
 	jsr scrollLevel
-	bra :++
+	bra animate
 
-:	lda #LEVEL_SCROLL_RIGHT
+levelScrollRight:
+
+	lda #LEVEL_SCROLL_RIGHT
 	sta scrollDirection
 	jsr scrollLevel
 
-:	jsr animHero					; display next animation frame
+animate:
+
+	jsr animHero					; display next animation frame
+	bra endHeroPadCheck
+
+levelNoScroll:
+
+	lda #LEVEL_SCROLL_NONE
+	sta scrollDirection
 
 endHeroPadCheck:
 
@@ -884,24 +1032,18 @@ endHeroPadCheck:
 	phy
 	phb
 
-	rep #$20
-	.A16
-
-	lda #$0000
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
+	xba								; clear high byte of A register
+	lda #$00
+	xba
 
 	ldy heroAnimAddr
 	cpy #.LOWORD(heroFall)
-	beq :+										; hero is already falling
+	beq :+							; hero is already falling
 
 	ldy #.LOWORD(heroFall)
 	sty heroAnimAddr
 	ldy #$0000
-	stz animFrameIndex							; reset animation indexes and counter
+	stz animFrameIndex				; reset animation indexes and counter
 	stz animFrameCounter
 	stz animationJumpFrameCounter
 
@@ -909,11 +1051,14 @@ endHeroPadCheck:
 	cmp #$1d
 	bne :+
 
-	jsr clearHeroSprite							; clear hero sprite
+	jsr clearHeroSprite				; clear hero sprite
 	lda livesCounter
 	dec
-	jsr setLiveCounter							; update live counter
-	; TODO  restart level
+	jsr setLiveCounter				; update live counter
+
+	;*** TODO  restart level
+	;**************************
+
 	bra :+++
 
 :	inc
@@ -921,13 +1066,13 @@ endHeroPadCheck:
 
 	lda heroFlag
 	bit #HERO_STATUS_MIRROR_FLAG
-	bne mirrorMode				; jmp to correct blockLoop code (mirror/normal)
+	bne mirrorMode					; jmp to correct blockLoop code (mirror/normal)
 
 normalMode:
 	lda animationJumpFrameCounter
 	tax
 	lda heroXOffset
-	pha											; save original X Offset
+	pha								; save original X Offset
 	sec
 	sbc heroFallXOffset,X
 	sta heroXOffset
