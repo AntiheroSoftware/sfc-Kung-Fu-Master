@@ -131,7 +131,7 @@ spriteTrickIRQValue:
 	;**************************************************************************
 
 	jsl gss_init
-	jsl gss_setStereo				; TODO buggy if called when in fastrom mode
+	jsl gss_setStereo				; buggy if called when in fastrom mode
 	lda #$00
 	jsl gss_playTrack
 
