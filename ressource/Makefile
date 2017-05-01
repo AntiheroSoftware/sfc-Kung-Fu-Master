@@ -1,6 +1,6 @@
 all: ressource
 
-ressource: splash irem titleScreen letterHandBlank KFM_Player_final_sprite spriteFull score font letterGreyPalette letterRedPalette
+ressource: splash irem titleScreen letterHandBlank KFM_Player_final_sprite spriteFull score font
 
 splash: raw/splash.pcx
 	wine ../tools/pcx2snes.exe -screen -s8 -c16 -o16 raw/splash
@@ -38,12 +38,4 @@ font: raw/font.pcx
 	../../Tools/pcx2snes/pcx2snes -n -s8 -c16 -o16 raw/font
 	mv raw/font.pic .
 	mv raw/font.clr ./font.clr
-letterGreyPalette: raw/letterGreyPalette.pcx
-	../../Tools/pcx2snes/pcx2snes -s8 -c16 -o16 raw/letterGreyPalette
-	rm raw/letterGreyPalette.pic
-	mv raw/letterGreyPalette.clr ./letterGreyPalette.clr
-letterRedPalette: raw/letterRedPalette.pcx
-	../../Tools/pcx2snes/pcx2snes -s8 -c16 -o16 raw/letterRedPalette
-	rm raw/letterRedPalette.pic
-	mv raw/letterRedPalette.clr ./letterRedPalette.clr
 

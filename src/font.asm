@@ -10,21 +10,31 @@
             .include    "snes.inc"
 			.include	"includes/fontData.inc"
 
+			.export 	initFont
+			.export 	setFontCursorPosition
+			.export 	writeFontString
+
+			.export 	fontTiles
+            .export 	letterGreyPal
+            .export 	letterRedPal
+			.export 	letterIntroString
 
 .segment "BSS"
+
+baseCursorPosX:
+	.res 	2
 
 cursorPos:
     .res    2
 
-paletteNumber:
+fontMapHigh:
 	.res 	1
 
 fontMapPtr:
     .res    2
 
-; TODO remove this and ref
-debugMap:
-	.res	2
+fontTileOffset:
+	.res	1
 
 .segment "CODE"
 
@@ -33,9 +43,11 @@ debugMap:
 ;******************************************************************************
 ;*** A contains palette to use                                              ***
 ;*** X contains pointer to VRAM                                             ***
+;*** Y contains font Tile Offset                                            ***
 ;******************************************************************************
 
 .proc initFont
+	pha
     phx
     php
 
@@ -44,13 +56,20 @@ debugMap:
     .A8
     .I16
 
+	asl
+    asl
+    sta fontMapHigh
+
     stx fontMapPtr
+
+    sty fontTileOffset
 
     ldx #$0000
     stx cursorPos
 
     plp
     plx
+    pla
 
     rts
 .endproc
@@ -71,12 +90,12 @@ debugMap:
     .I16
 
     txa
-    asl a
+	stx baseCursorPosX
 loopY:
     cpy #$00
     beq endY
     clc
-    adc #$0040
+    adc #$0020
     dey
     bra loopY
 endY:
@@ -102,8 +121,10 @@ endY:
     .I16
 
     lda cursorPos
-    and #$FFC0      ; check for the right mask value
-    adc #$40        ; check for the right add value
+    and #$FFE0      ; check for the right mask value
+    clc
+    adc #$20        ; check for the right add value
+    adc baseCursorPosX
     sta cursorPos
 
     plp
@@ -115,12 +136,14 @@ endY:
 ;*** writeFontString **********************************************************
 ;******************************************************************************
 ;*** A (16 bit) contains string ptr                                         ***
+;*** X Offset in tile data													***
+;*** Y VRAM start adress to write											***
 ;******************************************************************************
 
 .proc writeFontString
-    phx
     phy
     pha             ; save A
+    phx
     php
 
     rep #$10        ; A -> 8 bit
@@ -136,6 +159,16 @@ loop:
     cmp #$00        ; check if value is 0 -> stop
     beq stop
 
+    cmp #$08
+    bcs checkEndOfLine
+
+paletteChange:
+	asl
+	asl
+	sta fontMapHigh
+	bra skip
+
+checkEndOfLine:
     cmp #$0A        ; if value is \n adapt X to simulate new line and branch to loop
     bne notEndOfLine
 
@@ -143,6 +176,7 @@ endOfLine:
     stx cursorPos   ; store cursorPos in memory
     jsr setFontCursorPositionNewLine
     ldx cursorPos   ; reload updated cursorPos
+    bra skip
 
 notEndOfLine:
 
@@ -154,10 +188,53 @@ notEndOfLine:
 toUpperEnd:
 
     sbc #$1F        ; remove $20 from A
-    sta debugMap,x  ; set A in debugMap with X index
+
+    cmp #$00		; skip space (might need to change
+	beq next 		; or simply add a parameter to set
+
+	pha
+
+	lda #$80
+	sta $2115		; set incremental mode
+
+	;*** calculate VRAM address
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	clc
+	adc fontMapPtr
+
+	sta $2116
+
+	rep #$10
+    sep #$20
+    .A8
+    .I16
+
+    pla
+	clc
+	adc fontTileOffset
+    sta $2118
+
+	lda fontMapHigh
+	sta $2119
+
     iny             ; increment Y
-    inx             ; increment X by 2
-    inx
+	inx             ; increment X by 2
+	stx	cursorPos
+
+	bra loop
+
+next:
+	inx             ; increment X by 2
+	stx	cursorPos
+
+skip:
+    iny             ; increment Y
+
     bra loop
 
 stop:
@@ -165,8 +242,8 @@ stop:
 
     plp             ; restore processor status from stack
     pla             ; get A from stack
-    ply
     plx
+    ply
 
     rts
 .endproc

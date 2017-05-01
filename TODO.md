@@ -2,6 +2,8 @@ IN PROGRESS
 ===========
 
 * implement first draft of upcoming grabbing enemies
+* option screen
+* select on main screen 
 
 BUGS
 ====
@@ -33,14 +35,17 @@ TODO
 
 * make hero lose a life and restart level or game over
 
-* implement letter screen
 * implement "player 1" message at level start 
 
 * implement state engine for game
 
+* split main.asm and remove splash and intro code from it
+
 DONE
 ====
 
+* ~~implement font code~~ fixed 01/05/17
+* ~~letter intro before first level~~ fixed 01/05/17
 * ~~switch to fastrom~~ fixed 13/03/17
 * ~~refactor enemy data struct for easy indexing~~ fixed 07/03/17
 * ~~On level start there is somehow partly messed gfx and partly loaded frame~~ fixed 03/11/16

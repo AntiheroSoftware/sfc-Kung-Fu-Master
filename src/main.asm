@@ -20,6 +20,7 @@
             .include	"includes/score.inc"
             .include	"includes/hit.inc"
             .include	"includes/snesgss.inc"
+            .include	"includes/font.inc"
 
             .forceimport	__STARTUP__
 
@@ -309,6 +310,28 @@ gameStartIntro:
 	VRAMLoad letterHandTiles, LETTER_TILE_ADDR, $0A20
 	VRAMLoad letterHandMap, LETTER_MAP_ADDR, $800
 	CGRAMLoad letterHandPal, $00, $20
+
+	;*** Font data loading ***
+	;*************************
+
+	VRAMLoad fontTiles, $0510, $0800
+	CGRAMLoad letterGreyPal, $10, $20
+	CGRAMLoad letterRedPal, $20, $20
+
+	lda #$01
+	ldx #LETTER_MAP_ADDR
+	ldy #$0051
+	jsr initFont
+
+	ldx #$0006
+	ldy #$0005
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(letterIntroString)
+	jsr writeFontString
+
+	;*** End of font stuff ***
+	;*************************
 
 	lda #$01         ; enable main screen 1 + disable sprite (because title screen was using sprites)
 	sta $212c
