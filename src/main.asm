@@ -249,12 +249,43 @@ titleScreen:
 	setBG1SC SPLASH_MAP_ADDR, $00
 	setBG12NBA SPLASH_TILE_ADDR, $0000
 
-	VRAMLoad titleScreenTiles, SPLASH_TILE_ADDR, $16A0
+	VRAMLoad titleScreenTiles, SPLASH_TILE_ADDR, $11A0
 	VRAMLoad titleScreenMap, SPLASH_MAP_ADDR, $800
 	CGRAMLoad titleScreenPal, $00, $20
 
+	;*** Font data loading ***
+	;*************************
+
+	VRAMLoad fontTiles, $08D0, $0800
+	CGRAMLoad titleScreenWhitePal, $10, $20
+	CGRAMLoad titleScreenYellowPal, $20, $20
+	CGRAMLoad titleScreenWhiteRedPal, $30, $20
+
+	lda #$01
+	ldx #SPLASH_MAP_ADDR
+	ldy #$008d
+	jsr initFont
+
+	ldx #$000c
+	ldy #$000a
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(titleScreenSelectString)
+	jsr writeFontString
+
+	ldx #$0006
+	ldy #$0018
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(titleScreenCopyrightString)
+	jsr writeFontString
+
+	;*** End of font stuff ***
+	;*************************
+
 	lda #HERO_TITLE_SCREEN_Y_OFFSET
 	jsr initHeroSprite
+	jsr initEnemySprite
 
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c

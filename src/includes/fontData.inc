@@ -12,6 +12,15 @@ letterGreyPal:
 letterRedPal:
     .incbin "../ressource/letterRedPalette.clr"
 
+titleScreenWhitePal:
+    .incbin "../ressource/titleScreenWhitePalette.clr"
+
+titleScreenYellowPal:
+    .incbin "../ressource/titleScreenYellowPalette.clr"
+
+titleScreenWhiteRedPal:
+    .incbin "../ressource/titleScreenWhiteRedPalette.clr"
+
 .segment "CODE"
 
 letterIntroString:
@@ -24,3 +33,12 @@ letterIntroString:
 	.byte " AT ONCE.",$0a,$0a
 	.byte "5 SONS OF THE DEVIL",$0a,$0a
 	.byte " WILL ENTERTAIN YOU.",$00
+
+titleScreenSelectString:
+    .byte $02,"1", $01, " PLAYER",$0a,$0a
+    .byte $02,"2", $01, " PLAYERS",$0a,$0a
+    .byte "OPTIONS",$00
+
+titleScreenCopyrightString:
+    .byte $02,"  @ 1984", $03," IREM CORP.",$0a,$0a
+    .byte $02,"@ 2017", $03," ANTIHERO SOFT.",$00

@@ -26,10 +26,8 @@ KFM_Player_final_sprite: raw/KFM_Player_final_sprite.pcx
 	wine ../tools/pcx2snes.exe -n -s16 -c16 -o16 raw/KFM_Player_final_sprite
 	mv raw/KFM_Player_final_sprite.pic .
 	mv raw/KFM_Player_final_sprite.clr .
-spriteFull: raw/spriteFull.pcx
-	../../Tools/pcx2snes/pcx2snes -n -r -s16 -c16 -o32 raw/spriteFull
-	mv raw/spriteFull.pic .
-	mv raw/spriteFull.clr ./spriteFull.clr
+spriteFull: raw/spriteFull.png
+	../../Tools/SuperFamiconv/bin/superfamiconv -i raw/spriteFull.png -p spriteFull.clr -t spriteFull.pic --no-discard --tile-width 16 --tile-height 16 -v
 score: raw/score.pcx
 	../../Tools/pcx2snes/pcx2snes -n -s8 -c16 -o16 raw/score
 	mv raw/score.pic .

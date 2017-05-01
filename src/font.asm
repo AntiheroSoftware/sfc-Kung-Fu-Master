@@ -15,9 +15,16 @@
 			.export 	writeFontString
 
 			.export 	fontTiles
+
             .export 	letterGreyPal
             .export 	letterRedPal
+            .export 	titleScreenWhitePal
+            .export 	titleScreenYellowPal
+            .export 	titleScreenWhiteRedPal
+
 			.export 	letterIntroString
+			.export 	titleScreenSelectString
+            .export 	titleScreenCopyrightString
 
 .segment "BSS"
 
