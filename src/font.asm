@@ -11,22 +11,40 @@
 			.include	"includes/fontData.inc"
 
 			.export 	initFont
+			.export 	enableSkipSpaces
+			.export 	disableSkipSpaces
 			.export 	setFontCursorPosition
 			.export 	writeFontString
 
 			.export 	fontTiles
+
+			;***********************
+			;*** Palettes export ***
+			;***********************
 
             .export 	letterGreyPal
             .export 	letterRedPal
             .export 	titleScreenWhitePal
             .export 	titleScreenYellowPal
             .export 	titleScreenWhiteRedPal
+            .export 	gameMessagePal
+
+			;***********************
+			;*** Strings export ***
+			;***********************
 
 			.export 	letterIntroString
 			.export 	titleScreenSelectString
             .export 	titleScreenCopyrightString
+            .export 	readyString
+            .export 	onePlayerFirstFloorString
+
+            .export skipSpaces
 
 .segment "BSS"
+
+skipSpaces:
+	.res 	1
 
 baseCursorPosX:
 	.res 	2
@@ -65,6 +83,7 @@ fontTileOffset:
 
 	asl
     asl
+    ora #%00100000
     sta fontMapHigh
 
     stx fontMapPtr
@@ -74,11 +93,60 @@ fontTileOffset:
     ldx #$0000
     stx cursorPos
 
+    lda #$01
+    sta skipSpaces
+
     plp
     plx
     pla
 
     rts
+.endproc
+
+;******************************************************************************
+;*** enableSkipSpaces *********************************************************
+;******************************************************************************
+;*** No parameters        													***
+;******************************************************************************
+
+.proc enableSkipSpaces
+	pha
+	php
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	lda #$01
+	sta skipSpaces
+
+	plp
+	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** disableSkipSpaces *********************************************************
+;******************************************************************************
+;*** No parameters        													***
+;******************************************************************************
+
+.proc disableSkipSpaces
+	pha
+	php
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	lda #$00
+	sta skipSpaces
+
+	plp
+	pla
+	rts
 .endproc
 
 ;******************************************************************************
@@ -172,6 +240,7 @@ loop:
 paletteChange:
 	asl
 	asl
+	ora #%00100000
 	sta fontMapHigh
 	bra skip
 
@@ -196,9 +265,14 @@ toUpperEnd:
 
     sbc #$1F        ; remove $20 from A
 
-    cmp #$00		; skip space (might need to change
-	beq next 		; or simply add a parameter to set
+    cmp #$00		; skip space (might need to change)
+	bne notSpace 	; or simply add a parameter to set
 
+	lda skipSpaces
+	cmp #$00
+	bne next
+
+notSpace:
 	pha
 
 	lda #$80

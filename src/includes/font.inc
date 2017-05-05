@@ -1,4 +1,6 @@
 .import initFont
+.import enableSkipSpaces
+.import disableSkipSpaces
 .import setFontCursorPosition
 .import writeFontString
 
@@ -10,6 +12,10 @@
 .import titleScreenYellowPal
 .import titleScreenWhiteRedPal
 
+.import gameMessagePal
+
 .import letterIntroString
 .import titleScreenSelectString
 .import titleScreenCopyrightString
+.import readyString
+.import onePlayerFirstFloorString

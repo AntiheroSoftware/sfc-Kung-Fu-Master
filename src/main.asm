@@ -398,6 +398,36 @@ gameStart:
 	jsr initLevel
 	jsr initScore
 
+	;*** Font data loading ***
+	;*************************
+
+	VRAMLoad fontTiles, $7590, $0800
+	CGRAMLoad gameMessagePal, $70, $20
+
+	lda #$07
+	ldx #$7C00 						; todo put reference from an include SCORE_MAP_ADDR
+	ldy #$0059
+	jsr initFont
+
+	jsr disableSkipSpaces
+
+	ldx #$0007
+	ldy #$000b
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(onePlayerFirstFloorString)
+	jsr writeFontString
+
+	ldx #$000c
+	ldy #$000e
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(readyString)
+	jsr writeFontString
+
+	;*** End of font stuff ***
+	;*************************
+
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
 	jsr initEnemySprite

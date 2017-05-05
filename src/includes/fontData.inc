@@ -21,6 +21,9 @@ titleScreenYellowPal:
 titleScreenWhiteRedPal:
     .incbin "../ressource/titleScreenWhiteRedPalette.clr"
 
+gameMessagePal:
+    .incbin "../ressource/gameMessagePalette.clr"
+
 .segment "CODE"
 
 letterIntroString:
@@ -42,3 +45,12 @@ titleScreenSelectString:
 titleScreenCopyrightString:
     .byte $02,"  @ 1984", $03," IREM CORP.",$0a,$0a
     .byte $02,"@ 2017", $03," ANTIHERO SOFT.",$00
+
+readyString:
+	.byte $07, " READY ",$0a
+	.byte      "       ",$00
+
+onePlayerFirstFloorString:
+	.byte $07, "                  ",$0a
+	.byte      " 1-PLAYER 1-FLOOR ",$0a
+    .byte      "                  ",$00

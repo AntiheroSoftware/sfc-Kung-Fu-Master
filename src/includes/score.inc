@@ -8,3 +8,4 @@
 .import 	updateScorePlayer1
 .import 	updateScorePlayer2
 .import 	updateScoreTop
+.import     scoreMap
