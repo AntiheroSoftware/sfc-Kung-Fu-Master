@@ -41,6 +41,10 @@ TODO
 
 * split main.asm and remove splash and intro code from it
 
+* add code to clear an area in font.asm
+* add pause in game (with message)
+* add event in start of level (print message + hero moving alone)
+
 DONE
 ====
 
