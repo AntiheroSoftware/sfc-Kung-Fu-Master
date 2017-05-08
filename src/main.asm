@@ -98,6 +98,12 @@ fadeOutValue:						; only used in splashScreen so can be reused
 splashCounter:						; only used in splashScreen so can be reused
 	.res 2
 
+gamePaused:
+	.res 1
+
+gamePausedUpdated:
+	.res 1
+
 .segment "ZEROPAGE"
 
 spriteTrickIndex:
@@ -393,6 +399,10 @@ gameStart:
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
 	stz CPU_NMITIMEN				; Disable NMI and pad reading
 
+	lda #$00
+	sta gamePaused					; init game pause values
+	sta gamePausedUpdated
+
 	jsr initEvents					; reset events
 
 	jsr initLevel
@@ -411,19 +421,28 @@ gameStart:
 
 	jsr disableSkipSpaces
 
-	ldx #$0007
-	ldy #$000b
-	jsr setFontCursorPosition
+;	ldx #$0007
+;	ldy #$000b
+;	jsr setFontCursorPosition
 
-	ldx #.LOWORD(onePlayerFirstFloorString)
-	jsr writeFontString
+;	ldx #.LOWORD(onePlayerFirstFloorString)
+;	jsr writeFontString
 
-	ldx #$000c
-	ldy #$000e
-	jsr setFontCursorPosition
+;	ldx #$000c
+;	ldy #$000e
+;	jsr setFontCursorPosition
 
-	ldx #.LOWORD(readyString)
-	jsr writeFontString
+;	ldx #.LOWORD(readyString)
+;	jsr writeFontString
+
+;	ldx #$000c
+;	ldy #$000e
+;	jsr setFontCursorPosition
+
+;	lda #$00
+;	ldx #$0007
+;	ldy #$0002
+;	jsr clearFontZone
 
 	;*** End of font stuff ***
 	;*************************
@@ -444,6 +463,12 @@ gameStart:
 	lda #.BANKBYTE(transferHeroSpriteDataEvent)
 	ldx #.LOWORD(transferHeroSpriteDataEvent)
 	ldy #EVENT_GAME_SCREEN_TRANSFER_HERO_SPRITE_DATA
+	jsr addEvent
+
+	; set the event that display game paused message
+	lda #.BANKBYTE(gamePauseMessageEvent)
+	ldx #.LOWORD(gamePauseMessageEvent)
+	ldy #EVENT_GAME_SCREEN_PAUSE_MESSAGE
 	jsr addEvent
 
 	ldx #$00FF						; IRQ init
@@ -467,6 +492,33 @@ gameStart:
 	setINIDSP $0f   				; Enable screen full brightness
 
 gameStartInfiniteLoop:
+
+	lda padFirstPushData1
+	bit #PAD_START
+	beq noStartPressed
+
+	lda gamePaused
+	eor #$01
+	sta gamePaused
+
+	lda #$01
+	sta gamePausedUpdated
+
+noStartPressed:
+
+	lda gamePaused
+	cmp #$01						; check if game paused
+	bne gameStartContinue
+
+	wai
+	wai
+	wai
+	wai
+	wai								; Wait for 4 IRQ and NMI to happen
+
+	bra gameStartInfiniteLoop
+
+gameStartContinue:
 
 	jsr updateTime
 
@@ -755,4 +807,51 @@ return:
     lda #$01                        ; continue event value
     plp
     rtl
+.endproc
+
+.proc gameStartMessageEvent
+
+.endproc
+
+.proc gamePauseMessageEvent
+	php
+
+	lda gamePausedUpdated
+	cmp #$01
+	bne noUpdate
+
+	lda #$00
+	sta gamePausedUpdated
+
+	lda gamePaused
+	cmp #$01
+	bne removeGamePausedMessage
+
+displayGamePausedMessage:
+
+	ldx #$0009
+	ldy #$000b
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(gamePausedString)
+	jsr writeFontString
+
+	bra noUpdate
+
+removeGamePausedMessage:
+
+	ldx #$0009
+	ldy #$000b
+	jsr setFontCursorPosition
+
+	lda #$00
+	ldx #$000d
+	ldy #$0003
+	jsr clearFontZone
+
+noUpdate:
+	lda #$01                        ; continue event value
+
+	plp
+	rtl
 .endproc

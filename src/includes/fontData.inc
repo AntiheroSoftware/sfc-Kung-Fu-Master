@@ -54,3 +54,8 @@ onePlayerFirstFloorString:
 	.byte $07, "                  ",$0a
 	.byte      " 1-PLAYER 1-FLOOR ",$0a
     .byte      "                  ",$00
+
+gamePausedString:
+	.byte $07, "             ",$0a
+	.byte      " GAME PAUSED ",$0a
+	.byte      "             ",$00

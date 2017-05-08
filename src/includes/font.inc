@@ -3,6 +3,7 @@
 .import disableSkipSpaces
 .import setFontCursorPosition
 .import writeFontString
+.import clearFontZone
 
 .import fontTiles
 .import letterGreyPal
@@ -19,3 +20,4 @@
 .import titleScreenCopyrightString
 .import readyString
 .import onePlayerFirstFloorString
+.import gamePausedString

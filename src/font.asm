@@ -15,6 +15,7 @@
 			.export 	disableSkipSpaces
 			.export 	setFontCursorPosition
 			.export 	writeFontString
+			.export 	clearFontZone
 
 			.export 	fontTiles
 
@@ -38,6 +39,7 @@
             .export 	titleScreenCopyrightString
             .export 	readyString
             .export 	onePlayerFirstFloorString
+            .export 	gamePausedString
 
             .export skipSpaces
 
@@ -327,4 +329,67 @@ stop:
     ply
 
     rts
+.endproc
+
+;******************************************************************************
+;*** clearFontZone ************************************************************
+;******************************************************************************
+;*** A contains data to set 												***
+;*** X contains number of column to clear                                   ***
+;*** Y contains number of line to clear                                     ***
+;******************************************************************************
+
+.proc clearFontZone
+	php
+
+	phx 			; save X
+
+loopY:
+loopX:
+
+	pha
+
+	;*** calculate VRAM address
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	clc
+	adc fontMapPtr
+
+	sta $2116
+
+	inc cursorPos
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	pla
+	sta $2118
+
+	lda #$00
+	sta $2119
+
+	dex             ; decrement X
+
+	cpx #$0000
+	bne loopX
+
+	jsr setFontCursorPositionNewLine
+	dey
+
+	plx
+	phx
+
+	cpy #$0000
+	bne loopY
+
+	plx				; restore stack
+
+	plp
+	rts
 .endproc
