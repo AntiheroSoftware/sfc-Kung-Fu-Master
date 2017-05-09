@@ -11,10 +11,15 @@
 			.include	"includes/fontData.inc"
 
 			.export 	initFont
+			.export 	setFontPalette
 			.export 	enableSkipSpaces
 			.export 	disableSkipSpaces
+			.export 	enableSkipLeadingZero
+			.export 	disableSkipLeadingZero
 			.export 	setFontCursorPosition
+			.export 	setFontCursorPositionNewLine
 			.export 	writeFontString
+			.export 	writeFontNumber
 			.export 	clearFontZone
 
 			.export 	fontTiles
@@ -29,6 +34,9 @@
             .export 	titleScreenYellowPal
             .export 	titleScreenWhiteRedPal
             .export 	gameMessagePal
+            .export 	fontWhiteRedBlackPal
+            .export 	fontRedBlackBlackPal
+            .export 	fontCyanBlackBlackPal
 
 			;***********************
 			;*** Strings export ***
@@ -46,6 +54,12 @@
 .segment "BSS"
 
 skipSpaces:
+	.res 	1
+
+skipLeadingZero:
+	.res 	1
+
+leadingZero:
 	.res 	1
 
 baseCursorPosX:
@@ -98,11 +112,32 @@ fontTileOffset:
     lda #$01
     sta skipSpaces
 
+    lda #$00
+    sta skipLeadingZero
+
     plp
     plx
     pla
 
     rts
+.endproc
+
+;******************************************************************************
+;*** setFontPalette ***********************************************************
+;******************************************************************************
+;*** A contains palette number         										***
+;******************************************************************************
+
+.proc setFontPalette
+	pha
+
+	asl
+	asl
+	ora #%00100000
+	sta fontMapHigh
+
+	pla
+	rts
 .endproc
 
 ;******************************************************************************
@@ -145,6 +180,52 @@ fontTileOffset:
 
 	lda #$00
 	sta skipSpaces
+
+	plp
+	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** enableSkipLeadingZero ****************************************************
+;******************************************************************************
+;*** No parameters        													***
+;******************************************************************************
+
+.proc enableSkipLeadingZero
+	pha
+	php
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	lda #$01
+	sta skipLeadingZero
+
+	plp
+	pla
+	rts
+.endproc
+
+;******************************************************************************
+;*** disableSkipLeadingZero ***************************************************
+;******************************************************************************
+;*** No parameters        													***
+;******************************************************************************
+
+.proc disableSkipLeadingZero
+	pha
+	php
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	lda #$00
+	sta skipLeadingZero
 
 	plp
 	pla
@@ -275,44 +356,16 @@ toUpperEnd:
 	bne next
 
 notSpace:
-	pha
-
-	lda #$80
-	sta $2115		; set incremental mode
-
-	;*** calculate VRAM address
-
-	rep #$30
-	.A16
-	.I16
-
-	lda cursorPos
-	clc
-	adc fontMapPtr
-
-	sta $2116
-
-	rep #$10
-    sep #$20
-    .A8
-    .I16
-
-    pla
-	clc
-	adc fontTileOffset
-    sta $2118
-
-	lda fontMapHigh
-	sta $2119
+	jsr _writeToVRAM
 
     iny             ; increment Y
-	inx             ; increment X by 2
+	inx             ; increment X
 	stx	cursorPos
 
 	bra loop
 
 next:
-	inx             ; increment X by 2
+	inx             ; increment X
 	stx	cursorPos
 
 skip:
@@ -324,11 +377,108 @@ stop:
     stx cursorPos   ; store cursorPos in memory
 
     plp             ; restore processor status from stack
-    pla             ; get A from stack
     plx
+    pla				; get A from stack
     ply
 
     rts
+.endproc
+
+;*******************************************************************************
+;*** writeFontNumber ***********************************************************
+;*******************************************************************************
+;*** A -> number of digit to print (byte)                                    ***
+;*** X -> address (word)                                                     ***
+;*******************************************************************************
+
+.proc writeFontNumber
+	pha
+	phx
+	phy
+	php
+
+	pha
+	lda skipLeadingZero
+	cmp #$01
+	bne dontSkip
+
+	lda #$00
+	sta leadingZero
+	pla
+	bra loop
+
+dontSkip:
+	lda #$ff
+	sta leadingZero
+	pla
+
+loop:
+	pha 							; preverse digit number counter
+	lda $0000,x
+
+	lsr
+	lsr
+	lsr
+	lsr
+
+	cmp leadingZero
+	beq skipFirst
+
+printFirst:
+	clc
+	adc #$10
+
+	jsr _writeToVRAM
+
+	lda #$ff
+	sta leadingZero
+
+skipFirst:
+	ldy cursorPos
+	iny
+	sty cursorPos
+
+	pla
+	dec
+	cmp #$00
+	beq end
+
+	pha
+	lda $0000,x
+
+	and #%00001111					; first digit
+
+	cmp leadingZero
+	beq skipSecond
+
+printSecond:
+	clc
+	adc #$10
+
+	jsr _writeToVRAM
+
+	lda #$ff
+	sta leadingZero
+
+skipSecond:
+	ldy cursorPos
+	iny
+	sty cursorPos
+
+	pla
+	dec
+	beq end
+
+	inx
+	bra loop
+
+end:
+
+	plp
+	ply
+	plx
+	pla
+	rts
 .endproc
 
 ;******************************************************************************
@@ -389,6 +539,49 @@ loopX:
 	bne loopY
 
 	plx				; restore stack
+
+	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** _writeToVRAM *************************************************************
+;******************************************************************************
+;*** A contains char to print  												***
+;******************************************************************************
+
+.proc _writeToVRAM
+	php
+
+	pha
+
+	lda #$80
+	sta $2115		; set incremental mode
+
+	;*** calculate VRAM address
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	clc
+	adc fontMapPtr
+
+	sta $2116
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	pla
+	clc
+	adc fontTileOffset
+	sta $2118
+
+	lda fontMapHigh
+	sta $2119
 
 	plp
 	rts

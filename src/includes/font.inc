@@ -1,8 +1,13 @@
 .import initFont
+.import setFontPalette
 .import enableSkipSpaces
 .import disableSkipSpaces
+.import enableSkipLeadingZero
+.import disableSkipLeadingZero
 .import setFontCursorPosition
+.import setFontCursorPositionNewLine
 .import writeFontString
+.import writeFontNumber
 .import clearFontZone
 
 .import fontTiles
@@ -14,6 +19,9 @@
 .import titleScreenWhiteRedPal
 
 .import gameMessagePal
+.import fontWhiteRedBlackPal
+.import fontRedBlackBlackPal
+.import fontCyanBlackBlackPal
 
 .import letterIntroString
 .import titleScreenSelectString

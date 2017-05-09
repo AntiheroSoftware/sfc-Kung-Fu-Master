@@ -21,6 +21,15 @@ titleScreenYellowPal:
 titleScreenWhiteRedPal:
     .incbin "../ressource/titleScreenWhiteRedPalette.clr"
 
+fontWhiteRedBlackPal:
+    .incbin "../ressource/fontWhiteRedBlackPalette.clr"
+
+fontRedBlackBlackPal:
+	.incbin "../ressource/fontRedBlackBlackPalette.clr"
+
+fontCyanBlackBlackPal:
+	.incbin "../ressource/fontCyanBlackBlackPalette.clr"
+
 gameMessagePal:
     .incbin "../ressource/gameMessagePalette.clr"
 

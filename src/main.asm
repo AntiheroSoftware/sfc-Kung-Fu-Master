@@ -21,6 +21,7 @@
             .include	"includes/hit.inc"
             .include	"includes/snesgss.inc"
             .include	"includes/font.inc"
+            .include	"includes/highScore.inc"
 
             .forceimport	__STARTUP__
 
