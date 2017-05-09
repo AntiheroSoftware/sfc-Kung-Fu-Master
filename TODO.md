@@ -23,7 +23,6 @@ REFACTORING
 TODO
 ====
 
-* use superfamicheck
 * use superfamiconv
 
 * put snesgss code in sfclib
@@ -41,13 +40,15 @@ TODO
 
 * split main.asm and remove splash and intro code from it
 
-* add code to clear an area in font.asm
-* add pause in game (with message)
 * add event in start of level (print message + hero moving alone)
 
 DONE
 ====
 
+* ~~use superfamicheck~~ fixed 09/05/17
+* ~~add high score screen code~~ fixed 09/05/17
+* ~~add code to clear an area in font.asm~~ fixed 09/05/17
+* ~~add pause in game (with message)~~ fixed 09/05/17
 * ~~implement font code~~ fixed 01/05/17
 * ~~letter intro before first level~~ fixed 01/05/17
 * ~~switch to fastrom~~ fixed 13/03/17

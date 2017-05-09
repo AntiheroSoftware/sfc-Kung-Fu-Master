@@ -7,3 +7,4 @@ ressource:
 
 rom:
 	@$(MAKE) -C src
+	../Tools/SuperFamicheck/bin/superfamicheck -f -s kungfumaster.sfc
