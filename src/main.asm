@@ -22,6 +22,7 @@
             .include	"includes/snesgss.inc"
             .include	"includes/font.inc"
             .include	"includes/highScore.inc"
+            .include	"includes/cursor.inc"
 
             .forceimport	__STARTUP__
 
@@ -309,6 +310,15 @@ titleScreen:
 	ldy #$0001
 	jsr addEvent
 
+	ldx #.LOWORD(cursorList)
+	jsr initCursor
+
+	; set the event that trasnfer hero tile data
+	lda #.BANKBYTE(cursorEvent)
+	ldx #.LOWORD(cursorEvent)
+	ldy #$0002
+	jsr addEvent
+
 	setINIDSP $0f   				; Enable screen full brightness
 
 	lda #CONTROL_VALUE_NONE
@@ -320,15 +330,18 @@ infiniteLoop:
 
 checkForGameStartIntro:
 
-	jsr checkPressStart
+	; TODO set automated reactHero
+	;ldx padPushData1
+	;jsr reactHero
 
-	lda controlValue
-	cmp #CONTROL_VALUE_GAME_START_INTRO
-	beq gameStartIntro
+	lda cursorTargetSet
+	cmp #$01
+	bne skipToWait
 
-	ldx padPushData1
-	jsr reactHero
+jump:
+	jmp [cursorTarget]
 
+skipToWait:
 	wai
 	bra infiniteLoop
 
@@ -552,6 +565,8 @@ waitForVBlank:
 ; .export 	_gameStart = _main::gameStart
 ; .export 	_checkForGameStart = _main::checkForGameStart
 ; .export 	_checkForTitleScreen = _main::checkForTitleScreen
+.export 	_gameStartIntro = _main::gameStartIntro
+.export 	_jump = _main::jump
 
 .proc checkPressStart
 
