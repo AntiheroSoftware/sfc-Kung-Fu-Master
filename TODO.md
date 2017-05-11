@@ -3,7 +3,6 @@ IN PROGRESS
 
 * implement first draft of upcoming grabbing enemies
 * option screen
-* select on main screen 
 
 BUGS
 ====
@@ -23,7 +22,7 @@ REFACTORING
 TODO
 ====
 
-* use superfamiconv
+* use superfamiconv for all conversion
 
 * put snesgss code in sfclib
 
@@ -36,15 +35,13 @@ TODO
 
 * implement "player 1" message at level start 
 
-* implement state engine for game
-
-* split main.asm and remove splash and intro code from it
-
 * add event in start of level (print message + hero moving alone)
 
 DONE
 ====
 
+* ~~split main.asm and remove splash and intro code from it~~ fixed 11/05/17
+* ~~select on main screen~~ fixed 11/05/17
 * ~~use superfamicheck~~ fixed 09/05/17
 * ~~add high score screen code~~ fixed 09/05/17
 * ~~add code to clear an area in font.asm~~ fixed 09/05/17
