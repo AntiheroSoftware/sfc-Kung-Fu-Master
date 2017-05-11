@@ -16,10 +16,6 @@
             .export 	cursorTarget
             .export 	cursorTargetSet
 
-            .export cursorList
-
-            .import _gameStartIntro
-
 CURSOR_OAM_OFFSET = 119*4
 CURSOR_OAM_OFFSET_2 = $21d
 
@@ -35,6 +31,8 @@ CURSOR_OAM_OFFSET_2 = $21d
 ;*** previousOffset	byte													***
 ;*** nextOffset		byte													***
 ;******************************************************************************
+
+/*
 
 cursorList:
 	.word $004a
@@ -57,6 +55,8 @@ cursorList:
 	.word .LOWORD(_gameStartIntro)
 	.byte $08
 	.byte $00
+
+*/
 
 .segment "BSS"
 
@@ -84,6 +84,7 @@ cursorTargetSet:
 ;******************************************************************************
 
 .proc initCursor
+	pha
 	php
 
 	lda #$00
@@ -107,15 +108,13 @@ cursorTargetSet:
 	lda #$32
 	sta oamData+CURSOR_OAM_OFFSET+3
 
-	;lda #$80
-	;sta oamData+$215
-
 	lda #%10000000
 	sta oamData+CURSOR_OAM_OFFSET_2
 
 	jsr OAMDataUpdated
 
 	plp
+	pla
 	rts
 .endproc
 

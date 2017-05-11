@@ -1,5 +1,5 @@
 ;
-; Kung Fu Master high score
+; Kung Fu Master high score screen
 ;
 ; by lintbe/AntiheroSoftware <jfdusar@gmail.com>
 ;
@@ -8,8 +8,8 @@
             .feature	c_comments
 
             .include    "snes.inc"
-			.include	"includes/highScoreData.inc"
-            .include	"includes/font.inc"
+			.include	"../includes/highScoreData.inc"
+            .include	"../includes/font.inc"
 
 			.export 	initHighScore
 			.export 	insertNewHighScore
@@ -24,7 +24,7 @@ HIGH_SCORE_MAP_ADDR     = $1000
 .segment "BSS"
 
 highScores:
-	.res (3+3)*20
+	.res (3+5)*20
 
 blankData:
 	.res 2
