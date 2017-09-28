@@ -33,9 +33,9 @@
 
             .import 	antiheroSplash
 
-            .import spriteTrickIRQVTimer
-            .import spriteTrickIRQValue
-            .import spriteTrickIndex
+            .import 	spriteTrickIRQVTimer
+            .import 	spriteTrickIRQValue
+            .importzp 	spriteTrickIndex
 
 MAIN_DATA_BANK = $00
 

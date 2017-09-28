@@ -25,7 +25,7 @@
 			.export 	playGame
 			.export 	spriteTrickIRQVTimer
 			.export 	spriteTrickIRQValue
-			.export 	spriteTrickIndex
+			.exportzp 	spriteTrickIndex
 
 .segment "BSS"
 
