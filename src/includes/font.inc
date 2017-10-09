@@ -1,4 +1,5 @@
 .import initFont
+.import initFontBuffer
 .import setFontPalette
 .import enableSkipSpaces
 .import disableSkipSpaces
@@ -9,6 +10,7 @@
 .import writeFontString
 .import writeFontNumber
 .import clearFontZone
+.import copyFontBufferToVRAMOnceEvent
 
 .import fontTiles
 .import letterGreyPal

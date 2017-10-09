@@ -12,6 +12,7 @@ all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) cursor.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) events.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) game/play.asm
+	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) screen/screen.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) screen/highScore.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) screen/title.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) screen/option.asm

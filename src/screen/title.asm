@@ -17,6 +17,7 @@
 			.include	"../includes/enemy.inc"
             .include	"../includes/font.inc"
 			.include	"../includes/cursor.inc"
+			.include	"../includes/screen.inc"
 
             .export 	titleScreen
             .import 	letterSplash
@@ -27,7 +28,7 @@
 			.export 	titleScreenPal
 
 TITLE_TILE_ADDR	= $0000
-TITLE_MAP_ADDR     = $1000
+TITLE_MAP_ADDR	= $1000
 
 .segment "BANK1"
 
@@ -83,6 +84,8 @@ titleCursorList:
 .proc titleScreen
 
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
+
+	;WRAMLoad titleScreenMap, screenBuffer, $800
 
 	jsr removeAllEvent
 

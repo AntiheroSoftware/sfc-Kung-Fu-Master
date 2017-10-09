@@ -433,7 +433,9 @@ lineLoop:							; loop for each line
     and #ENEMY_MS_BLOCK_NUMBER_MASK
     cmp #$00
     bne continueLineLoop			; if no block it's the end
+
 	jmp endLineLoop
+
 continueLineLoop:
 	lda ($01,s),Y					; load number block for this line + status
     pha								; save it to the stack
@@ -447,18 +449,20 @@ continueLineLoop:
     adc EnemyCurrentYOffset
 
 	cmp #$e0
-	bcc :+
+	bcc :+							; if Y < 244 continue to handle the line
+
 
 	pla
+	and #ENEMY_MS_BLOCK_NUMBER_MASK ; get back number of block for this line
 skipLineLoop:
 	iny
 	iny
-	iny
-	iny
+	iny								; skip data for that line
 	dec
 	cmp #$00
 	bne skipLineLoop
 
+	iny								; goto next line index
 	bra lineLoop
 
 :
@@ -667,7 +671,7 @@ endLineLoop:
 fillLoop:
     lda spriteCounter
     cmp #$08
-    beq endFillLoop
+    bcs endFillLoop					; if a >= $08
 
     lda #$e0
     sta oamData+1,X                 ; V (Y) pos of the sprite
@@ -709,6 +713,10 @@ endFillLoop:
     plp
     rts
 .endproc
+
+.export setEnemyOAM_lineLoop = setEnemyOAM::lineLoop
+.export setEnemyOAM_skiplineLoop = setEnemyOAM::skipLineLoop
+.export setEnemyOAM_fillLoop = setEnemyOAM::fillLoop
 
 ;******************************************************************************
 ;*** animEnemy ****************************************************************
@@ -1190,6 +1198,9 @@ skipAnim:
 ;******************************************************************************
 ;*** enemyGrabFall ************************************************************
 ;******************************************************************************
+;*** A contains enemyFlag                                                   ***
+;*** X contains enemy data struct index    									***
+;******************************************************************************
 
 .proc enemyGrabFall
 
@@ -1272,7 +1283,6 @@ skipAnim:
 	; TODO set enemy X offset
 
 	txa											; slot to anim
-	_EnemyDataIndexSetFromAccumulator
 	jsr animEnemy
 
 	stz EnemyCurrentYOffset

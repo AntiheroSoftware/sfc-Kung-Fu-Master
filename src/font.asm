@@ -11,6 +11,7 @@
 			.include	"includes/fontData.inc"
 
 			.export 	initFont
+			.export 	initFontBuffer
 			.export 	setFontPalette
 			.export 	enableSkipSpaces
 			.export 	disableSkipSpaces
@@ -21,6 +22,7 @@
 			.export 	writeFontString
 			.export 	writeFontNumber
 			.export 	clearFontZone
+			.export 	copyFontBufferToVRAMOnceEvent
 
 			.export 	fontTiles
 
@@ -50,6 +52,8 @@
             .export 	gamePausedString
 
             .export skipSpaces
+            .export _writeToVRAM
+            .export _writeToBuffer
 
 .segment "BSS"
 
@@ -76,6 +80,14 @@ fontMapPtr:
 
 fontTileOffset:
 	.res	1
+
+writeFunctionPtr:
+	.res 	2
+
+.segment "ZEROPAGE"
+
+bufferPtr:
+	.res	2
 
 .segment "CODE"
 
@@ -115,11 +127,31 @@ fontTileOffset:
     lda #$00
     sta skipLeadingZero
 
+    ldx #.LOWORD(_writeToVRAM)
+    stx writeFunctionPtr
+
     plp
     plx
     pla
 
     rts
+.endproc
+
+;******************************************************************************
+;*** initFontBuffer ***********************************************************
+;******************************************************************************
+;*** X contains buffer address         										***
+;******************************************************************************
+
+.proc initFontBuffer
+	phx
+	stx bufferPtr
+
+	ldx #.LOWORD(_writeToBuffer)
+	stx writeFunctionPtr
+
+	plx
+	rts
 .endproc
 
 ;******************************************************************************
@@ -299,10 +331,10 @@ endY:
 ;******************************************************************************
 
 .proc writeFontString
-    phy
+    phy				; save Y
     pha             ; save A
-    phx
-    php
+    phx				; save X
+    php				; save register state
 
     rep #$10        ; A -> 8 bit
     sep #$20        ; X, Y -> 16 bit
@@ -318,7 +350,7 @@ loop:
     beq stop
 
     cmp #$08
-    bcs checkEndOfLine
+    bcs checkEndOfLine	; current char is less than 8
 
 paletteChange:
 	asl
@@ -338,14 +370,13 @@ endOfLine:
     bra skip
 
 notEndOfLine:
-
     cmp     #$61    ; toUpper A
     bcc     toUpperEnd
     cmp     #$7B
     bcs     toUpperEnd
     sbc     #$20
-toUpperEnd:
 
+toUpperEnd:
     sbc #$1F        ; remove $20 from A
 
     cmp #$00		; skip space (might need to change)
@@ -356,7 +387,7 @@ toUpperEnd:
 	bne next
 
 notSpace:
-	jsr _writeToVRAM
+	jsr _write
 
     iny             ; increment Y
 	inx             ; increment X
@@ -428,7 +459,7 @@ printFirst:
 	clc
 	adc #$10
 
-	jsr _writeToVRAM
+	jsr _write
 
 	lda #$ff
 	sta leadingZero
@@ -493,11 +524,10 @@ end:
 	php
 
 	phx 			; save X
+	pha
 
 loopY:
 loopX:
-
-	pha
 
 	;*** calculate VRAM address
 
@@ -520,6 +550,7 @@ loopX:
 
 	pla
 	sta $2118
+	pha
 
 	lda #$00
 	sta $2119
@@ -538,10 +569,21 @@ loopX:
 	cpy #$0000
 	bne loopY
 
+	pla
 	plx				; restore stack
 
 	plp
 	rts
+.endproc
+
+;******************************************************************************
+;*** _write *************************************************************
+;******************************************************************************
+;*** A contains char to print  												***
+;******************************************************************************
+
+.proc _write
+	jmp (writeFunctionPtr)
 .endproc
 
 ;******************************************************************************
@@ -585,4 +627,49 @@ loopX:
 
 	plp
 	rts
+.endproc
+
+;******************************************************************************
+;*** _writeToBuffer ***********************************************************
+;******************************************************************************
+;*** A contains char to print  												***
+;******************************************************************************
+
+.proc _writeToBuffer
+	php
+	pha
+	phx
+	phy
+
+	ldx bufferPtr
+	ldy cursorPos
+
+	clc
+	adc fontTileOffset
+	sta (bufferPtr),Y
+
+	iny
+
+	lda fontMapHigh
+	sta (bufferPtr),Y
+
+	ply
+	plx
+	pla
+	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** copyFontBufferToVRAMOnceEvent ********************************************
+;******************************************************************************
+;*** X contains VRAM destination address 									***
+;******************************************************************************
+
+.proc copyFontBufferToVRAMOnceEvent
+
+	VRAMLoad (bufferPtr), $1000, $800
+	lda #$00
+	rtl
+
 .endproc

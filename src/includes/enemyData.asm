@@ -130,7 +130,7 @@ grabbingWalk3:						; 6 sprite blocks
 	.byte  			  					  $10, $01, $08
 	.byte   ENEMY_MS_GRAB_PAL + $02, $30, $01, $10, $06
 	.byte 			  					  $10, $01, $08
-	.byte	ENEMY_MS_GRAB_PAL + $00
+	.byte	$00
 
 grabbingArmUpWalk1:					; 4 sprite blocks
 	.byte   ENEMY_MS_GRAB_PAL + $01, $00, $09, $09, $02

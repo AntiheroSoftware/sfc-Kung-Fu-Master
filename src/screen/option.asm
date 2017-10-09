@@ -15,6 +15,7 @@
 			.include	"../includes/events.inc"
             .include	"../includes/font.inc"
 			.include	"../includes/cursor.inc"
+			.include	"../includes/screen.inc"
 
             .export 	optionScreen
             .import 	titleScreen
@@ -23,21 +24,11 @@
             .import 	titleScreenMap
             .import 	titleScreenPal
 
+            .export optionsString
+            .export optionExitString
+
 OPTION_TILE_ADDR	= $0000
 OPTION_MAP_ADDR     = $1000
-
-.segment "BANK1"
-
-/*
-titleScreenTiles:
-    .incbin "../ressource/titleScreen.pic"
-
-titleScreenMap:
-    .incbin "../ressource/titleScreen.map"
-
-titleScreenPal:
-    .incbin "../ressource/titleScreen.clr"
-*/
 
 .segment "RODATA"
 
@@ -90,33 +81,37 @@ optionsString:
     .byte $01,"LIVES",$0a,$0a
     .byte $01,"CONTINUE",$0a,$0a
     .byte $01,"DIFFICULTY",$0a,$0a
+optionExitString:
     .byte $01,"EXIT",$00
 
 .proc optionScreen
-
-	setINIDSP $80   				; Enable forced VBlank during DMA transfer
 
 	jsr removeAllEvent
 
 	setBG1SC OPTION_MAP_ADDR, $00
 	setBG12NBA OPTION_TILE_ADDR, $0000
 
-	;VRAMLoad titleScreenTiles, OPTION_TILE_ADDR, $11A0
-	VRAMLoad titleScreenMap, OPTION_MAP_ADDR, $800
-	;CGRAMLoad titleScreenPal, $00, $20
-
 	;*** Font data loading ***
 	;*************************
 
-	;VRAMLoad fontTiles, $08D0, $0800
-	;CGRAMLoad titleScreenWhitePal, $10, $20
-	;CGRAMLoad titleScreenYellowPal, $20, $20
-	;CGRAMLoad titleScreenWhiteRedPal, $30, $20
+	wai 							; wait for interrupt (VBLANK)
 
 	lda #$01
 	ldx #OPTION_MAP_ADDR
 	ldy #$008d
 	jsr initFont
+
+	ldx #.LOWORD(screenBuffer)
+	jsr initFontBuffer
+
+	ldx #$000c
+	ldy #$000a
+	jsr setFontCursorPosition
+
+	;lda #$01
+	;ldx #$000a
+	;ldy #$0007
+	;jsr clearFontZone
 
 	ldx #$000c
 	ldy #$000a
@@ -124,6 +119,12 @@ optionsString:
 
 	ldx #.LOWORD(optionsString)
 	jsr writeFontString
+
+	setINIDSP $80   				; Enable forced VBlank during DMA transfer
+
+	VRAMLoad screenBuffer, OPTION_MAP_ADDR, $800
+
+	setINIDSP $0f   				; Enable screen full brightness
 
 	;*** End of font stuff ***
 	;*************************
@@ -140,13 +141,13 @@ optionsString:
 	ldy #$0000
 	jsr addEvent
 
-	; set the event that transfer hero tile data
+	; set the event that handle knife cursor
 	lda #.BANKBYTE(cursorEvent)
 	ldx #.LOWORD(cursorEvent)
 	ldy #$0001
 	jsr addEvent
 
-	setINIDSP $0f   				; Enable screen full brightness
+	; TODO clear hero sprite
 
 infiniteLoop:
 
