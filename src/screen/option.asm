@@ -108,23 +108,12 @@ optionExitString:
 	ldy #$000a
 	jsr setFontCursorPosition
 
-	;lda #$01
-	;ldx #$000a
-	;ldy #$0007
-	;jsr clearFontZone
-
 	ldx #$000c
 	ldy #$000a
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(optionsString)
 	jsr writeFontString
-
-	setINIDSP $80   				; Enable forced VBlank during DMA transfer
-
-	VRAMLoad screenBuffer, OPTION_MAP_ADDR, $800
-
-	setINIDSP $0f   				; Enable screen full brightness
 
 	;*** End of font stuff ***
 	;*************************
@@ -145,6 +134,12 @@ optionExitString:
 	lda #.BANKBYTE(cursorEvent)
 	ldx #.LOWORD(cursorEvent)
 	ldy #$0001
+	jsr addEvent
+
+	; set the event that copy the buffer to VRAM only once
+	lda #.BANKBYTE(copyFontBufferToVRAMOnceEvent)
+	ldx #.LOWORD(copyFontBufferToVRAMOnceEvent)
+	ldy #$0002
 	jsr addEvent
 
 	; TODO clear hero sprite

@@ -85,7 +85,7 @@ titleCursorList:
 
 	setINIDSP $80   				; Enable forced VBlank during DMA transfer
 
-	;WRAMLoad titleScreenMap, screenBuffer, $800
+	WRAMLoad titleScreenMap, screenBuffer, $800 	; copy title screen map to WRAM
 
 	jsr removeAllEvent
 

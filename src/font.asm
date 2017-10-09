@@ -641,8 +641,25 @@ loopX:
 	phx
 	phy
 
+	pha
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	asl
+	tay
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	pla
+
 	ldx bufferPtr
-	ldy cursorPos
+	;ldy cursorPos
 
 	clc
 	adc fontTileOffset

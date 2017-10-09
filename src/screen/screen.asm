@@ -12,5 +12,4 @@
 .segment "BSS"
 
 screenBuffer:
-	;.res	$800
-	.res	0
+	.res	$800
