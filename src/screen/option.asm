@@ -16,6 +16,7 @@
             .include	"../includes/font.inc"
 			.include	"../includes/cursor.inc"
 			.include	"../includes/screen.inc"
+			.include	"../includes/hero.inc"
 
             .export 	optionScreen
             .import 	titleScreen
@@ -44,32 +45,39 @@ OPTION_MAP_ADDR     = $1000
 ;******************************************************************************
 
 optionCursorList:
-	.word $004a
-	.byte $4b
+	.word $0020
+	.byte $53
 	.byte .BANKBYTE(titleScreen)
 	.word .LOWORD(titleScreen)
-	.byte $18
+	.byte $20
 	.byte $08
 
-	.word $004a
-	.byte $5b
+	.word $0020
+	.byte $63
 	.byte .BANKBYTE(titleScreen)
 	.word .LOWORD(titleScreen)
 	.byte $00
 	.byte $10
 
-	.word $004a
-	.byte $6b
+	.word $0020
+	.byte $73
 	.byte .BANKBYTE(titleScreen)
 	.word .LOWORD(titleScreen)
 	.byte $08
 	.byte $18
 
-	.word $004a
-	.byte $7b
+	.word $0020
+	.byte $83
 	.byte .BANKBYTE(titleScreen)
 	.word .LOWORD(titleScreen)
 	.byte $10
+	.byte $20
+
+	.word $0020
+	.byte $93
+	.byte .BANKBYTE(titleScreen)
+	.word .LOWORD(titleScreen)
+	.byte $18
 	.byte $00
 
 .segment "CODE"
@@ -78,9 +86,10 @@ optionCursorList:
 .I16
 
 optionsString:
-    .byte $01,"LIVES",$0a,$0a
-    .byte $01,"CONTINUE",$0a,$0a
-    .byte $01,"DIFFICULTY",$0a,$0a
+    .byte $01,"DIFFICULTY ",$02,"< NORMAL >",$01,$0a,$0a
+    .byte $01,"LIVES      ",$02,"< 3 >",$01,$0a,$0a
+    .byte $01,"CONTINUE   ",$02,"< 3 >",$01,$0a,$0a
+    .byte $01,"SOUND      ",$02,"< STEREO >",$01,$0a,$0a
 optionExitString:
     .byte $01,"EXIT",$00
 
@@ -94,8 +103,6 @@ optionExitString:
 	;*** Font data loading ***
 	;*************************
 
-	wai 							; wait for interrupt (VBLANK)
-
 	lda #$01
 	ldx #OPTION_MAP_ADDR
 	ldy #$008d
@@ -104,12 +111,8 @@ optionExitString:
 	ldx #.LOWORD(screenBuffer)
 	jsr initFontBuffer
 
-	ldx #$000c
-	ldy #$000a
-	jsr setFontCursorPosition
-
-	ldx #$000c
-	ldy #$000a
+	ldx #$0007
+	ldy #$000b
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(optionsString)
@@ -142,7 +145,9 @@ optionExitString:
 	ldy #$0002
 	jsr addEvent
 
-	; TODO clear hero sprite
+	; clear hero sprite
+	jsr clearHeroSprite
+	jsr OAMDataUpdated
 
 infiniteLoop:
 

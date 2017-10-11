@@ -22,6 +22,7 @@
             .include    "includes/hero.inc"
 
             .export 	initHeroSprite
+            .export 	clearHeroSprite
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
 			.export		spriteCounter

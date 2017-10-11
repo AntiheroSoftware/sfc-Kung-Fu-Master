@@ -1,6 +1,7 @@
 .IFNDEF HERO_MAIN_CODE
 
     .import 	initHeroSprite
+    .import     clearHeroSprite
     .import     transferHeroSpriteDataEvent
     .import     reactHero
     .importzp   heroXOffset

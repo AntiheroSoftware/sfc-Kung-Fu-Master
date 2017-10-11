@@ -87,7 +87,7 @@ writeFunctionPtr:
 .segment "ZEROPAGE"
 
 bufferPtr:
-	.res	2
+	.res	3						;
 
 .segment "CODE"
 
@@ -146,6 +146,7 @@ bufferPtr:
 .proc initFontBuffer
 	phx
 	stx bufferPtr
+	stz bufferPtr+2
 
 	ldx #.LOWORD(_writeToBuffer)
 	stx writeFunctionPtr
