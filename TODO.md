@@ -3,6 +3,7 @@ IN PROGRESS
 
 * implement first draft of upcoming grabbing enemies
 * option screen
+* bug when quitting pause in game
 
 BUGS
 ====
