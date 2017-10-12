@@ -525,7 +525,7 @@ end:
 	php
 
 	phx 			; save X
-	pha
+	pha				; save char to outout
 
 loopY:
 loopX:
@@ -564,8 +564,10 @@ loopX:
 	jsr setFontCursorPositionNewLine
 	dey
 
+	pla				; TODO might be optimized
 	plx
 	phx
+	pha
 
 	cpy #$0000
 	bne loopY

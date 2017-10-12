@@ -3,7 +3,6 @@ IN PROGRESS
 
 * implement first draft of upcoming grabbing enemies
 * option screen
-* bug when quitting pause in game
 
 BUGS
 ====
@@ -41,6 +40,7 @@ TODO
 DONE
 ====
 
+* ~~bug when quitting pause in game~~ fixzs 12/10/17
 * ~~split main.asm and remove splash and intro code from it~~ fixed 11/05/17
 * ~~select on main screen~~ fixed 11/05/17
 * ~~use superfamicheck~~ fixed 09/05/17
