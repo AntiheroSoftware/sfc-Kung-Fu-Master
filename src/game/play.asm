@@ -22,10 +22,13 @@
 			.include	"../includes/hit.inc"
 			.include	"../includes/font.inc"
 
+			.import 	titleScreen
+
 			.export 	playGame
 			.export 	spriteTrickIRQVTimer
 			.export 	spriteTrickIRQValue
 			.exportzp 	spriteTrickIndex
+			.export 	gameHeroDie
 
 .segment "BSS"
 
@@ -33,6 +36,9 @@ gamePaused:
 	.res 1
 
 gamePausedUpdated:
+	.res 1
+
+gameHeroDie:
 	.res 1
 
 .segment "ZEROPAGE"
@@ -64,6 +70,7 @@ spriteTrickIRQValue:
 	lda #$00
 	sta gamePaused					; init game pause values
 	sta gamePausedUpdated
+	sta gameHeroDie
 
 	jsr initEvents					; reset events
 
@@ -108,6 +115,8 @@ spriteTrickIRQValue:
 
 	;*** End of font stuff ***
 	;*************************
+
+levelRestart:
 
 	lda #HERO_GAME_SCREEN_Y_OFFSET
 	jsr initHeroSprite
@@ -162,6 +171,24 @@ gameStartInfiniteLoop:
 	sta gamePausedUpdated
 
 noStartPressed:
+
+	lda gameHeroDie
+	cmp #$01
+	bne noHeroDie
+
+	stz gameHeroDie					; reset hero die flag
+
+	lda livesCounter
+	cmp #$00
+	bne :+
+
+	jmp titleScreen
+
+:	lda #$40
+	jsr setEnergyPlayer
+	bra levelRestart
+
+noHeroDie:
 
 	lda gamePaused
 	cmp #$01						; check if game paused

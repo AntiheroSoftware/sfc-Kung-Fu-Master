@@ -19,7 +19,7 @@
 			.include	"../includes/hero.inc"
 
             .export 	optionScreen
-            .import 	titleScreen
+            .import 	titleScreenReload
 
             .import 	titleScreenTiles
             .import 	titleScreenMap
@@ -47,36 +47,36 @@ OPTION_MAP_ADDR     = $1000
 optionCursorList:
 	.word $0020
 	.byte $53
-	.byte .BANKBYTE(titleScreen)
-	.word .LOWORD(titleScreen)
+	.byte .BANKBYTE(titleScreenReload)
+	.word .LOWORD(titleScreenReload)
 	.byte $20
 	.byte $08
 
 	.word $0020
 	.byte $63
-	.byte .BANKBYTE(titleScreen)
-	.word .LOWORD(titleScreen)
+	.byte .BANKBYTE(titleScreenReload)
+	.word .LOWORD(titleScreenReload)
 	.byte $00
 	.byte $10
 
 	.word $0020
 	.byte $73
-	.byte .BANKBYTE(titleScreen)
-	.word .LOWORD(titleScreen)
+	.byte .BANKBYTE(titleScreenReload)
+	.word .LOWORD(titleScreenReload)
 	.byte $08
 	.byte $18
 
 	.word $0020
 	.byte $83
-	.byte .BANKBYTE(titleScreen)
-	.word .LOWORD(titleScreen)
+	.byte .BANKBYTE(titleScreenReload)
+	.word .LOWORD(titleScreenReload)
 	.byte $10
 	.byte $20
 
 	.word $0020
 	.byte $93
-	.byte .BANKBYTE(titleScreen)
-	.word .LOWORD(titleScreen)
+	.byte .BANKBYTE(titleScreenReload)
+	.word .LOWORD(titleScreenReload)
 	.byte $18
 	.byte $00
 
@@ -110,6 +110,15 @@ optionExitString:
 
 	ldx #.LOWORD(screenBuffer)
 	jsr initFontBuffer
+
+	ldx #$000c
+	ldy #$000a
+	jsr setFontCursorPosition
+
+	lda #$01
+	ldx #$0009
+	ldy #$0005
+	jsr clearFontZone
 
 	ldx #$0007
 	ldy #$000b

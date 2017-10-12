@@ -54,6 +54,8 @@
             .export skipSpaces
             .export _writeToVRAM
             .export _writeToBuffer
+            .export _clearToVRAM
+			.export _clearToBuffer
 
 .segment "BSS"
 
@@ -82,6 +84,9 @@ fontTileOffset:
 	.res	1
 
 writeFunctionPtr:
+	.res 	2
+
+clearFunctionPtr:
 	.res 	2
 
 .segment "ZEROPAGE"
@@ -130,6 +135,9 @@ bufferPtr:
     ldx #.LOWORD(_writeToVRAM)
     stx writeFunctionPtr
 
+    ldx #.LOWORD(_clearToVRAM)
+	stx clearFunctionPtr
+
     plp
     plx
     pla
@@ -150,6 +158,9 @@ bufferPtr:
 
 	ldx #.LOWORD(_writeToBuffer)
 	stx writeFunctionPtr
+
+	ldx #.LOWORD(_clearToBuffer)
+	stx clearFunctionPtr
 
 	plx
 	rts
@@ -530,31 +541,7 @@ end:
 loopY:
 loopX:
 
-	;*** calculate VRAM address
-
-	rep #$30
-	.A16
-	.I16
-
-	lda cursorPos
-	clc
-	adc fontMapPtr
-
-	sta $2116
-
-	inc cursorPos
-
-	rep #$10
-	sep #$20
-	.A8
-	.I16
-
-	pla
-	sta $2118
-	pha
-
-	lda #$00
-	sta $2119
+	jsr _clear
 
 	dex             ; decrement X
 
@@ -672,6 +659,102 @@ loopX:
 
 	lda fontMapHigh
 	sta (bufferPtr),Y
+
+	ply
+	plx
+	pla
+	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** _clear *******************************************************************
+;******************************************************************************
+;*** A contains char to use to clear  										***
+;******************************************************************************
+
+.proc _clear
+	jmp (clearFunctionPtr)
+.endproc
+
+;******************************************************************************
+;*** _clearToVRAM *************************************************************
+;******************************************************************************
+;*** A contains char to use to clear  										***
+;******************************************************************************
+
+.proc _clearToVRAM
+	php
+
+	pha
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	clc
+	adc fontMapPtr
+
+	sta $2116
+
+	inc cursorPos
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	pla
+	sta $2118
+	pha
+
+	lda #$00
+	sta $2119
+
+	pla
+	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** _clearToBuffer ***********************************************************
+;******************************************************************************
+;*** A contains char to use to clear  										***
+;******************************************************************************
+
+.proc _clearToBuffer
+	php
+	pha
+	phx
+	phy
+
+	pha
+
+	rep #$30
+	.A16
+	.I16
+
+	lda cursorPos
+	asl
+	tay
+
+	rep #$10
+	sep #$20
+	.A8
+	.I16
+
+	ldx bufferPtr
+
+	pla
+	sta (bufferPtr),Y
+
+	iny
+
+	lda #$00
+	sta (bufferPtr),Y
+
+	inc cursorPos
 
 	ply
 	plx

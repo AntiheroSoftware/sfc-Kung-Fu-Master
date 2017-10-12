@@ -21,6 +21,9 @@
             			HERO_MAIN_CODE = 1
             .include    "includes/hero.inc"
 
+            .import 	playGame
+            .import 	gameHeroDie
+
             .export 	initHeroSprite
             .export 	clearHeroSprite
             .export 	transferHeroSpriteDataEvent
@@ -1057,8 +1060,9 @@ endHeroPadCheck:
 	dec
 	jsr setLiveCounter				; update live counter
 
-	;*** TODO  restart level
-	;**************************
+	; We state to the main loop that the hero is dead
+	lda #$01
+	sta gameHeroDie
 
 	bra :+++
 

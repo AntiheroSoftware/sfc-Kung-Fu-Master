@@ -87,8 +87,6 @@ titleCursorList:
 
 	WRAMLoad titleScreenMap, screenBuffer, $800 	; copy title screen map to WRAM
 
-	jsr removeAllEvent
-
 	setBG1SC TITLE_MAP_ADDR, $00
 	setBG12NBA TITLE_TILE_ADDR, $0000
 
@@ -104,10 +102,24 @@ titleCursorList:
 	CGRAMLoad titleScreenYellowPal, $20, $20
 	CGRAMLoad titleScreenWhiteRedPal, $30, $20
 
+titleScreenReload:
+
 	lda #$01
 	ldx #TITLE_MAP_ADDR
 	ldy #$008d
 	jsr initFont
+
+	ldx #.LOWORD(screenBuffer)
+	jsr initFontBuffer
+
+	ldx #$0007
+	ldy #$000b
+	jsr setFontCursorPosition
+
+	lda #$01
+	ldx #$0015
+	ldy #$0009
+	jsr clearFontZone
 
 	ldx #$000c
 	ldy #$000a
@@ -133,6 +145,12 @@ titleCursorList:
 	lda #$11         				; enable main screen 1 +sprite
 	sta $212c
 
+	; reset BG1 scroll register
+	stz $210d
+	stz $210e
+
+	jsr removeAllEvent
+
 	; set the event that copy OAM data
 	lda #.BANKBYTE(copyOAMEvent)
 	ldx #.LOWORD(copyOAMEvent)
@@ -152,6 +170,12 @@ titleCursorList:
 	lda #.BANKBYTE(cursorEvent)
 	ldx #.LOWORD(cursorEvent)
 	ldy #$0002
+	jsr addEvent
+
+	; set the event that copy the buffer to VRAM only once
+	lda #.BANKBYTE(copyFontBufferToVRAMOnceEvent)
+	ldx #.LOWORD(copyFontBufferToVRAMOnceEvent)
+	ldy #$0003
 	jsr addEvent
 
 	setINIDSP $0f   				; Enable screen full brightness
@@ -174,3 +198,5 @@ skipToWait:
 	bra infiniteLoop
 
 .endproc
+
+.export 	titleScreenReload = titleScreen::titleScreenReload
