@@ -19,6 +19,8 @@
             .export 	updateEnergyPlayer
             .export 	setEnergyPlayer
             .export 	energyPlayer
+            .export 	setEnergyEnemy
+			.export 	energyEnemy
             .export 	setLiveCounter
 			.export 	livesCounter
 			.export 	updateScorePlayer1
@@ -57,7 +59,7 @@ scoreTop:
 energyPlayer:
 	.res 1
 
-energyEnnemy:
+energyEnemy:
 	.res 1
 
 timeCounter:
@@ -98,7 +100,7 @@ dragonCounter:
 
 	lda #$40
 	sta energyPlayer
-	sta energyEnnemy
+	sta energyEnemy
 
 	ldx #$2000
 	stx timeCounter
@@ -391,18 +393,18 @@ end:
 .endproc
 
 ;******************************************************************************
-;*** setEnergyEnnemy functions ************************************************
+;*** setEnergyEnemy functions ************************************************
 ;******************************************************************************
 ;*** A contains new energy value (0 - 64)                                   ***
 ;******************************************************************************
 
-.proc setEnergyEnnemy
+.proc setEnergyEnemy
 
 	phx
 	phy
 	php
 
-	sta energyEnnemy
+	sta energyEnemy
 
 	pha								; save a
 

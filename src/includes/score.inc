@@ -3,6 +3,8 @@
 .import 	updateEnergyPlayer
 .import     energyPlayer
 .import 	setEnergyPlayer
+.import     energyEnemy
+.import 	setEnergyEnemy
 .import 	setLiveCounter
 .import 	livesCounter
 .import 	updateScorePlayer1
