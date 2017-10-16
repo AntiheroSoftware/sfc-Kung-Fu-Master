@@ -2,7 +2,9 @@ IN PROGRESS
 ===========
 
 * implement first draft of upcoming grabbing enemies
-* option screen (a button and left/right)
+* high score screen
+* make hero lose a life and restart level or game over
+* implement "player 1" message at level start
 
 BUGS
 ====
@@ -30,15 +32,12 @@ TODO
 
 * implement knife enemy
 
-* make hero lose a life and restart level or game over
-
-* implement "player 1" message at level start 
-
 * add event in start of level (print message + hero moving alone)
 
 DONE
 ====
 
+* ~~option screen controls (a button and left/right)~~ fixed 16/10/17
 * ~~option screen~~ fixed 16/10/17
 * ~~snesgss is buggy with fastrom (spc_command seems faulty)~~ fixed since a while ;)
 * ~~bug when quitting pause in game~~ fixzs 12/10/17
