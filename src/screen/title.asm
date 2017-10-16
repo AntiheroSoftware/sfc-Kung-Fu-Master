@@ -52,6 +52,7 @@ titleScreenPal:
 ;*** dstAddr		word													***
 ;*** previousOffset	byte													***
 ;*** nextOffset		byte													***
+;*** padMask		word													***
 ;******************************************************************************
 
 titleCursorList:
@@ -59,22 +60,25 @@ titleCursorList:
 	.byte $4b
 	.byte .BANKBYTE(letterSplash)
 	.word .LOWORD(letterSplash)
-	.byte $10
-	.byte $08
+	.byte $14
+	.byte $0a
+	.word PAD_START | PAD_A
 
 	.word $004a
 	.byte $5b
 	.byte .BANKBYTE(letterSplash)
 	.word .LOWORD(letterSplash)
 	.byte $00
-	.byte $10
+	.byte $14
+	.word PAD_START | PAD_A
 
 	.word $004a
 	.byte $6b
 	.byte .BANKBYTE(optionScreen)
 	.word .LOWORD(optionScreen)
-	.byte $08
+	.byte $0a
 	.byte $00
+	.word PAD_START | PAD_A
 
 .segment "CODE"
 

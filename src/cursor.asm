@@ -30,6 +30,7 @@ CURSOR_OAM_OFFSET_2 = $21d
 ;*** dstAddr		word													***
 ;*** previousOffset	byte													***
 ;*** nextOffset		byte													***
+;*** padMask		word													***
 ;******************************************************************************
 
 /*
@@ -39,22 +40,25 @@ cursorList:
 	.byte $4b
 	.byte .BANKBYTE(_gameStartIntro)
 	.word .LOWORD(_gameStartIntro)
-	.byte $10
-	.byte $08
+	.byte $14
+	.byte $0a
+	.word PAD_START
 
 	.word $004a
 	.byte $5b
 	.byte .BANKBYTE(_gameStartIntro)
 	.word .LOWORD(_gameStartIntro)
 	.byte $00
-	.byte $10
+	.byte $14
+	.word PAD_START
 
 	.word $004a
 	.byte $6b
 	.byte .BANKBYTE(_gameStartIntro)
 	.word .LOWORD(_gameStartIntro)
-	.byte $08
+	.byte $0a
 	.byte $00
+	.word PAD_START
 
 */
 
@@ -128,16 +132,24 @@ cursorTargetSet:
 	phx
 	php
 
-	lda padFirstPushData1
-	bit #PAD_START
-	beq checkForDOWN
+	rep #$20
+	.A16
 
 	ldx cursorListAddr
-	lda $03,x
+	lda padFirstPushData1
+	bit $08,X
+	beq checkForDOWN
+
+	sep #$20
+	.A8
+
+cursorActivated:
+	;ldx cursorListAddr
+	lda $03,X
 	sta cursorTarget+2
-	lda $04,x
+	lda $04,X
 	sta cursorTarget
-	lda $05,x
+	lda $05,X
 	sta cursorTarget+1
 
 	lda #$01
@@ -149,6 +161,9 @@ cursorTargetSet:
 	rtl
 
 checkForDOWN:
+
+	sep #$20
+	.A8
 
 	lda padFirstPushData1
 	bit #PAD_DOWN

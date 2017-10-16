@@ -45,6 +45,7 @@ OPTION_MAP_ADDR     = $1000
 ;*** dstAddr		word													***
 ;*** previousOffset	byte													***
 ;*** nextOffset		byte													***
+;*** padMask		word													***
 ;******************************************************************************
 
 optionCursorList:
@@ -52,36 +53,41 @@ optionCursorList:
 	.byte $53
 	.byte .BANKBYTE(updateDifficulty)
 	.word .LOWORD(updateDifficulty)
-	.byte $20
-	.byte $08
+	.byte $28
+	.byte $0a
+	.word PAD_START | PAD_A | PAD_LEFT | PAD_RIGHT
 
 	.word $0020
 	.byte $63
 	.byte .BANKBYTE(updateLives)
 	.word .LOWORD(updateLives)
 	.byte $00
-	.byte $10
+	.byte $14
+	.word PAD_START | PAD_A | PAD_LEFT | PAD_RIGHT
 
 	.word $0020
 	.byte $73
 	.byte .BANKBYTE(updateContinue)
 	.word .LOWORD(updateContinue)
-	.byte $08
-	.byte $18
+	.byte $0a
+	.byte $1e
+	.word PAD_START | PAD_A | PAD_LEFT | PAD_RIGHT
 
 	.word $0020
 	.byte $83
 	.byte .BANKBYTE(updateSound)
 	.word .LOWORD(updateSound)
-	.byte $10
-	.byte $20
+	.byte $14
+	.byte $28
+	.word PAD_START | PAD_A | PAD_LEFT | PAD_RIGHT
 
 	.word $0020
 	.byte $93
 	.byte .BANKBYTE(returnToTitleScreen)
 	.word .LOWORD(returnToTitleScreen)
-	.byte $18
+	.byte $1e
 	.byte $00
+	.word PAD_START | PAD_A
 
 difficultyPtrList:
 	.word .LOWORD(difficultyEasyString)
@@ -242,9 +248,31 @@ skipToWait:
 	phy
 	php
 
+	;*** START / A / RIGHT 	-> inc
+	;*** LEFT				-> dec
+	;********************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LEFT
+	beq nextValue
+
+previousValue:
+ 	lda settingsDifficultyIndex
+	dec
+	cmp #$ff
+	bne continue
+	lda #$03
+	bra continue
+
+nextValue:
 	lda settingsDifficultyIndex
-	; TODO currently next is the only implemented
 	inc
+	cmp #$04
+	bne continue
+	lda #$00
+	bra continue
+
+continue:
 
 	rep #$20
     .A16
@@ -257,12 +285,6 @@ skipToWait:
     sep #$20
 	.A8
 
-	lda difficultyValueList,X
-	cmp #$00
-	bne store
-
-	ldx #$0000
-	ldy #$0000
 	lda difficultyValueList,X
 
 store:
@@ -305,9 +327,31 @@ display:
   	phy
   	php
 
-  	lda settingsLivesIndex
-  	; TODO currently next is the only implemented
-  	inc
+	;*** START / A / RIGHT 	-> inc
+	;*** LEFT				-> dec
+	;********************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LEFT
+	beq nextValue
+
+previousValue:
+	lda settingsLivesIndex
+	dec
+	cmp #$ff
+	bne continue
+	lda #$02
+	bra continue
+
+nextValue:
+	lda settingsLivesIndex
+	inc
+	cmp #$03
+	bne continue
+	lda #$00
+	bra continue
+
+continue:
 
   	rep #$20
 	  .A16
@@ -320,12 +364,6 @@ display:
 	  sep #$20
 	.A8
 
-	lda livesValueList,X
-	cmp #$00
-	bne store
-
-	ldx #$0000
-	ldy #$0000
 	lda livesValueList,X
 
 store:
@@ -368,9 +406,31 @@ display:
 	phy
 	php
 
+	;*** START / A / RIGHT 	-> inc
+	;*** LEFT				-> dec
+	;********************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LEFT
+	beq nextValue
+
+previousValue:
 	lda settingsContinueIndex
-	; TODO currently next is the only implemented
+	dec
+	cmp #$ff
+	bne continue
+	lda #$02
+	bra continue
+
+nextValue:
+	lda settingsContinueIndex
 	inc
+	cmp #$03
+	bne continue
+	lda #$00
+	bra continue
+
+continue:
 
 	rep #$20
 	.A16
@@ -383,12 +443,6 @@ display:
 	sep #$20
 	.A8
 
-	lda continueValueList,X
-	cmp #$00
-	bne store
-
-	ldx #$0000
-	ldy #$0000
 	lda continueValueList,X
 
 store:
@@ -431,9 +485,31 @@ display:
   	phy
   	php
 
-  	lda settingsSoundIndex
-  	; TODO currently next is the only implemented
-  	inc
+	;*** START / A / RIGHT 	-> inc
+	;*** LEFT				-> dec
+	;********************************
+
+	lda padFirstPushDataLow1
+	bit #PAD_LEFT
+	beq nextValue
+
+previousValue:
+	lda settingsSoundIndex
+	dec
+	cmp #$ff
+	bne continue
+	lda #$01
+	bra continue
+
+nextValue:
+	lda settingsSoundIndex
+	inc
+	cmp #$02
+	bne continue
+	lda #$00
+	bra continue
+
+continue:
 
   	rep #$20
 	.A16
@@ -446,12 +522,6 @@ display:
 	sep #$20
 	.A8
 
-	lda soundValueList,X
-	cmp #$00
-	bne store
-
-	ldx #$0000
-	ldy #$0000
 	lda soundValueList,X
 
 store:
