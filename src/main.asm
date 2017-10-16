@@ -23,6 +23,7 @@
             .include	"includes/font.inc"
             .include	"includes/highScore.inc"
             .include	"includes/cursor.inc"
+            .include	"includes/settings.inc"
 
             .forceimport	__STARTUP__
 
@@ -61,6 +62,11 @@ MAIN_DATA_BANK = $00
 	jsl gss_setStereo				; buggy if called when in fastrom mode
 	lda #$00
 	jsl gss_playTrack
+
+	;**************************************************************************
+	;*** Settings init ********************************************************
+	;**************************************************************************
+	jsr initSettings
 
 	;*** Enable fastrom after music set ***
 	;**************************************

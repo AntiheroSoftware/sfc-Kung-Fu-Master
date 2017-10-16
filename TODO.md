@@ -2,17 +2,16 @@ IN PROGRESS
 ===========
 
 * implement first draft of upcoming grabbing enemies
-* option screen
+* option screen (a button and left/right)
 
 BUGS
 ====
 
 * some grab enemy have their hands up since the beginning
-* snesgss is buggy with fastrom (spc_command seems faulty)
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
 * Some issues with background level when scrolling, after a while or under special
 conditions the offset get screwed
-* Sometimes there is a bug where enemy fall a second time from upper position (eproduced it on first punch hit directly going on left) 
+* Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
 
 REFACTORING
 ===========
@@ -40,6 +39,8 @@ TODO
 DONE
 ====
 
+* ~~option screen~~ fixed 16/10/17
+* ~~snesgss is buggy with fastrom (spc_command seems faulty)~~ fixed since a while ;)
 * ~~bug when quitting pause in game~~ fixzs 12/10/17
 * ~~split main.asm and remove splash and intro code from it~~ fixed 11/05/17
 * ~~select on main screen~~ fixed 11/05/17

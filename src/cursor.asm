@@ -143,7 +143,7 @@ cursorTargetSet:
 	lda #$01
 	sta cursorTargetSet
 
-	lda #$00				; stop event
+	lda #$01				; continue event
 	plp
 	plx
 	rtl
