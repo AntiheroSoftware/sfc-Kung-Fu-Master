@@ -13,6 +13,7 @@
 			.include    "snes-sprite.inc"
 
 			.include	"../includes/base.inc"
+			.include	"../includes/common.inc"
 			.include	"../includes/events.inc"
 			.include	"../includes/hero.inc"
 			.include	"../includes/enemy.inc"
@@ -21,6 +22,7 @@
 			.include	"../includes/score.inc"
 			.include	"../includes/hit.inc"
 			.include	"../includes/font.inc"
+			.include	"../includes/screen.inc"
 
 			.import 	titleScreen
 
@@ -29,6 +31,8 @@
 			.export 	spriteTrickIRQValue
 			.exportzp 	spriteTrickIndex
 			.export 	gameHeroDie
+			.export 	levelStart
+			.export updateLevelMessageEvent
 
 .segment "BSS"
 
@@ -88,30 +92,10 @@ spriteTrickIRQValue:
 	ldy #$0059
 	jsr initFont
 
+	ldx #.LOWORD(screenBuffer)
+	jsr initFontBuffer
+
 	jsr disableSkipSpaces
-
-;	ldx #$0007
-;	ldy #$000b
-;	jsr setFontCursorPosition
-
-;	ldx #.LOWORD(onePlayerFirstFloorString)
-;	jsr writeFontString
-
-;	ldx #$000c
-;	ldy #$000e
-;	jsr setFontCursorPosition
-
-;	ldx #.LOWORD(readyString)
-;	jsr writeFontString
-
-;	ldx #$000c
-;	ldy #$000e
-;	jsr setFontCursorPosition
-
-;	lda #$00
-;	ldx #$0007
-;	ldy #$0002
-;	jsr clearFontZone
 
 	;*** End of font stuff ***
 	;*************************
@@ -156,6 +140,8 @@ levelRestart:
 	wai 							; Wait at least one NMI interrupt before setting full brightness
 
 	setINIDSP $0f   				; Enable screen full brightness
+
+	jsr levelStart
 
 gameStartInfiniteLoop:
 
@@ -226,12 +212,79 @@ gameStartContinue:
 .endproc
 
 ;******************************************************************************
-;*** Events *******************************************************************
+;*** levelStart ***************************************************************
 ;******************************************************************************
 
-.proc gameStartMessageEvent
+.proc levelStart
 
+	; Clear screenBuffer
+	WRAMClear blankData, screenBuffer, $0800
+
+	ldx #$0007
+	ldy #$0008
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(onePlayerFirstFloorString)
+	jsr writeFontString
+
+	; set the event that display game paused message
+	lda #.BANKBYTE(updateLevelMessageEvent)
+	ldx #.LOWORD(updateLevelMessageEvent)
+	ldy #EVENT_GAME_SCREEN_MESSAGE
+	jsr addEvent
+
+	ldx #$0100
+waitForReady:
+	wai
+	dex
+	cpx #$0000
+	bne waitForReady
+
+	ldx #$000c
+	ldy #$000b
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(readyString)
+	jsr writeFontString
+
+	; set the event that display game paused message
+	lda #.BANKBYTE(updateLevelMessageEvent)
+	ldx #.LOWORD(updateLevelMessageEvent)
+	ldy #EVENT_GAME_SCREEN_MESSAGE
+	jsr addEvent
+
+	ldx #$0300
+
+waitToStart:
+	wai
+	dex
+	cpx #$0000
+	bne waitToStart
+
+	;*** clear message
+	;********************
+
+	ldx #$0007
+	ldy #$0008
+	jsr setFontCursorPosition
+
+	lda #$00
+	ldx #$0012
+	ldy #$0005
+	jsr clearFontZone
+
+	; set the event that display game paused message
+	lda #.BANKBYTE(updateLevelMessageEvent)
+	ldx #.LOWORD(updateLevelMessageEvent)
+	ldy #EVENT_GAME_SCREEN_MESSAGE
+	jsr addEvent
+
+	rts
 .endproc
+
+;******************************************************************************
+;*** Events *******************************************************************
+;******************************************************************************
 
 .proc gamePauseMessageEvent
 	php
@@ -274,4 +327,17 @@ noUpdate:
 
 	plp
 	rtl
+.endproc
+
+;******************************************************************************
+;*** updateLevelMessageEvent **************************************************
+;******************************************************************************
+
+.proc updateLevelMessageEvent
+
+	; todo put reference from an include SCORE_MAP_ADDR
+	VRAMLoad (bufferPtr), $7C60, $400
+	lda #$00
+	rtl
+
 .endproc

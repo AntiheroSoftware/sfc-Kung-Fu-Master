@@ -8,6 +8,7 @@
             .feature	c_comments
 
             .include    "snes.inc"
+			.include	"../includes/common.inc"
 			.include	"../includes/highScoreData.inc"
             .include	"../includes/font.inc"
 
@@ -25,9 +26,6 @@ HIGH_SCORE_MAP_ADDR     = $1000
 
 highScores:
 	.res (3+5)*20
-
-blankData:
-	.res 2
 
 .segment "CODE"
 
@@ -172,7 +170,7 @@ loopSecondColumn:
 	jsr initFont
 
 	ldx #$0000
-	ldy #$0002
+	ldy #$0003
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(highScoreTitleString)

@@ -2,6 +2,7 @@ include Makefile.inc
 
 all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) main.asm
+	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) common.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) level.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) score.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) hero.asm
@@ -22,5 +23,5 @@ all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/irem.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/letter.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) snesgss.asm
-	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg main.o level.o score.o hero.o enemy.o enemyStrategy.o hit.o snesgss.o font.o cursor.o events.o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
+	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg main.o common.o level.o score.o hero.o enemy.o enemyStrategy.o hit.o snesgss.o font.o cursor.o events.o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
 	mv kungfumaster.sfc ..

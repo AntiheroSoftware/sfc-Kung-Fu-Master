@@ -11,6 +11,7 @@
 .import writeFontNumber
 .import clearFontZone
 .import copyFontBufferToVRAMOnceEvent
+.importzp bufferPtr
 
 .import fontTiles
 .import letterGreyPal

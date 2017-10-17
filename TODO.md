@@ -4,7 +4,6 @@ IN PROGRESS
 * implement first draft of upcoming grabbing enemies
 * high score screen
 * make hero lose a life and restart level or game over
-* implement "player 1" message at level start
 
 BUGS
 ====
@@ -37,6 +36,7 @@ TODO
 DONE
 ====
 
+* ~~implement "player 1" message at level start~~ fixed 17/10/17
 * ~~option screen controls (a button and left/right)~~ fixed 16/10/17
 * ~~option screen~~ fixed 16/10/17
 * ~~snesgss is buggy with fastrom (spc_command seems faulty)~~ fixed since a while ;)

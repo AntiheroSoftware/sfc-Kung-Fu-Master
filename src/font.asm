@@ -25,6 +25,7 @@
 			.export 	copyFontBufferToVRAMOnceEvent
 
 			.export 	fontTiles
+			.export 	bufferPtr
 
 			;***********************
 			;*** Palettes export ***

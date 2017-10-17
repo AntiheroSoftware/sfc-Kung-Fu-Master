@@ -18,6 +18,7 @@
             .include	"../includes/font.inc"
 			.include	"../includes/cursor.inc"
 			.include	"../includes/screen.inc"
+			.include	"../includes/highScore.inc"
 
             .export 	titleScreen
             .import 	letterSplash
