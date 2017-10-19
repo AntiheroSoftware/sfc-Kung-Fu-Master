@@ -12,6 +12,7 @@ all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) font.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) cursor.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) events.asm
+	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) scriptedPad.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) game/play.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) game/settings.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) screen/screen.asm
@@ -23,5 +24,5 @@ all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/irem.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/letter.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) snesgss.asm
-	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg main.o common.o level.o score.o hero.o enemy.o enemyStrategy.o hit.o snesgss.o font.o cursor.o events.o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
+	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg *o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
 	mv kungfumaster.sfc ..

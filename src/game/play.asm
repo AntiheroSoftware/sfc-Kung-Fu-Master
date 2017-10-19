@@ -23,6 +23,7 @@
 			.include	"../includes/hit.inc"
 			.include	"../includes/font.inc"
 			.include	"../includes/screen.inc"
+			.include	"../includes/scriptedPad.inc"
 
 			.import 	titleScreen
 
@@ -32,6 +33,8 @@
 			.exportzp 	spriteTrickIndex
 			.export 	gameHeroDie
 			.export 	levelStart
+
+			.export scriptedDataHeroLevelStart
 			.export updateLevelMessageEvent
 
 .segment "BSS"
@@ -61,10 +64,26 @@ spriteTrickIRQValue:
 	.byte %00010001
 	.byte %00011001
 
+;******************************************************************************
+;*** Data Structure ***********************************************************
+;******************************************************************************
+;*** number of frame (byte)													***
+;*** pad data (word)														***
+;******************************************************************************
+
+scriptedDataHeroLevelStart:
+	.byte $30						; 30 frames
+	.word PAD_LEFT					; left pressed
+	.byte $00
+
 .segment "CODE"
 
 .A8
 .I16
+
+;******************************************************************************
+;*** playGame *****************************************************************
+;******************************************************************************
 
 .proc playGame
 
@@ -96,6 +115,9 @@ spriteTrickIRQValue:
 	jsr initFontBuffer
 
 	jsr disableSkipSpaces
+
+	; Clear screenBuffer
+	WRAMClear blankData, screenBuffer, $0800
 
 	;*** End of font stuff ***
 	;*************************
@@ -141,7 +163,7 @@ levelRestart:
 
 	setINIDSP $0f   				; Enable screen full brightness
 
-	jsr levelStart
+	jsr levelStartIntro
 
 gameStartInfiniteLoop:
 
@@ -212,13 +234,10 @@ gameStartContinue:
 .endproc
 
 ;******************************************************************************
-;*** levelStart ***************************************************************
+;*** levelStartIntro **********************************************************
 ;******************************************************************************
 
-.proc levelStart
-
-	; Clear screenBuffer
-	WRAMClear blankData, screenBuffer, $0800
+.proc levelStartIntro
 
 	ldx #$0007
 	ldy #$0008
@@ -233,9 +252,16 @@ gameStartContinue:
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
-	ldx #$0100
+	ldx #$0010
+
 waitForReady:
+
 	wai
+	wai
+	wai
+	wai
+	wai								; Wait for 4 IRQ and NMI to happen
+
 	dex
 	cpx #$0000
 	bne waitForReady
@@ -253,10 +279,30 @@ waitForReady:
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
-	ldx #$0300
+	lda #.BANKBYTE(scriptedDataHeroLevelStart)
+	ldx #.LOWORD(scriptedDataHeroLevelStart)
+	jsr scriptedPadInit
+
+	ldx #$0050
 
 waitToStart:
+
+	phx
+
+	jsr scriptedPadReadData
+	jsr scriptedPadOverride
+
+	ldx padPushData1
+	jsr reactHero
+
 	wai
+	wai
+	wai
+	wai
+	wai								; Wait for 4 IRQ and NMI to happen
+
+	plx
+
 	dex
 	cpx #$0000
 	bne waitToStart
@@ -309,6 +355,8 @@ displayGamePausedMessage:
 	ldx #.LOWORD(gamePausedString)
 	jsr writeFontString
 
+	jsl updateLevelMessageEvent
+
 	bra noUpdate
 
 removeGamePausedMessage:
@@ -322,6 +370,8 @@ removeGamePausedMessage:
 	ldy #$0003
 	jsr clearFontZone
 
+	jsl updateLevelMessageEvent
+
 noUpdate:
 	lda #$01                        ; continue event value
 
@@ -334,10 +384,12 @@ noUpdate:
 ;******************************************************************************
 
 .proc updateLevelMessageEvent
-
-	; todo put reference from an include SCORE_MAP_ADDR
+	; TODO put reference from an include SCORE_MAP_ADDR
+	setINIDSP $80					; force VBLANK
 	VRAMLoad (bufferPtr), $7C60, $400
-	lda #$00
-	rtl
+	setINIDSP $0f					; restore full brighness
 
+	lda #$00						; just do this event once
+
+	rtl
 .endproc
