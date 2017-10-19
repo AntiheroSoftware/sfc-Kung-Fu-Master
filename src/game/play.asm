@@ -32,7 +32,7 @@
 			.export 	spriteTrickIRQValue
 			.exportzp 	spriteTrickIndex
 			.export 	gameHeroDie
-			.export 	levelStart
+			.export 	levelStartIntro
 
 			.export scriptedDataHeroLevelStart
 			.export updateLevelMessageEvent
@@ -240,7 +240,7 @@ gameStartContinue:
 .proc levelStartIntro
 
 	ldx #$0007
-	ldy #$0008
+	ldy #$0007
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(onePlayerFirstFloorString)
@@ -267,7 +267,7 @@ waitForReady:
 	bne waitForReady
 
 	ldx #$000c
-	ldy #$000b
+	ldy #$000a
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(readyString)
@@ -311,7 +311,7 @@ waitToStart:
 	;********************
 
 	ldx #$0007
-	ldy #$0008
+	ldy #$0007
 	jsr setFontCursorPosition
 
 	lda #$00
@@ -349,7 +349,7 @@ waitToStart:
 displayGamePausedMessage:
 
 	ldx #$0009
-	ldy #$000b
+	ldy #$0009
 	jsr setFontCursorPosition
 
 	ldx #.LOWORD(gamePausedString)
@@ -362,7 +362,7 @@ displayGamePausedMessage:
 removeGamePausedMessage:
 
 	ldx #$0009
-	ldy #$000b
+	ldy #$0009
 	jsr setFontCursorPosition
 
 	lda #$00

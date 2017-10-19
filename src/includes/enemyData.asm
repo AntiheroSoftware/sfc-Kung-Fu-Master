@@ -42,40 +42,40 @@ highByte:
 	.byte %11111111
 
 metaspriteStatusNormal:
-	.byte %00110011
-	.byte %00110101
-	.byte %00110111
-	.byte %00111001
-	.byte %10110011
-	.byte %10110101
-	.byte %10110111
-	.byte %10111001
-	.byte %00110010
-	.byte %00110100
-	.byte %00110110
-	.byte %00111000
-	.byte %10110010
-	.byte %10110100
-	.byte %10110110
-	.byte %10111000
+	.byte %00100011
+	.byte %00100101
+	.byte %00100111
+	.byte %00101001
+	.byte %10100011
+	.byte %10100101
+	.byte %10100111
+	.byte %10101001
+	.byte %00100010
+	.byte %00100100
+	.byte %00100110
+	.byte %00101000
+	.byte %10100010
+	.byte %10100100
+	.byte %10100110
+	.byte %10101000
 
 metaspriteStatusMirror:
-	.byte %01110011
-	.byte %01110101
-	.byte %01110111
-	.byte %01111001
-	.byte %11110011
-	.byte %11110101
-	.byte %11110111
-	.byte %11111001
-	.byte %01110010
-	.byte %01110100
-	.byte %01110110
-	.byte %01111000
-	.byte %11110010
-	.byte %11110100
-	.byte %11110110
-	.byte %11111000
+	.byte %01100011
+	.byte %01100101
+	.byte %01100111
+	.byte %01101001
+	.byte %11100011
+	.byte %11100101
+	.byte %11100111
+	.byte %11101001
+	.byte %01100010
+	.byte %01100100
+	.byte %01100110
+	.byte %01101000
+	.byte %11100010
+	.byte %11100100
+	.byte %11100110
+	.byte %11101000
 
 enemyFallYOffset:
 	.byte 0, 0, 1, 1, 2

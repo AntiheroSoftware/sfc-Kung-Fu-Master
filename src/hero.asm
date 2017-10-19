@@ -269,7 +269,7 @@ blockLoop:
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%00110000
+	lda #%00100000
 	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
 
 	inx
@@ -304,7 +304,7 @@ blockLoopMirror:
 	lda ($03,s),y
 	sta oamData+2,x                 ; Tile number
 
-	lda #%01110000
+	lda #%01100000
 	sta oamData+3,x                 ; no flip full priority palette 0 (8 global palette)
 
 	inx

@@ -308,7 +308,7 @@ initSettings              809C51 RLA    initSnes                  80A860 RLA
 insertNewHighScore        80A1DD  LA    iremSplash                809DE6 RLA    
 isEventActive             80AA3F RLA    letterGreyPal             848820 RLA    
 letterIntroString         808796 RLA    letterRedPal              848840 RLA    
-letterSplash              809EC8 RLA    levelStart                809B42  LA    
+letterSplash              809EC8 RLA    levelStartIntro           809B42  LA    
 livesCounter              000401 RLA    livesValueList            80ACBC RLA    
 oamData                   000D5D RLA    onePlayerFirstFloorString 8088A9 RLA    
 optionExitString          80A42B  LA    optionScreen              80A431 RLA    
@@ -459,7 +459,7 @@ gss_resumeTrack           8098C3  LA    gss_stopAll               8098D6  LA
 gss_setStereo             8098E6 RLA    gss_setMono               8098F9  LA    
 gss_setGlobalVolume       80990C  LA    gss_setChannelsVolume     80992B  LA    
 spc_load_data             80994A  LA    spc_command               8099B1  LA    
-playGame                  8099D7 RLA    levelStart                809B42  LA    
+playGame                  8099D7 RLA    levelStartIntro           809B42  LA    
 updateLevelMessageEvent   809C0D  LA    initSettings              809C51 RLA    
 antiheroSplash            809C86 RLA    splashScreenInit          809D68 RLA    
 splashScreenEvent         809D92 RLA    iremSplash                809DE6 RLA    
@@ -756,7 +756,7 @@ letterRedPal (font.o):
     letter.o                  splash/../includes/font.inc(18)
 letterSplash (letter.o):
     title.o                   screen/title.asm(24)
-levelStart (play.o):
+levelStartIntro (play.o):
 livesCounter (score.o):
     play.o                    game/../includes/score.inc(9)
     hero.o                    includes/score.inc(9)
