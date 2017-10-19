@@ -202,11 +202,7 @@ noHeroDie:
 	cmp #$01						; check if game paused
 	bne gameStartContinue
 
-	wai
-	wai
-	wai
-	wai
-	wai								; Wait for 4 IRQ and NMI to happen
+	jsr waitForVBlank
 
 	bra gameStartInfiniteLoop
 
@@ -223,11 +219,7 @@ gameStartContinue:
 
 	jsr enemyStrategyGrab
 
-	wai
-	wai
-	wai
-	wai
-	wai								; Wait for 4 IRQ and NMI to happen
+	jsr waitForVBlank
 
 	bra gameStartInfiniteLoop
 
@@ -256,11 +248,7 @@ gameStartContinue:
 
 waitForReady:
 
-	wai
-	wai
-	wai
-	wai
-	wai								; Wait for 4 IRQ and NMI to happen
+	jsr waitForVBlank
 
 	dex
 	cpx #$0000
@@ -295,11 +283,7 @@ waitToStart:
 	ldx padPushData1
 	jsr reactHero
 
-	wai
-	wai
-	wai
-	wai
-	wai								; Wait for 4 IRQ and NMI to happen
+	jsr waitForVBlank
 
 	plx
 
