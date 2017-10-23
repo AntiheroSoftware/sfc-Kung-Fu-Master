@@ -72,7 +72,7 @@ spriteTrickIRQValue:
 ;******************************************************************************
 
 scriptedDataHeroLevelStart:
-	.byte $30						; 30 frames
+	.byte $50						; 30 frames
 	.word PAD_LEFT					; left pressed
 	.byte $00
 
@@ -163,6 +163,9 @@ levelRestart:
 
 	setINIDSP $0f   				; Enable screen full brightness
 
+	lda #$c0
+	sta heroXOffset
+
 	jsr levelStartIntro
 
 gameStartInfiniteLoop:
@@ -194,7 +197,7 @@ noStartPressed:
 
 :	lda #$40
 	jsr setEnergyPlayer
-	bra levelRestart
+	jmp levelRestart
 
 noHeroDie:
 

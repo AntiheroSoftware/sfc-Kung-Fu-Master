@@ -994,14 +994,40 @@ levelScrollLeft:
 	;*** check heroXOffset
 	;******************************************************
 
-	lda #LEVEL_SCROLL_LEFT
+	lda levelRightEdgeVisible
+	cmp #$00
+	beq :+
+
+	lda heroXOffset
+	cmp #$70
+	beq :+
+
+	dec heroXOffset
+	lda #$01
+	sta forceRefresh
+	bra animate
+
+:	lda #LEVEL_SCROLL_LEFT
 	sta scrollDirection
 	jsr scrollLevel
 	bra animate
 
 levelScrollRight:
 
-	lda #LEVEL_SCROLL_RIGHT
+	lda levelRightEdgeVisible		; if right edge (start of level) is not visible we continue normal
+	cmp #$00
+	beq :+
+
+	lda heroXOffset					; else we check position of hero
+	cmp #$c8						; so it does go outside the wall
+	beq levelNoScroll
+
+	inc heroXOffset					; move hero right
+	lda #$01
+	sta forceRefresh
+	bra animate						; do the animation of the hero
+
+:	lda #LEVEL_SCROLL_RIGHT
 	sta scrollDirection
 	jsr scrollLevel
 

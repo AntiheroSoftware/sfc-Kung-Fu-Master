@@ -3,3 +3,6 @@
 
 .import     scrollValue
 .import     scrollDirection
+
+.import 	levelLeftEdgeVisible
+.import 	levelRightEdgeVisible

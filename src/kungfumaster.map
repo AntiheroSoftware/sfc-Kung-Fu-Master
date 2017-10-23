@@ -46,7 +46,7 @@ font.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK4             Offs=000000  Size=00093F  Align=00001  Fill=0000
 hero.o:
-    CODE              Offs=000B33  Size=000520  Align=00001  Fill=0000
+    CODE              Offs=000B33  Size=00054C  Align=00001  Fill=0000
     RODATA            Offs=000006  Size=000000  Align=00001  Fill=0000
     BSS               Offs=0000C5  Size=000007  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -54,128 +54,128 @@ hero.o:
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK2             Offs=000000  Size=0070A4  Align=00001  Fill=0000
 hit.o:
-    CODE              Offs=001053  Size=0000DD  Align=00001  Fill=0000
+    CODE              Offs=00107F  Size=0000DD  Align=00001  Fill=0000
     RODATA            Offs=000006  Size=000018  Align=00001  Fill=0000
     BSS               Offs=0000CC  Size=00005D  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000016  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 level.o:
-    CODE              Offs=001130  Size=000263  Align=00001  Fill=0000
+    CODE              Offs=00115C  Size=00026F  Align=00001  Fill=0000
     RODATA            Offs=00001E  Size=000082  Align=00001  Fill=0000
-    BSS               Offs=000129  Size=000009  Align=00001  Fill=0000
+    BSS               Offs=000129  Size=00000B  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000016  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK4             Offs=00093F  Size=0054A0  Align=00001  Fill=0000
 main.o:
-    CODE              Offs=001393  Size=000067  Align=00001  Fill=0000
+    CODE              Offs=0013CB  Size=000067  Align=00001  Fill=0000
     RODATA            Offs=0000A0  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000132  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000134  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000016  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 score.o:
-    CODE              Offs=0013FA  Size=000312  Align=00001  Fill=0000
+    CODE              Offs=001432  Size=000312  Align=00001  Fill=0000
     RODATA            Offs=0000A0  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000132  Size=0000D3  Align=00001  Fill=0000
+    BSS               Offs=000134  Size=0000D3  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000016  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK4             Offs=005DDF  Size=001600  Align=00001  Fill=0000
 scriptedPad.o:
-    CODE              Offs=00170C  Size=000091  Align=00001  Fill=0000
+    CODE              Offs=001744  Size=000091  Align=00001  Fill=0000
     RODATA            Offs=0000A0  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000205  Size=000009  Align=00001  Fill=0000
+    BSS               Offs=000207  Size=000009  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000016  Size=000002  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 snesgss.o:
-    CODE              Offs=00179D  Size=0001F3  Align=00001  Fill=0000
+    CODE              Offs=0017D5  Size=0001F3  Align=00001  Fill=0000
     RODATA            Offs=0000A0  Size=00000A  Align=00001  Fill=0000
-    BSS               Offs=00020E  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000210  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000018  Size=000019  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK7             Offs=000000  Size=003379  Align=00001  Fill=0000
 play.o:
-    CODE              Offs=001990  Size=000274  Align=00001  Fill=0000
+    CODE              Offs=0019C8  Size=000271  Align=00001  Fill=0000
     RODATA            Offs=0000AA  Size=00000C  Align=00001  Fill=0000
-    BSS               Offs=00020E  Size=000003  Align=00001  Fill=0000
+    BSS               Offs=000210  Size=000003  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000031  Size=000002  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 settings.o:
-    CODE              Offs=001C04  Size=000035  Align=00001  Fill=0000
+    CODE              Offs=001C39  Size=000035  Align=00001  Fill=0000
     RODATA            Offs=0000B6  Size=000010  Align=00001  Fill=0000
-    BSS               Offs=000211  Size=000008  Align=00001  Fill=0000
+    BSS               Offs=000213  Size=000008  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 antihero.o:
-    CODE              Offs=001C39  Size=0000E2  Align=00001  Fill=0000
+    CODE              Offs=001C6E  Size=0000E2  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000219  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00021B  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=00222F  Size=0011A0  Align=00001  Fill=0000
 common.o:
-    CODE              Offs=001D1B  Size=00007E  Align=00001  Fill=0000
+    CODE              Offs=001D50  Size=00007E  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000219  Size=00000F  Align=00001  Fill=0000
+    BSS               Offs=00021B  Size=00000F  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 irem.o:
-    CODE              Offs=001D99  Size=0000E2  Align=00001  Fill=0000
+    CODE              Offs=001DCE  Size=0000E2  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000228  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00022A  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=0033CF  Size=001140  Align=00001  Fill=0000
 letter.o:
-    CODE              Offs=001E7B  Size=000183  Align=00001  Fill=0000
+    CODE              Offs=001EB0  Size=000183  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000228  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=00022A  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=00450F  Size=001240  Align=00001  Fill=0000
 highScore.o:
-    CODE              Offs=001FFE  Size=000382  Align=00001  Fill=0000
+    CODE              Offs=002033  Size=000382  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000228  Size=0000A0  Align=00001  Fill=0000
+    BSS               Offs=00022A  Size=0000A0  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 option.o:
-    CODE              Offs=002380  Size=00025B  Align=00001  Fill=0000
+    CODE              Offs=0023B5  Size=00025B  Align=00001  Fill=0000
     RODATA            Offs=0000C6  Size=000094  Align=00001  Fill=0000
-    BSS               Offs=0002C8  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=0002CA  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 screen.o:
-    CODE              Offs=0025DB  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=002610  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=00015A  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=0002C8  Size=000800  Align=00001  Fill=0000
+    BSS               Offs=0002CA  Size=000800  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 title.o:
-    CODE              Offs=0025DB  Size=000238  Align=00001  Fill=0000
+    CODE              Offs=002610  Size=000238  Align=00001  Fill=0000
     RODATA            Offs=00015A  Size=00001E  Align=00001  Fill=0000
-    BSS               Offs=000AC8  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000ACA  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
     BANK1             Offs=00574F  Size=0019C0  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(crt0.o):
-    CODE              Offs=002813  Size=000000  Align=00001  Fill=0000
+    CODE              Offs=002848  Size=000000  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000AC8  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000ACA  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -183,37 +183,37 @@ title.o:
     ROMINFO           Offs=000000  Size=000030  Align=00001  Fill=0000
     VECTORS           Offs=000000  Size=00001C  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(init.o):
-    CODE              Offs=002813  Size=0000F3  Align=00001  Fill=0000
+    CODE              Offs=002848  Size=0000F3  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000AC8  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000ACA  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(event.o):
-    CODE              Offs=002906  Size=000101  Align=00001  Fill=0000
+    CODE              Offs=00293B  Size=000101  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000AC8  Size=000083  Align=00001  Fill=0000
+    BSS               Offs=000ACA  Size=000083  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(pad.o):
-    CODE              Offs=002A07  Size=000139  Align=00001  Fill=0000
+    CODE              Offs=002A3C  Size=000139  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000B4B  Size=000012  Align=00001  Fill=0000
+    BSS               Offs=000B4D  Size=000012  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(sprite.o):
-    CODE              Offs=002B40  Size=000074  Align=00001  Fill=0000
+    CODE              Offs=002B75  Size=000074  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000B5D  Size=000221  Align=00001  Fill=0000
+    BSS               Offs=000B5F  Size=000221  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
 ../../Tools/cc65-sfclib/bin/sfc.lib(waitvblank.o):
-    CODE              Offs=002BB4  Size=00000D  Align=00001  Fill=0000
+    CODE              Offs=002BE9  Size=00000D  Align=00001  Fill=0000
     RODATA            Offs=000178  Size=000000  Align=00001  Fill=0000
-    BSS               Offs=000D7E  Size=000000  Align=00001  Fill=0000
+    BSS               Offs=000D80  Size=000000  Align=00001  Fill=0000
     DATA              Offs=000000  Size=000000  Align=00001  Fill=0000
     ZEROPAGE          Offs=000033  Size=000000  Align=00001  Fill=0000
     NULL              Offs=000000  Size=000000  Align=00001  Fill=0000
@@ -226,12 +226,12 @@ Name                   Start     End    Size  Align
 DATA                  000000  000000  000000  00001
 NULL                  000000  000000  000000  00001
 ZEROPAGE              000000  000032  000033  00001
-BSS                   000200  000F7D  000D7E  00001
+BSS                   000200  000F7F  000D80  00001
 ROMINFO               00FFB0  00FFDF  000030  00001
 VECTORS               00FFE4  00FFFF  00001C  00001
 STARTUP               808000  808046  000047  00001
-CODE                  808047  80AC07  002BC1  00001
-RODATA                80AC08  80AD7F  000178  00001
+CODE                  808047  80AC3C  002BF6  00001
+RODATA                80AC3D  80ADB4  000178  00001
 BANK1                 818000  81F10E  00710F  00001
 BANK2                 828000  82F0A3  0070A4  00001
 BANK3                 838000  83FFFF  008000  00001
@@ -247,54 +247,54 @@ EnemyArrayOAMSlotOffset   000225  LA    EnemyArrayOffsetFramecounter 00027B  LA
 EnemyArrayXOffset         000241 RLA    EnemyArrayYOffset         00025D RLA    
 EnemyCurrentArrayIndexByte 000002  LZ    EnemyCurrentArrayIndexWord 000004  LZ    
 EnemyCurrentXOffset       000007  LZ    EnemyCurrentYOffset       000006  LZ    
-EnemyTempXOffsetHigh      000208  LA    OAMDataUpdated            80ABED RLA    
-SPC700_Driver             878000  LA    SPC700_Driver_Size        80ACA8  LA    
-Song_Bank_Table           80ACAC  LA    Song_Dst_Pointer          80ACAA  LA    
-Song_Offset_Table         80ACAE  LA    Song_Size_Table           80ACB0  LA    
-_IRQHandler               80940C RLA    _NMIHandler               809439 RLA    
+EnemyTempXOffsetHigh      000208  LA    OAMDataUpdated            80AC22 RLA    
+SPC700_Driver             878000  LA    SPC700_Driver_Size        80ACDD  LA    
+Song_Bank_Table           80ACE1  LA    Song_Dst_Pointer          80ACDF  LA    
+Song_Offset_Table         80ACE3  LA    Song_Size_Table           80ACE5  LA    
+_IRQHandler               809444 RLA    _NMIHandler               809471 RLA    
 __ROMINFO_FILEOFFS__      007FB0  EA    __ROMINFO_LAST__          00FFE0  LA    
 __ROMINFO_SIZE__          000034  EA    __ROMINFO_START__         00FFB0  LA    
 __STARTUP__               000001 REA    __VECTORS_FILEOFFS__      007FE4  EA    
 __VECTORS_LAST__          010000  LA    __VECTORS_SIZE__          00001C  EA    
 __VECTORS_START__         00FFE4  LA    _clearToBuffer            808B1E  LA    
-_clearToVRAM              808AFC  LA    _main                     8093DA RLA    
-_preInit                  809440 RLA    _writeToBuffer            808AD5  LA    
+_clearToVRAM              808AFC  LA    _main                     809412 RLA    
+_preInit                  809478 RLA    _writeToBuffer            808AD5  LA    
 _writeToVRAM              808AAE  LA    addEnemy                  808272 RLA    
-addEvent                  80A979 RLA    animEnemy                 808499  LA    
+addEvent                  80A9AE RLA    animEnemy                 808499  LA    
 animHero                  808CB2  LA    animInProgress            00000B  LZ    
-antiheroSplash            809C80 RLA    blankData                 80AC08 RLA    
+antiheroSplash            809CB5 RLA    blankData                 80AC3D RLA    
 bufferPtr                 000008 RLZ    clearEnemy                8082F7  LA    
 clearFontZone             808A8E RLA    clearHeroSprite           808BE9 RLA    
-clearOAM                  80AB87 RLA    continueValueList         80ACC7 RLA    
-copyFontBufferToVRAMOnceEvent 808B40 RLA    copyOAM                   80ABB6 RLA    
+clearOAM                  80ABBC RLA    continueValueList         80ACFC RLA    
+copyFontBufferToVRAMOnceEvent 808B40 RLA    copyOAM                   80ABEB RLA    
 copyOAMEvent              80878A RLA    cursorEvent               80807C RLA    
 cursorTarget              000204 RLA    cursorTargetSet           000207 RLA    
-difficultyPtrList         80AD00  LA    difficultyValueList       80ACBE RLA    
+difficultyPtrList         80AD35  LA    difficultyValueList       80ACF3 RLA    
 disableSkipLeadingZero    808989  LA    disableSkipSpaces         80896D RLA    
-displayHighScore          80A1D7  LA    doUpdateScore             0003F2  LA    
+displayHighScore          80A20C  LA    doUpdateScore             0003F4  LA    
 enableSkipLeadingZero     80897B RLA    enableSkipSpaces          80895F  LA    
 enemyFallAnimAddress      81A0AC  LA    enemyFallYOffset          81A070  LA    
-enemyGrabFall             8086D2  LA    enemyStrategyGrab         80875D RLA    
-enemyStrategyInit         808752 RLA    energyEnemy               0003FE  LA    
-energyPlayer              0003FD RLA    eventsTable               000CC8  LA    
-fallHero                  808FFB  LA    findEmptySlotEnemy        8082D5 RLA    
+enemyGrabFall             8086D2  LA    enemyStrategyGrab         80875D  LA    
+enemyStrategyInit         808752  LA    energyEnemy               000400  LA    
+energyPlayer              0003FF RLA    eventsTable               000CCA  LA    
+fallHero                  809027  LA    findEmptySlotEnemy        8082D5 RLA    
 fontCyanBlackBlackPal     8488FF RLA    fontRedBlackBlackPal      8488E0 RLA    
 fontTiles                 848000 RLA    fontWhiteRedBlackPal      8488C0 RLA    
-gameHeroDie               000410 RLA    gameMessagePal            84891F RLA    
-gamePausedString          8088E3 RLA    getEventCounter           80AA2D RLA    
+gameHeroDie               000412 RLA    gameMessagePal            84891F RLA    
+gamePausedString          8088E3 RLA    getEventCounter           80AA62 RLA    
 grabbingFall1             81A1AD  LA    grabbingGrab              81A203  LA    
 grabbingHitHighFall       81A211  LA    grabbingHitLowFall        81A225  LA    
 grabbingHitMidFall        81A21B  LA    grabbingShakeFall         81A207  LA    
 grabbingWalk              81A1E9  LA    grabbingWalk1             81A0B4  LA    
 grabbingWalk2             81A0C9  LA    gss_channels              00002B  LZ    
-gss_channelsVolume        00002C  LZ    gss_init                  8097E4 RLA    
-gss_pauseTrack            8098B0  LA    gss_playSfx               809861  LA    
-gss_playTrack             809810 RLA    gss_resumeTrack           8098C3  LA    
-gss_setChannelsVolume     80992B  LA    gss_setGlobalVolume       80990C  LA    
-gss_setMono               8098F9  LA    gss_setStereo             8098E6 RLA    
+gss_channelsVolume        00002C  LZ    gss_init                  80981C RLA    
+gss_pauseTrack            8098E8  LA    gss_playSfx               809899  LA    
+gss_playTrack             809848 RLA    gss_resumeTrack           8098FB  LA    
+gss_setChannelsVolume     809963  LA    gss_setGlobalVolume       809944  LA    
+gss_setMono               809931  LA    gss_setStereo             80991E RLA    
 gss_sfxChannel            00002D  LZ    gss_sfxNumber             00002E  LZ    
 gss_sfxPan                000030  LZ    gss_sfxVolume             00002F  LZ    
-gss_stopAll               8098D6  LA    gss_stopTrack             8098A0  LA    
+gss_stopAll               80990E  LA    gss_stopTrack             8098D8  LA    
 gss_trackNumber           000028  LZ    gss_volume                000029  LZ    
 gss_volumeSpeed           00002A  LZ    heroAnimInterruptCounter  00000E  LZ    
 heroDownKick2             82ED2C  LA    heroDownPunch1            82ED4D  LA    
@@ -302,76 +302,77 @@ heroDownPunch3            82ED86  LA    heroFlag                  000015 RLZ
 heroHitOffset             000012 RLZ    heroHitType               000014 RLZ    
 heroHitZone               000013 RLZ    heroStandKick2            82EDC7  LA    
 heroTransferAddr          0002CA  LA    heroXOffset               000010 RLZ    
-highByte                  81A040  LA    highScoreInitValues       80A137  LA    
-highScoreMainLoop         80A245  LA    highScoreTitleString      80A045  LA    
-hitAdd                    8090AF RLA    hitInit                   80909A RLA    
-hitProcess                809144 RLA    hitRemove                 80912B  LA    
+highByte                  81A040  LA    highScoreInitValues       80A16C  LA    
+highScoreMainLoop         80A27A  LA    highScoreTitleString      80A07A  LA    
+hitAdd                    8090DB RLA    hitInit                   8090C6 RLA    
+hitProcess                809170 RLA    hitRemove                 809157  LA    
 initCursor                808047 RLA    initEnemySprite           8080E1 RLA    
-initEvents                80A94D RLA    initFont                  80890E RLA    
+initEvents                80A982 RLA    initFont                  80890E RLA    
 initFontBuffer            808942 RLA    initHeroSprite            808B7A RLA    
-initHighScore             80A1D7  LA    initLevel                 809177 RLA    
-initPad                   80AA4E RLA    initScore                 809441 RLA    
-initSettings              809C4B RLA    initSnes                  80A85A RLA    
-insertNewHighScore        80A1D7  LA    iremSplash                809DE0 RLA    
-isEventActive             80AA39 RLA    letterGreyPal             848820 RLA    
+initHighScore             80A20C  LA    initLevel                 8091A3 RLA    
+initPad                   80AA83 RLA    initScore                 809479 RLA    
+initSettings              809C80 RLA    initSnes                  80A88F RLA    
+insertNewHighScore        80A20C  LA    iremSplash                809E15 RLA    
+isEventActive             80AA6E RLA    letterGreyPal             848820 RLA    
 letterIntroString         808796 RLA    letterRedPal              848840 RLA    
-letterSplash              809EC2 RLA    levelStartIntro           809B40  LA    
-livesCounter              000401 RLA    livesValueList            80ACC3 RLA    
-oamData                   000D5D RLA    onePlayerFirstFloorString 8088A9 RLA    
-optionExitString          80A425  LA    optionScreen              80A42B RLA    
-optionsString             80A3C7  LA    padFirstPushData1         000D4D RLA    
-padFirstPushDataHigh1     000D4E  LA    padFirstPushDataLow1      000D4D RLA    
-padPushData1              000D4B RLA    padPushData2              000D51  LA    
-padPushData3              000D55  LA    padPushData4              000D59  LA    
-padPushDataHigh1          000D4C  LA    padPushDataHigh2          000D52  LA    
-padPushDataHigh3          000D55  LA    padPushDataHigh4          000D59  LA    
-padPushDataLow1           000D4B RLA    padPushDataLow2           000D51  LA    
-padPushDataLow3           000D56  LA    padPushDataLow4           000D5A  LA    
-padReleaseData1           000D4F RLA    padReleaseData2           000D53  LA    
-padReleaseData3           000D57  LA    padReleaseData4           000D5B  LA    
-padReleaseDataHigh1       000D50  LA    padReleaseDataHigh2       000D54  LA    
-padReleaseDataHigh3       000D57  LA    padReleaseDataHigh4       000D5B  LA    
-padReleaseDataLow1        000D4F RLA    padReleaseDataLow2        000D53  LA    
-padReleaseDataLow3        000D58  LA    padReleaseDataLow4        000D5C  LA    
-playGame                  8099D7 RLA    processEvents             80A9A8 RLA    
+letterSplash              809EF7 RLA    levelLeftEdgeVisible      000333  LA    
+levelRightEdgeVisible     000332 RLA    levelStartIntro           809B75  LA    
+livesCounter              000403 RLA    livesValueList            80ACF8 RLA    
+oamData                   000D5F RLA    onePlayerFirstFloorString 8088A9 RLA    
+optionExitString          80A45A  LA    optionScreen              80A460 RLA    
+optionsString             80A3FC  LA    padFirstPushData1         000D4F RLA    
+padFirstPushDataHigh1     000D50  LA    padFirstPushDataLow1      000D4F RLA    
+padPushData1              000D4D RLA    padPushData2              000D53  LA    
+padPushData3              000D57  LA    padPushData4              000D5B  LA    
+padPushDataHigh1          000D4E  LA    padPushDataHigh2          000D54  LA    
+padPushDataHigh3          000D57  LA    padPushDataHigh4          000D5B  LA    
+padPushDataLow1           000D4D RLA    padPushDataLow2           000D53  LA    
+padPushDataLow3           000D58  LA    padPushDataLow4           000D5C  LA    
+padReleaseData1           000D51 RLA    padReleaseData2           000D55  LA    
+padReleaseData3           000D59  LA    padReleaseData4           000D5D  LA    
+padReleaseDataHigh1       000D52  LA    padReleaseDataHigh2       000D56  LA    
+padReleaseDataHigh3       000D59  LA    padReleaseDataHigh4       000D5D  LA    
+padReleaseDataLow1        000D51 RLA    padReleaseDataLow2        000D55  LA    
+padReleaseDataLow3        000D5A  LA    padReleaseDataLow4        000D5E  LA    
+playGame                  809A0F RLA    processEvents             80A9DD RLA    
 reactEnemy                8084FD RLA    reactEnemyGrab            808540  LA    
-reactHero                 808DFC RLA    readPad1                  80AA8F RLA    
-readPad2                  80AACD  LA    readPad3                  80AB0B  LA    
-readPad4                  80AB49  LA    readyString               808898 RLA    
-removeAllEvent            80AA16 RLA    removeEvent               80A9FD  LA    
-scoreEvent                8096C2  LA    scoreMapData              000332  LA    
-scorePlayer1              0003F4  LA    screenBuffer              0004C8 RLA    
-scriptedDataHeroLevelStart 80ACBA  LA    scriptedPadInit           809753 RLA    
-scriptedPadOverride       8097A8 RLA    scriptedPadReadData       809765 RLA    
-scrollDirection           00032F RLA    scrollLevel               80926E RLA    
+reactHero                 808DFC RLA    readPad1                  80AAC4 RLA    
+readPad2                  80AB02  LA    readPad3                  80AB40  LA    
+readPad4                  80AB7E  LA    readyString               808898 RLA    
+removeAllEvent            80AA4B RLA    removeEvent               80AA32  LA    
+scoreEvent                8096FA  LA    scoreMapData              000334  LA    
+scorePlayer1              0003F6  LA    screenBuffer              0004CA RLA    
+scriptedDataHeroLevelStart 80ACEF  LA    scriptedPadInit           80978B RLA    
+scriptedPadOverride       8097E0 RLA    scriptedPadReadData       80979D RLA    
+scrollDirection           00032F RLA    scrollLevel               80929A RLA    
 scrollValue               00032D  LA    setEnemyOAM               808321  LA    
 setEnemyOAM_fillLoop      80845E  EA    setEnemyOAM_lineLoop      80833D  EA    
-setEnemyOAM_skiplineLoop  80835B  EA    setEnergyEnemy            809621  LA    
-setEnergyPlayer           8095D1 RLA    setFontCursorPosition     808997 RLA    
+setEnemyOAM_skiplineLoop  80835B  EA    setEnergyEnemy            809659  LA    
+setEnergyPlayer           809609 RLA    setFontCursorPosition     808997 RLA    
 setFontCursorPositionNewLine 8089B1 RLA    setFontPalette            808955 RLA    
-setHeroOAM                808C0A  LA    setLiveCounter            80969D RLA    
+setHeroOAM                808C0A  LA    setLiveCounter            8096D5 RLA    
 setMirrorSpriteMode       808DEA  LA    setNormalSpriteMode       808DF3  LA    
-setShakingFlag            809075  LA    settingsContinueIndex     000415 RLA    
-settingsContinueValue     000416 RLA    settingsDifficultyIndex   000411 RLA    
-settingsDifficultyValue   000412 RLA    settingsLivesIndex        000413 RLA    
-settingsLivesValue        000414 RLA    settingsSoundIndex        000417 RLA    
-settingsSoundValue        000418 RLA    skipSpaces                0002B6  LA    
-soundValueList            80ACCB RLA    spc_command               8099B1  LA    
-spc_load_data             80994A  LA    splashScreenEvent         809D8C RLA    
-splashScreenInit          809D62 RLA    spriteCounter             0002C5 RLA    
-spriteTrickIRQVTimer      80ACB2 RLA    spriteTrickIRQValue       80ACB6 RLA    
-spriteTrickIndex          000031 RLZ    timeCounter               0003FF  LA    
-titleScreen               80A622 RLA    titleScreenCopyrightString 808869 RLA    
+setShakingFlag            8090A1  LA    settingsContinueIndex     000417 RLA    
+settingsContinueValue     000418 RLA    settingsDifficultyIndex   000413 RLA    
+settingsDifficultyValue   000414 RLA    settingsLivesIndex        000415 RLA    
+settingsLivesValue        000416 RLA    settingsSoundIndex        000419 RLA    
+settingsSoundValue        00041A RLA    skipSpaces                0002B6  LA    
+soundValueList            80AD00 RLA    spc_command               8099E9  LA    
+spc_load_data             809982  LA    splashScreenEvent         809DC1 RLA    
+splashScreenInit          809D97 RLA    spriteCounter             0002C5 RLA    
+spriteTrickIRQVTimer      80ACE7 RLA    spriteTrickIRQValue       80ACEB RLA    
+spriteTrickIndex          000031 RLZ    timeCounter               000401  LA    
+titleScreen               80A657 RLA    titleScreenCopyrightString 808869 RLA    
 titleScreenMap            81E8EF  LA    titleScreenPal            81F0EF  LA    
-titleScreenReload         80A7BD REA    titleScreenSelectString   808848 RLA    
+titleScreenReload         80A7F2 REA    titleScreenSelectString   808848 RLA    
 titleScreenTiles          81D74F  LA    titleScreenWhitePal       848860 RLA    
 titleScreenWhiteRedPal    8488A0 RLA    titleScreenYellowPal      848880 RLA    
-transferHeroSpriteDataEvent 808D97 RLA    updateDifficulty          80A4B1  LA    
-updateEnergyPlayer        8095C4 RLA    updateLevelMessageEvent   809C07  LA    
-updateScorePlayer1        809547 RLA    updateScorePlayer2        809576  LA    
-updateScoreTop            8095A5  LA    updateTime                809668 RLA    
-waitForVBlank             80ABFB RLA    writeFontNumber           808A28 RLA    
-writeFontString           8089C8 RLA    writeNumberToScoreMap     80970A  LA    
+transferHeroSpriteDataEvent 808D97 RLA    updateDifficulty          80A4E6  LA    
+updateEnergyPlayer        8095FC RLA    updateLevelMessageEvent   809C3C  LA    
+updateScorePlayer1        80957F RLA    updateScorePlayer2        8095AE  LA    
+updateScoreTop            8095DD  LA    updateTime                8096A0 RLA    
+waitForVBlank             80AC30 RLA    writeFontNumber           808A28 RLA    
+writeFontString           8089C8 RLA    writeNumberToScoreMap     809742  LA    
 
 
 
@@ -397,30 +398,31 @@ EnemyArrayAnimFrameIndex  00025E  LA    EnemyArrayAnimFrameCounter 00027A  LA
 EnemyArrayOffsetFramecounter 00027B  LA    EnemyArrayFlag            000297  LA    
 skipSpaces                0002B6  LA    spriteCounter             0002C5 RLA    
 heroTransferAddr          0002CA  LA    scrollValue               00032D  LA    
-scrollDirection           00032F RLA    scoreMapData              000332  LA    
-doUpdateScore             0003F2  LA    scorePlayer1              0003F4  LA    
-energyPlayer              0003FD RLA    energyEnemy               0003FE  LA    
-timeCounter               0003FF  LA    livesCounter              000401 RLA    
-gameHeroDie               000410 RLA    settingsDifficultyIndex   000411 RLA    
-settingsDifficultyValue   000412 RLA    settingsLivesIndex        000413 RLA    
-settingsLivesValue        000414 RLA    settingsContinueIndex     000415 RLA    
-settingsContinueValue     000416 RLA    settingsSoundIndex        000417 RLA    
-settingsSoundValue        000418 RLA    screenBuffer              0004C8 RLA    
-eventsTable               000CC8  LA    padPushData1              000D4B RLA    
-padPushDataLow1           000D4B RLA    padPushDataHigh1          000D4C  LA    
-padFirstPushDataLow1      000D4D RLA    padFirstPushData1         000D4D RLA    
-padFirstPushDataHigh1     000D4E  LA    padReleaseDataLow1        000D4F RLA    
-padReleaseData1           000D4F RLA    padReleaseDataHigh1       000D50  LA    
-padPushData2              000D51  LA    padPushDataLow2           000D51  LA    
-padPushDataHigh2          000D52  LA    padReleaseData2           000D53  LA    
-padReleaseDataLow2        000D53  LA    padReleaseDataHigh2       000D54  LA    
-padPushData3              000D55  LA    padPushDataHigh3          000D55  LA    
-padPushDataLow3           000D56  LA    padReleaseDataHigh3       000D57  LA    
-padReleaseData3           000D57  LA    padReleaseDataLow3        000D58  LA    
-padPushDataHigh4          000D59  LA    padPushData4              000D59  LA    
-padPushDataLow4           000D5A  LA    padReleaseData4           000D5B  LA    
-padReleaseDataHigh4       000D5B  LA    padReleaseDataLow4        000D5C  LA    
-oamData                   000D5D RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
+scrollDirection           00032F RLA    levelRightEdgeVisible     000332 RLA    
+levelLeftEdgeVisible      000333  LA    scoreMapData              000334  LA    
+doUpdateScore             0003F4  LA    scorePlayer1              0003F6  LA    
+energyPlayer              0003FF RLA    energyEnemy               000400  LA    
+timeCounter               000401  LA    livesCounter              000403 RLA    
+gameHeroDie               000412 RLA    settingsDifficultyIndex   000413 RLA    
+settingsDifficultyValue   000414 RLA    settingsLivesIndex        000415 RLA    
+settingsLivesValue        000416 RLA    settingsContinueIndex     000417 RLA    
+settingsContinueValue     000418 RLA    settingsSoundIndex        000419 RLA    
+settingsSoundValue        00041A RLA    screenBuffer              0004CA RLA    
+eventsTable               000CCA  LA    padPushData1              000D4D RLA    
+padPushDataLow1           000D4D RLA    padPushDataHigh1          000D4E  LA    
+padFirstPushDataLow1      000D4F RLA    padFirstPushData1         000D4F RLA    
+padFirstPushDataHigh1     000D50  LA    padReleaseDataLow1        000D51 RLA    
+padReleaseData1           000D51 RLA    padReleaseDataHigh1       000D52  LA    
+padPushDataLow2           000D53  LA    padPushData2              000D53  LA    
+padPushDataHigh2          000D54  LA    padReleaseData2           000D55  LA    
+padReleaseDataLow2        000D55  LA    padReleaseDataHigh2       000D56  LA    
+padPushDataHigh3          000D57  LA    padPushData3              000D57  LA    
+padPushDataLow3           000D58  LA    padReleaseDataHigh3       000D59  LA    
+padReleaseData3           000D59  LA    padReleaseDataLow3        000D5A  LA    
+padPushDataHigh4          000D5B  LA    padPushData4              000D5B  LA    
+padPushDataLow4           000D5C  LA    padReleaseDataHigh4       000D5D  LA    
+padReleaseData4           000D5D  LA    padReleaseDataLow4        000D5E  LA    
+oamData                   000D5F RLA    __ROMINFO_FILEOFFS__      007FB0  EA    
 __VECTORS_FILEOFFS__      007FE4  EA    __ROMINFO_START__         00FFB0  LA    
 __ROMINFO_LAST__          00FFE0  LA    __VECTORS_START__         00FFE4  LA    
 __VECTORS_LAST__          010000  LA    initCursor                808047 RLA    
@@ -430,8 +432,8 @@ clearEnemy                8082F7  LA    setEnemyOAM               808321  LA
 setEnemyOAM_lineLoop      80833D  EA    setEnemyOAM_skiplineLoop  80835B  EA    
 setEnemyOAM_fillLoop      80845E  EA    animEnemy                 808499  LA    
 reactEnemy                8084FD RLA    reactEnemyGrab            808540  LA    
-enemyGrabFall             8086D2  LA    enemyStrategyInit         808752 RLA    
-enemyStrategyGrab         80875D RLA    copyOAMEvent              80878A RLA    
+enemyGrabFall             8086D2  LA    enemyStrategyInit         808752  LA    
+enemyStrategyGrab         80875D  LA    copyOAMEvent              80878A RLA    
 letterIntroString         808796 RLA    titleScreenSelectString   808848 RLA    
 titleScreenCopyrightString 808869 RLA    readyString               808898 RLA    
 onePlayerFirstFloorString 8088A9 RLA    gamePausedString          8088E3 RLA    
@@ -447,52 +449,52 @@ copyFontBufferToVRAMOnceEvent 808B40 RLA    initHeroSprite            808B7A RLA
 clearHeroSprite           808BE9 RLA    setHeroOAM                808C0A  LA    
 animHero                  808CB2  LA    transferHeroSpriteDataEvent 808D97 RLA    
 setMirrorSpriteMode       808DEA  LA    setNormalSpriteMode       808DF3  LA    
-reactHero                 808DFC RLA    fallHero                  808FFB  LA    
-setShakingFlag            809075  LA    hitInit                   80909A RLA    
-hitAdd                    8090AF RLA    hitRemove                 80912B  LA    
-hitProcess                809144 RLA    initLevel                 809177 RLA    
-scrollLevel               80926E RLA    _main                     8093DA RLA    
-_IRQHandler               80940C RLA    _NMIHandler               809439 RLA    
-_preInit                  809440 RLA    initScore                 809441 RLA    
-updateScorePlayer1        809547 RLA    updateScorePlayer2        809576  LA    
-updateScoreTop            8095A5  LA    updateEnergyPlayer        8095C4 RLA    
-setEnergyPlayer           8095D1 RLA    setEnergyEnemy            809621  LA    
-updateTime                809668 RLA    setLiveCounter            80969D RLA    
-scoreEvent                8096C2  LA    writeNumberToScoreMap     80970A  LA    
-scriptedPadInit           809753 RLA    scriptedPadReadData       809765 RLA    
-scriptedPadOverride       8097A8 RLA    gss_init                  8097E4 RLA    
-gss_playTrack             809810 RLA    gss_playSfx               809861  LA    
-gss_stopTrack             8098A0  LA    gss_pauseTrack            8098B0  LA    
-gss_resumeTrack           8098C3  LA    gss_stopAll               8098D6  LA    
-gss_setStereo             8098E6 RLA    gss_setMono               8098F9  LA    
-gss_setGlobalVolume       80990C  LA    gss_setChannelsVolume     80992B  LA    
-spc_load_data             80994A  LA    spc_command               8099B1  LA    
-playGame                  8099D7 RLA    levelStartIntro           809B40  LA    
-updateLevelMessageEvent   809C07  LA    initSettings              809C4B RLA    
-antiheroSplash            809C80 RLA    splashScreenInit          809D62 RLA    
-splashScreenEvent         809D8C RLA    iremSplash                809DE0 RLA    
-letterSplash              809EC2 RLA    highScoreTitleString      80A045  LA    
-highScoreInitValues       80A137  LA    initHighScore             80A1D7  LA    
-insertNewHighScore        80A1D7  LA    displayHighScore          80A1D7  LA    
-highScoreMainLoop         80A245  LA    optionsString             80A3C7  LA    
-optionExitString          80A425  LA    optionScreen              80A42B RLA    
-updateDifficulty          80A4B1  LA    titleScreen               80A622 RLA    
-titleScreenReload         80A7BD REA    initSnes                  80A85A RLA    
-initEvents                80A94D RLA    addEvent                  80A979 RLA    
-processEvents             80A9A8 RLA    removeEvent               80A9FD  LA    
-removeAllEvent            80AA16 RLA    getEventCounter           80AA2D RLA    
-isEventActive             80AA39 RLA    initPad                   80AA4E RLA    
-readPad1                  80AA8F RLA    readPad2                  80AACD  LA    
-readPad3                  80AB0B  LA    readPad4                  80AB49  LA    
-clearOAM                  80AB87 RLA    copyOAM                   80ABB6 RLA    
-OAMDataUpdated            80ABED RLA    waitForVBlank             80ABFB RLA    
-blankData                 80AC08 RLA    SPC700_Driver_Size        80ACA8  LA    
-Song_Dst_Pointer          80ACAA  LA    Song_Bank_Table           80ACAC  LA    
-Song_Offset_Table         80ACAE  LA    Song_Size_Table           80ACB0  LA    
-spriteTrickIRQVTimer      80ACB2 RLA    spriteTrickIRQValue       80ACB6 RLA    
-scriptedDataHeroLevelStart 80ACBA  LA    difficultyValueList       80ACBE RLA    
-livesValueList            80ACC3 RLA    continueValueList         80ACC7 RLA    
-soundValueList            80ACCB RLA    difficultyPtrList         80AD00  LA    
+reactHero                 808DFC RLA    fallHero                  809027  LA    
+setShakingFlag            8090A1  LA    hitInit                   8090C6 RLA    
+hitAdd                    8090DB RLA    hitRemove                 809157  LA    
+hitProcess                809170 RLA    initLevel                 8091A3 RLA    
+scrollLevel               80929A RLA    _main                     809412 RLA    
+_IRQHandler               809444 RLA    _NMIHandler               809471 RLA    
+_preInit                  809478 RLA    initScore                 809479 RLA    
+updateScorePlayer1        80957F RLA    updateScorePlayer2        8095AE  LA    
+updateScoreTop            8095DD  LA    updateEnergyPlayer        8095FC RLA    
+setEnergyPlayer           809609 RLA    setEnergyEnemy            809659  LA    
+updateTime                8096A0 RLA    setLiveCounter            8096D5 RLA    
+scoreEvent                8096FA  LA    writeNumberToScoreMap     809742  LA    
+scriptedPadInit           80978B RLA    scriptedPadReadData       80979D RLA    
+scriptedPadOverride       8097E0 RLA    gss_init                  80981C RLA    
+gss_playTrack             809848 RLA    gss_playSfx               809899  LA    
+gss_stopTrack             8098D8  LA    gss_pauseTrack            8098E8  LA    
+gss_resumeTrack           8098FB  LA    gss_stopAll               80990E  LA    
+gss_setStereo             80991E RLA    gss_setMono               809931  LA    
+gss_setGlobalVolume       809944  LA    gss_setChannelsVolume     809963  LA    
+spc_load_data             809982  LA    spc_command               8099E9  LA    
+playGame                  809A0F RLA    levelStartIntro           809B75  LA    
+updateLevelMessageEvent   809C3C  LA    initSettings              809C80 RLA    
+antiheroSplash            809CB5 RLA    splashScreenInit          809D97 RLA    
+splashScreenEvent         809DC1 RLA    iremSplash                809E15 RLA    
+letterSplash              809EF7 RLA    highScoreTitleString      80A07A  LA    
+highScoreInitValues       80A16C  LA    displayHighScore          80A20C  LA    
+insertNewHighScore        80A20C  LA    initHighScore             80A20C  LA    
+highScoreMainLoop         80A27A  LA    optionsString             80A3FC  LA    
+optionExitString          80A45A  LA    optionScreen              80A460 RLA    
+updateDifficulty          80A4E6  LA    titleScreen               80A657 RLA    
+titleScreenReload         80A7F2 REA    initSnes                  80A88F RLA    
+initEvents                80A982 RLA    addEvent                  80A9AE RLA    
+processEvents             80A9DD RLA    removeEvent               80AA32  LA    
+removeAllEvent            80AA4B RLA    getEventCounter           80AA62 RLA    
+isEventActive             80AA6E RLA    initPad                   80AA83 RLA    
+readPad1                  80AAC4 RLA    readPad2                  80AB02  LA    
+readPad3                  80AB40  LA    readPad4                  80AB7E  LA    
+clearOAM                  80ABBC RLA    copyOAM                   80ABEB RLA    
+OAMDataUpdated            80AC22 RLA    waitForVBlank             80AC30 RLA    
+blankData                 80AC3D RLA    SPC700_Driver_Size        80ACDD  LA    
+Song_Dst_Pointer          80ACDF  LA    Song_Bank_Table           80ACE1  LA    
+Song_Offset_Table         80ACE3  LA    Song_Size_Table           80ACE5  LA    
+spriteTrickIRQVTimer      80ACE7 RLA    spriteTrickIRQValue       80ACEB RLA    
+scriptedDataHeroLevelStart 80ACEF  LA    difficultyValueList       80ACF3 RLA    
+livesValueList            80ACF8 RLA    continueValueList         80ACFC RLA    
+soundValueList            80AD00 RLA    difficultyPtrList         80AD35  LA    
 highByte                  81A040  LA    enemyFallYOffset          81A070  LA    
 enemyFallAnimAddress      81A0AC  LA    grabbingWalk1             81A0B4  LA    
 grabbingWalk2             81A0C9  LA    grabbingFall1             81A1AD  LA    
@@ -628,9 +630,7 @@ enemyFallAnimAddress (enemy.o):
 enemyFallYOffset (enemy.o):
 enemyGrabFall (enemy.o):
 enemyStrategyGrab (enemyStrategy.o):
-    play.o                    game/../includes/enemyStrategy.inc(6)
 enemyStrategyInit (enemyStrategy.o):
-    play.o                    game/../includes/enemyStrategy.inc(5)
 energyEnemy (score.o):
 energyPlayer (score.o):
     hero.o                    includes/score.inc(4)
@@ -705,6 +705,7 @@ heroHitZone (hero.o):
 heroStandKick2 (hero.o):
 heroTransferAddr (hero.o):
 heroXOffset (hero.o):
+    play.o                    game/../includes/hero.inc(7)
     enemy.o                   includes/hero.inc(7)
 highByte (enemy.o):
 highScoreInitValues (highScore.o):
@@ -765,6 +766,9 @@ letterRedPal (font.o):
     letter.o                  splash/../includes/font.inc(18)
 letterSplash (letter.o):
     title.o                   screen/title.asm(24)
+levelLeftEdgeVisible (level.o):
+levelRightEdgeVisible (level.o):
+    hero.o                    includes/level.inc(8)
 levelStartIntro (play.o):
 livesCounter (score.o):
     play.o                    game/../includes/score.inc(9)

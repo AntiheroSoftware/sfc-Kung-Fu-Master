@@ -19,6 +19,8 @@
             .export		scrollLevel
             .export 	scrollValue
             .export		scrollDirection
+            .export 	levelLeftEdgeVisible
+            .export 	levelRightEdgeVisible
 
 .include "includes/levelData.asm"
 
@@ -115,6 +117,9 @@ stopLoop:
 	phy
 	php
 
+	stz levelLeftEdgeVisible					; reset edge visibility variable
+	stz levelRightEdgeVisible
+
 	lda scrollDirection
 	cmp scrollPreviousDirection
 	beq sameDirection							; jump to same direction
@@ -173,12 +178,13 @@ scrollLeft:
 	sep #$20
 	.A8
 
-:	bra scrollValueSet
+:	inc levelLeftEdgeVisible
+	bra scrollValueSet
 
 scrollRight:
 
 	cpx #$00ff						; check scroll right boundaries
-	beq scrollValueSet
+	beq :+
 
 	inx  			                ; increment scrollValue
 	stx scrollValue
@@ -206,6 +212,8 @@ scrollRight:
 
 	sep #$20
 	.A8
+
+:	inc levelRightEdgeVisible
 
 scrollValueSet:
 
@@ -315,6 +323,12 @@ scrollPreviousDirection:
 	.res 	1
 
 doUpdate:
+	.res 1
+
+levelRightEdgeVisible:
+	.res 1
+
+levelLeftEdgeVisible:
 	.res 1
 
 .segment "RODATA"

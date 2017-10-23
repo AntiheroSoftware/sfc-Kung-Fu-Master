@@ -2,16 +2,19 @@ IN PROGRESS
 ===========
 
 * implement first draft of upcoming grabbing enemies
-* high score screen
 * make hero lose a life and restart level or game over
+* add event in start of level (hero moving alone)
+* allow hero to stand at very right of level (or left in pair levels) with no scroll
+* high score screen (and put it in the demo loop)
 
 BUGS
 ====
 
+* Minor glitch on top of screen when setting pause due to force vblank on event that print pause 
+* Some issues with background level when scrolling, after a while or under special conditions the offset get screwed
 * some grab enemy have their hands up since the beginning
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
-* Some issues with background level when scrolling, after a while or under special
-conditions the offset get screwed
+
 * Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
 
 REFACTORING
@@ -22,16 +25,15 @@ REFACTORING
 TODO
 ====
 
+* have a simple way to disable collision for testing (invincible mode)
 * use superfamiconv for all conversion
-
 * put snesgss code in sfclib
-
 * check gfx for hero grabbed
 * review sprite gfx for enemies to optimise and have full enemy gfx
-
 * implement knife enemy
-
-* add event in start of level (print message + hero moving alone)
+* implement midget enemy
+* implement boss (use new method with setFrame, translateX, and so on ...) 
+* rip gfx for bombs and dragons
 
 DONE
 ====
