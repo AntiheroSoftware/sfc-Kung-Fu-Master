@@ -37,6 +37,7 @@ TODO
 DONE
 ====
 
+* ~~allow hero to stand at very right of level (or left in pair levels) with no scroll~~ fixed 17/10/17
 * ~~Some issues with background level when scrolling, after a while or under special conditions the offset get screwed~~ fixed 23/10/17
 * ~~implement "player 1" message at level start~~ fixed 17/10/17
 * ~~option screen controls (a button and left/right)~~ fixed 16/10/17
