@@ -4,6 +4,7 @@
     .import     clearHeroSprite
     .import     transferHeroSpriteDataEvent
     .import     reactHero
+    .import 	refreshHero
     .importzp   heroXOffset
     .importzp   heroFlag
     .importzp   heroHitOffset

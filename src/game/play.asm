@@ -36,6 +36,7 @@
 
 			.export scriptedDataHeroLevelStart
 			.export updateLevelMessageEvent
+			.export gamePauseMessageEvent
 
 .segment "BSS"
 
@@ -165,6 +166,7 @@ levelRestart:
 
 	lda #$c0
 	sta heroXOffset
+	jsr refreshHero
 
 	jsr levelStartIntro
 

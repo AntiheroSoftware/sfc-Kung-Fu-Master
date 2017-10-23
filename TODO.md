@@ -10,7 +10,7 @@ IN PROGRESS
 BUGS
 ====
 
-* Minor glitch on top of screen when setting pause due to force vblank on event that print pause 
+* Minor glitch on top of screen when setting pause due to force vblank on event that print pause (see REFACTORING)
 * some grab enemy have their hands up since the beginning
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
 * Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
@@ -19,6 +19,7 @@ REFACTORING
 ===========
 
 * remove some 'trick' to gain ram, and optimize execution code. I think that at the final there is plenty of ram size.
+* optimize write font in game with precalc version and just copy them to VRAM
 
 TODO
 ====

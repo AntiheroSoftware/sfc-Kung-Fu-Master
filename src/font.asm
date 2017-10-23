@@ -650,7 +650,6 @@ loopX:
 	pla
 
 	ldx bufferPtr
-	;ldy cursorPos
 
 	clc
 	adc fontTileOffset

@@ -28,6 +28,7 @@
             .export 	clearHeroSprite
             .export 	transferHeroSpriteDataEvent
 			.export 	reactHero
+			.export 	refreshHero
 			.export		spriteCounter
 			.export 	heroXOffset
 			.export 	heroFlag
@@ -554,6 +555,12 @@ endAnim:
 
     rts
 
+.endproc
+
+.proc refreshHero
+	inc forceRefresh
+	jsr animHero
+	rts
 .endproc
 
 ;*******************************************************************************
