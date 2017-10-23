@@ -22,6 +22,9 @@
             .export 	levelLeftEdgeVisible
             .export 	levelRightEdgeVisible
 
+            .export VRAMLineLeft
+            .export VRAMLineRight
+
 .include "includes/levelData.asm"
 
 .segment "CODE"
@@ -120,26 +123,6 @@ stopLoop:
 	stz levelLeftEdgeVisible					; reset edge visibility variable
 	stz levelRightEdgeVisible
 
-	lda scrollDirection
-	cmp scrollPreviousDirection
-	beq sameDirection							; jump to same direction
-
-	cmp #LEVEL_SCROLL_RIGHT
-	beq :++ 									; Change direction for right
-
-	cmp #LEVEL_SCROLL_LEFT
-	beq :+
-
-	bra noScroll
-
-:
-	jsr scrollLevelDirectionLeft
-	sta scrollPreviousDirection
-	bra sameDirection
-
-:	jsr scrollLevelDirectionRight
-	sta scrollPreviousDirection
-
 sameDirection:
 	ldx scrollValue
 	lda scrollDirection
@@ -155,23 +138,32 @@ scrollLeft:
 	stx scrollValue
 	txa
 	and #%00000111
+	cmp #%00000000
 	bne scrollValueSet
 
 	lda #$01
 	sta doUpdate
 
-	lda VRAMLine
+	lda VRAMLineLeft
 	dec
 	and #$3f
+	sta VRAMLineLeft
 	sta VRAMLine
+	dec VRAMLineRight
 
 	rep #$20
 	.A16
 
-	lda MAPOffset
+	lda MAPOffsetLeft
 	sec
 	sbc #$38
+	sta MAPOffsetLeft
 	sta MAPOffset
+
+	lda MAPOffsetRight
+	sec
+	sbc #$38
+	sta MAPOffsetRight
 
 	bra scrollValueSet
 
@@ -190,23 +182,32 @@ scrollRight:
 	stx scrollValue
 	txa
 	and #%00000111
+	cmp #%00000001
 	bne scrollValueSet
 
 	lda #$01
 	sta doUpdate
 
-	lda VRAMLine
+	lda VRAMLineRight
 	inc
 	and #$3f
+	sta VRAMLineRight
 	sta VRAMLine
+	inc VRAMLineLeft
 
 	rep #$20
 	.A16
 
-	lda MAPOffset
+	lda MAPOffsetRight
 	clc
 	adc #$38
+	sta MAPOffsetRight
 	sta MAPOffset
+
+	lda MAPOffsetLeft
+	clc
+	adc #$38
+	sta MAPOffsetLeft
 
 	bra scrollValueSet
 
@@ -231,77 +232,6 @@ noScroll:
 .endproc
 
 ;******************************************************************************
-;*** scrollLevelDirectionLeft ************************************************
-;******************************************************************************
-
-.proc scrollLevelDirectionLeft
-
-	pha
-	php
-
-	rep #$20
-	.A16
-
-	lda VRAMLine
-	sec
-	sbc #$21
-	and #$003f
-	sta VRAMLine
-
-	lda MAPOffset
-	sec
-	sbc #$0738
-	sta MAPOffset
-
-	sep #$20
-	.A8
-
-	plp
-	pla
-
-	rts
-
-.endproc
-
-;******************************************************************************
-;*** scrollLevelDirectionRight *************************************************
-;******************************************************************************
-
-.proc scrollLevelDirectionRight
-
-	pha
-	php
-
-	rep #$20
-	.A16
-
-	lda VRAMLine
-	clc
-	adc #$21
-	and #$003f
-	sta VRAMLine
-
-	lda MAPOffset
-	clc
-	adc #$0738
-	sta MAPOffset
-
-	sep #$20
-	.A8
-
-	plp
-	pla
-	rts
-
-.endproc
-
-;******************************************************************************
-;*** Score functions **********************************************************
-;******************************************************************************
-
-
-
-;******************************************************************************
 ;*** Events *******************************************************************
 ;******************************************************************************
 
@@ -310,7 +240,19 @@ noScroll:
 VRAMLine:
 	.res 2
 
+VRAMLineLeft:
+	.res 2
+
+VRAMLineRight:
+	.res 2
+
 MAPOffset:
+	.res 2
+
+MAPOffsetLeft:
+	.res 2
+
+MAPOffsetRight:
 	.res 2
 
 scrollValue:
@@ -318,9 +260,6 @@ scrollValue:
 
 scrollDirection:
     .res    1
-
-scrollPreviousDirection:
-	.res 	1
 
 doUpdate:
 	.res 1
@@ -355,17 +294,20 @@ VRAMOffset:
     sta $210e
     stz $210e
 
-    lda #$1f
-    sta VRAMLine
-    lda #$00
-    sta VRAMLine+1
+    ldx #$001f
+    stx VRAMLine
+    stx VRAMLineLeft
+    ldx #$0000
+    stx VRAMLineRight
 
 	ldx #.LOWORD(levelMapInitial)
 	stx MAPOffset
+	stx MAPOffsetLeft
+	ldx #.LOWORD(levelMapInitialEnd)
+	stx MAPOffsetRight
 
     lda #LEVEL_SCROLL_LEFT         	; init scrollDirection (init with left)
     sta scrollDirection
-    sta scrollPreviousDirection
     sta doUpdate
 
     ldx #$0100                      ; init scrollValue

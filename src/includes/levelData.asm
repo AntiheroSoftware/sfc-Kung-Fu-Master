@@ -10,10 +10,8 @@ levelTiles:
 levelMap:
     .incbin "../ressource/level.map"
 
-levelMapInitial := levelMap+($0700*6)-$38
-levelMapRestart := levelMap+($0700*1)
-levelMapStart   := levelMap
-levelMapEnd     := levelMap+($0700*7)
+levelMapInitial 	:= levelMap+($0700*6)-$38
+levelMapInitialEnd	:= levelMap+($0700*7)
 
 levelPal:
     .incbin "../ressource/level0.pal"
