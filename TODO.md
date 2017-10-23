@@ -11,10 +11,8 @@ BUGS
 ====
 
 * Minor glitch on top of screen when setting pause due to force vblank on event that print pause 
-* Some issues with background level when scrolling, after a while or under special conditions the offset get screwed
 * some grab enemy have their hands up since the beginning
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
-
 * Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
 
 REFACTORING
@@ -38,6 +36,7 @@ TODO
 DONE
 ====
 
+* ~~Some issues with background level when scrolling, after a while or under special conditions the offset get screwed~~ fixed 23/10/17
 * ~~implement "player 1" message at level start~~ fixed 17/10/17
 * ~~option screen controls (a button and left/right)~~ fixed 16/10/17
 * ~~option screen~~ fixed 16/10/17
