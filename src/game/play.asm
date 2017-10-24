@@ -35,7 +35,7 @@
 			.export 	levelStartIntro
 
 			.export scriptedDataHeroLevelStart
-			.export updateLevelMessageEvent
+			.export updateLevelMessageOnceEvent
 			.export gamePauseMessageEvent
 
 .segment "BSS"
@@ -108,7 +108,7 @@ scriptedDataHeroLevelStart:
 	CGRAMLoad gameMessagePal, $70, $20
 
 	lda #$07
-	ldx #$7C00 						; todo put reference from an include SCORE_MAP_ADDR
+	ldx #SCORE_MAP_ADDR
 	ldy #$0059
 	jsr initFont
 
@@ -180,8 +180,7 @@ gameStartInfiniteLoop:
 	eor #$01
 	sta gamePaused
 
-	lda #$01
-	sta gamePausedUpdated
+	jsr gamePauseMessage
 
 noStartPressed:
 
@@ -244,8 +243,8 @@ gameStartContinue:
 	jsr writeFontString
 
 	; set the event that display game paused message
-	lda #.BANKBYTE(updateLevelMessageEvent)
-	ldx #.LOWORD(updateLevelMessageEvent)
+	lda #.BANKBYTE(updateLevelMessageOnceEvent)
+	ldx #.LOWORD(updateLevelMessageOnceEvent)
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
@@ -282,8 +281,8 @@ waitForReady:
 	jsr writeFontString
 
 	; set the event that display game paused message
-	lda #.BANKBYTE(updateLevelMessageEvent)
-	ldx #.LOWORD(updateLevelMessageEvent)
+	lda #.BANKBYTE(updateLevelMessageOnceEvent)
+	ldx #.LOWORD(updateLevelMessageOnceEvent)
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
@@ -321,8 +320,8 @@ waitToStart:
 	jsr clearFontZone
 
 	; set the event that display game paused message
-	lda #.BANKBYTE(updateLevelMessageEvent)
-	ldx #.LOWORD(updateLevelMessageEvent)
+	lda #.BANKBYTE(updateLevelMessageOnceEvent)
+	ldx #.LOWORD(updateLevelMessageOnceEvent)
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
@@ -330,17 +329,16 @@ waitToStart:
 .endproc
 
 ;******************************************************************************
-;*** Events *******************************************************************
+;*** gamePauseMessage **********************************************************
 ;******************************************************************************
 
-.proc gamePauseMessageEvent
+.proc gamePauseMessage
 	php
+	pha
+	phx
+	phy
 
-	lda gamePausedUpdated
-	cmp #$01
-	bne noUpdate
-
-	lda #$00
+	lda #$01
 	sta gamePausedUpdated
 
 	lda gamePaused
@@ -356,9 +354,7 @@ displayGamePausedMessage:
 	ldx #.LOWORD(gamePausedString)
 	jsr writeFontString
 
-	jsl updateLevelMessageEvent
-
-	bra noUpdate
+	bra updateEnd
 
 removeGamePausedMessage:
 
@@ -371,7 +367,29 @@ removeGamePausedMessage:
 	ldy #$0003
 	jsr clearFontZone
 
-	jsl updateLevelMessageEvent
+updateEnd:
+
+	ply
+	plx
+	pla
+	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** Events *******************************************************************
+;******************************************************************************
+
+.proc gamePauseMessageEvent
+	php
+
+	lda gamePausedUpdated
+	cmp #$01
+	bne noUpdate
+
+	jsl updateLevelMessageOnceEvent
+
+	stz gamePausedUpdated
 
 noUpdate:
 	lda #$01                        ; continue event value
@@ -381,16 +399,13 @@ noUpdate:
 .endproc
 
 ;******************************************************************************
-;*** updateLevelMessageEvent **************************************************
+;*** updateLevelMessageOnceEvent **************************************************
 ;******************************************************************************
 
-.proc updateLevelMessageEvent
-	; TODO put reference from an include SCORE_MAP_ADDR
-	setINIDSP $80					; force VBLANK
-	VRAMLoad (bufferPtr), $7C60, $400
-	setINIDSP $0f					; restore full brighness
+SCORE_MAP_BUFFER_ADDR := SCORE_MAP_ADDR + $60
 
+.proc updateLevelMessageOnceEvent
+	VRAMLoad (bufferPtr), SCORE_MAP_BUFFER_ADDR, $400
 	lda #$00						; just do this event once
-
 	rtl
 .endproc

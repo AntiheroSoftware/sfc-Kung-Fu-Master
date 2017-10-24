@@ -8,7 +8,6 @@ IN PROGRESS
 BUGS
 ====
 
-* Minor glitch on top of screen when setting pause due to force vblank on event that print pause (see REFACTORING)
 * some grab enemy have their hands up since the beginning
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
 * Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
@@ -17,7 +16,7 @@ REFACTORING
 ===========
 
 * remove some 'trick' to gain ram, and optimize execution code. I think that at the final there is plenty of ram size.
-* optimize write font in game with precalc version and just copy them to VRAM
+* optimize write font in game with precalc version and just copy them to VRAM (or just don't do it in VBlank)
 
 TODO
 ====
@@ -35,6 +34,7 @@ TODO
 DONE
 ====
 
+* ~~Minor glitch on top of screen when setting pause due to force vblank on event that print pause (see REFACTORING)~~ fixed 24/10/17
 * ~~add event in start of level (hero moving alone)~~ fixed 24/10/17
 * ~~allow hero to stand at very right of level (or left in pair levels) with no scroll~~ fixed 23/10/17
 * ~~Some issues with background level when scrolling, after a while or under special conditions the offset get screwed~~ fixed 23/10/17

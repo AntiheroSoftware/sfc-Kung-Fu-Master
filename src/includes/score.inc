@@ -11,3 +11,5 @@
 .import 	updateScorePlayer2
 .import 	updateScoreTop
 .import     scoreMap
+
+.include	"scoreDefine.inc"

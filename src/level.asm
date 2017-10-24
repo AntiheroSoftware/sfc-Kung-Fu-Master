@@ -13,7 +13,7 @@
 
             .include	"includes/base.inc"
             .include	"includes/score.inc"
-            .include	"includes/scoreDefine.inc"
+            ;.include	"includes/scoreDefine.inc"
 
             .export		initLevel
             .export		scrollLevel
