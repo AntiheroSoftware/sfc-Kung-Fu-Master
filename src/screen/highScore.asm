@@ -187,7 +187,7 @@ loopSecondColumn:
 
 	setINIDSP $0f   				; Enable screen full brightness
 
-	ldx #(60 * 10)						; wait for 10 seconds
+	ldx #(60*10)					; wait for 10 seconds
 
 loop:
 

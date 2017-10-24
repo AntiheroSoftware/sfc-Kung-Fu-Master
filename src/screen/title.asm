@@ -215,7 +215,7 @@ skipToWait:
 
 	jsr highScoreMainLoop
 
-	bra setupTimer
+	jmp titleScreen
 
 .endproc
 
