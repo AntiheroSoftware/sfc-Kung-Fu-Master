@@ -73,7 +73,7 @@ spriteTrickIRQValue:
 ;******************************************************************************
 
 scriptedDataHeroLevelStart:
-	.byte $50						; 30 frames
+	.byte $2b						; 30 frames
 	.word PAD_LEFT					; left pressed
 	.byte $00
 
@@ -160,13 +160,13 @@ levelRestart:
 	lda #$B1        				; Enable NMI + IRQ + pad reading
 	sta CPU_NMITIMEN
 
+	lda #$9b
+	sta heroXOffset
+	jsr refreshHero
+
 	wai 							; Wait at least one NMI interrupt before setting full brightness
 
 	setINIDSP $0f   				; Enable screen full brightness
-
-	lda #$c0
-	sta heroXOffset
-	jsr refreshHero
 
 	jsr levelStartIntro
 
@@ -249,11 +249,26 @@ gameStartContinue:
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
-	ldx #$0010
+	lda #.BANKBYTE(scriptedDataHeroLevelStart)
+	ldx #.LOWORD(scriptedDataHeroLevelStart)
+	jsr scriptedPadInit
+
+	; number of frames before ready message display (55 frames)
+	ldx #$0037
 
 waitForReady:
 
+	phx
+
+	jsr scriptedPadReadData
+	jsr scriptedPadOverride
+
+	ldx padPushData1
+	jsr reactHero
+
 	jsr waitForVBlank
+
+	plx
 
 	dex
 	cpx #$0000
@@ -272,11 +287,8 @@ waitForReady:
 	ldy #EVENT_GAME_SCREEN_MESSAGE
 	jsr addEvent
 
-	lda #.BANKBYTE(scriptedDataHeroLevelStart)
-	ldx #.LOWORD(scriptedDataHeroLevelStart)
-	jsr scriptedPadInit
-
-	ldx #$0050
+	; number of frames ready message wait before starting the game (95 frames)
+	ldx #$005f
 
 waitToStart:
 

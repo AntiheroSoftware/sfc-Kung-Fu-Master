@@ -3,8 +3,6 @@ IN PROGRESS
 
 * implement first draft of upcoming grabbing enemies
 * make hero lose a life and restart level or game over
-* add event in start of level (hero moving alone)
-* allow hero to stand at very right of level (or left in pair levels) with no scroll
 * high score screen (and put it in the demo loop)
 
 BUGS
@@ -37,7 +35,8 @@ TODO
 DONE
 ====
 
-* ~~allow hero to stand at very right of level (or left in pair levels) with no scroll~~ fixed 17/10/17
+* ~~add event in start of level (hero moving alone)~~ fixed 24/10/17
+* ~~allow hero to stand at very right of level (or left in pair levels) with no scroll~~ fixed 23/10/17
 * ~~Some issues with background level when scrolling, after a while or under special conditions the offset get screwed~~ fixed 23/10/17
 * ~~implement "player 1" message at level start~~ fixed 17/10/17
 * ~~option screen controls (a button and left/right)~~ fixed 16/10/17
