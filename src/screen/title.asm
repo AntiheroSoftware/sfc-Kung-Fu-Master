@@ -185,7 +185,13 @@ titleScreenReload:
 
 	setINIDSP $0f   				; Enable screen full brightness
 
+setupTimer:
+
+	ldx #(60 * 30)						; frame per second * 30 seconds
+
 infiniteLoop:
+
+	phx
 
 	; TODO set automated reactHero
 	; ldx padPushData1
@@ -199,8 +205,17 @@ jump:
 	jmp [cursorTarget]
 
 skipToWait:
-	wai
-	bra infiniteLoop
+	jsr waitForVBlank
+
+	plx
+
+	dex
+	cpx #$0000
+	bne infiniteLoop
+
+	jsr highScoreMainLoop
+
+	bra setupTimer
 
 .endproc
 

@@ -24,5 +24,5 @@ all:
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/irem.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) splash/letter.asm
 	$(CC65_BIN)/ca65 -t none -I $(SFC_INC_PATH) snesgss.asm
-	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg *o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
+	$(CC65_BIN)/ld65 -vm -m kungfumaster.map -Ln kungfumaster.sym -o kungfumaster.sfc --cfg-path $(SFC_CFG_PATH) -C snes-fast-lorom256.cfg *o game/*.o splash/*.o screen/*.o $(SFC_LIB_PATH)/sfc.lib
 	mv kungfumaster.sfc ..

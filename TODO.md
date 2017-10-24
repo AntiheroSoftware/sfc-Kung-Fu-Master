@@ -3,7 +3,7 @@ IN PROGRESS
 
 * implement first draft of upcoming grabbing enemies
 * make hero lose a life and restart level or game over
-* high score screen (and put it in the demo loop)
+* set scripted hero in title screen
 
 BUGS
 ====
@@ -34,6 +34,7 @@ TODO
 DONE
 ====
 
+* ~~high score screen (and put it in the demo loop)~~ fixed 24/10/17
 * ~~Minor glitch on top of screen when setting pause due to force vblank on event that print pause (see REFACTORING)~~ fixed 24/10/17
 * ~~add event in start of level (hero moving alone)~~ fixed 24/10/17
 * ~~allow hero to stand at very right of level (or left in pair levels) with no scroll~~ fixed 23/10/17
