@@ -16,6 +16,7 @@
             ;.include	"includes/scoreDefine.inc"
 
             .export		initLevel
+            .export 	scrollInitEvent
             .export		scrollLevel
             .export 	scrollValue
             .export		scrollDirection
@@ -123,11 +124,21 @@ stopLoop:
 	stz levelLeftEdgeVisible					; reset edge visibility variable
 	stz levelRightEdgeVisible
 
-sameDirection:
 	ldx scrollValue
+	cpx #$fb00						; check scroll left boundaries
+    bne :+
+    inc levelLeftEdgeVisible
+:	cpx #$0100						; check scroll right boundaries
+	bne :+
+	inc levelRightEdgeVisible
+:
 	lda scrollDirection
 	cmp #LEVEL_SCROLL_RIGHT
 	beq scrollRight
+	cmp #LEVEL_SCROLL_LEFT
+	beq scrollLeft
+
+	jmp noScroll
 
 scrollLeft:
 
@@ -170,13 +181,12 @@ scrollLeft:
 	sep #$20
 	.A8
 
-:	inc levelLeftEdgeVisible
-	bra scrollValueSet
+:	bra scrollValueSet
 
 scrollRight:
 
-	cpx #$00ff						; check scroll right boundaries
-	beq :+
+	cpx #$0100						; check scroll right boundaries
+	beq scrollValueSet
 
 	inx  			                ; increment scrollValue
 	stx scrollValue
@@ -210,11 +220,6 @@ scrollRight:
 	sta MAPOffsetLeft
 
 	bra scrollValueSet
-
-	sep #$20
-	.A8
-
-:	inc levelRightEdgeVisible
 
 scrollValueSet:
 
@@ -306,12 +311,15 @@ VRAMOffset:
 	ldx #.LOWORD(levelMapInitialEnd)
 	stx MAPOffsetRight
 
-    lda #LEVEL_SCROLL_LEFT         	; init scrollDirection (init with left)
-    sta scrollDirection
-    sta doUpdate
+	ldx #$0100                      ; init scrollValue
+	stx scrollValue
 
-    ldx #$0100                      ; init scrollValue
-    stx scrollValue
+    lda #LEVEL_SCROLL_NONE         	; init scrollDirection (init with NONE)
+    sta scrollDirection
+    jsr scrollLevel
+
+    lda #$01
+    sta doUpdate
 
     plp
     plx

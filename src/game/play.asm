@@ -196,8 +196,9 @@ noStartPressed:
 
 	jmp titleScreen
 
-:	lda #$40
+:	lda #$40						; reset energy player
 	jsr setEnergyPlayer
+	jsr scrollInitEvent				; reset scroll in current level
 	jmp levelRestart
 
 noHeroDie:

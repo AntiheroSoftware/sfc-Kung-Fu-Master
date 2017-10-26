@@ -1,4 +1,5 @@
 .import     initLevel
+.import     scrollInitEvent
 .import     scrollLevel
 
 .import     scrollValue
