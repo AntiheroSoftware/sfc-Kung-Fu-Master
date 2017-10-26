@@ -4,7 +4,6 @@ IN PROGRESS
 * implement first draft of upcoming grabbing enemies
 * make hero lose a life and restart level or game over
 * set scripted hero in title screen
-* some grab enemy have their hands up since the beginning
 
 BUGS
 ====
@@ -33,6 +32,7 @@ TODO
 DONE
 ====
 
+* ~~some grab enemy have their hands up since the beginning~~ fixed 26/10/17
 * ~~Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
   -> this is due to the fact that the enemy start off screen and are considered like being near (or so)~~ fixed 26/10/17
 * ~~high score screen (and put it in the demo loop)~~ fixed 24/10/17

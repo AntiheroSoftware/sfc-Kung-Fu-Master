@@ -234,14 +234,20 @@ endInitArrayLoop:
 	stz EnemyCurrentYOffset
 	stz EnemyCurrentXOffset
 
-	;*** TODO
-	;*** check if we can simplify _EnemyDataIndexSetFromXIndex
-	;*** seems to double init a lot of things with initEnemySprite
-	;*****************************************************************
+	pha								; save flags
 
-	_EnemyDataIndexSetFromXIndex
+	rep #$20
+	.A16
 
-	ldx EnemyCurrentArrayIndexWord
+	txa
+	and #$00ff
+	asl								; index slot * 2
+	tax
+
+	sep #$20
+	.A8
+
+	pla								; restore flags
 	ora #ENEMY_STATUS_ACTIVE_FLAG
 	sta EnemyArrayFlag,X
 	stz EnemyArrayAnimFrameIndex,X
@@ -275,9 +281,8 @@ grab_mirror_init:
 grab_end_init:
 
 	txa
-	;asl							; removed cause X is not index slot but already *2
 	asl
-	asl								; index slot * 8
+	asl								; index slot * 8 (X is already slot * 2)
 	asl
 	asl 							; computed index slot * 4 cause each slot is taking 4 bytes
 	sta EnemyArrayOAMSlotOffset,X	; set OAM slot offset
@@ -285,10 +290,8 @@ grab_end_init:
 	lda #.LOWORD(grabbingWalk)
 	sta EnemyArrayAnimAddress,X
 
-	rep #$10
 	sep #$20
 	.A8
-	.I16
 
 	jmp check_end
 
@@ -1063,9 +1066,9 @@ normalMode:
 	jmp end
 
 normalModeLiftArmCheck:
+	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	rep #$20
 	.A16
-	cmp #ENEMY_NORMAL_GRAB_DISTANCE_ARMS_UP		; check if we need to set arms up animation
 	bpl normalModeGoRight
 
 	lda #.LOWORD(grabbingArmUpWalk)				; we don't reset the animation indexes and counter

@@ -60,25 +60,6 @@ ENEMY_MIRROR_GRAB_DISTANCE_GRAB 	= $04
     .I16
 .endmacro
 
-.macro _EnemyDataIndexSetFromXIndex
-    pha
-    rep #$20
-    .A16
-
-    txa
-    and #$00ff
-    sta EnemyCurrentArrayIndexByte
-    asl								; index slot * 2
-    sta EnemyCurrentArrayIndexWord
-    lda EnemyCurrentArrayIndexByte	; restore value
-
-    rep #$10
-    sep #$20
-    .A8
-    .I16
-    pla
-.endmacro
-
 .macro _ResetEnemyShakingCounter
 
     lda EnemyArrayFlag,X
