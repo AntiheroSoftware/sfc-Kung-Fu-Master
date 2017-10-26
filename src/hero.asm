@@ -707,6 +707,9 @@ heroStillHaveEnergy:
 	stz animFrameIndex
 	stz animFrameCounter
 
+	lda #LEVEL_SCROLL_NONE			; set scrollDirection to NONE
+	sta scrollDirection
+
 :	jsr animHero
 	jmp endHeroPadCheck
 

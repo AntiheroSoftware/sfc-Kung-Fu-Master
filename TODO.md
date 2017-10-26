@@ -32,6 +32,7 @@ TODO
 DONE
 ====
 
+* ~~hero go fast even if the screen doesnt scroll (scrollDirection must be set to none when hero is grabbed)~~ fixed 26/10/17
 * ~~some grab enemy have their hands up since the beginning~~ fixed 26/10/17
 * ~~Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
   -> this is due to the fact that the enemy start off screen and are considered like being near (or so)~~ fixed 26/10/17
