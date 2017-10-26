@@ -8,11 +8,12 @@ IN PROGRESS
 BUGS
 ====
 
-* reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
+* small glitch in OAM table right after hero die
   
 REFACTORING
 ===========
 
+* reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
 * remove some 'trick' to gain ram, and optimize execution code. I think that at the final there is plenty of ram size.
 * optimize write font in game with precalc version and just copy them to VRAM (or just don't do it in VBlank)
 

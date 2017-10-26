@@ -194,7 +194,8 @@ noStartPressed:
 	cmp #$00
 	bne :+
 
-	jmp titleScreen
+	jmp titleScreen					; game over jmp to title screen
+									; TODO should print a game over message and go to highscore screen
 
 :	lda #$40						; reset energy player
 	jsr setEnergyPlayer

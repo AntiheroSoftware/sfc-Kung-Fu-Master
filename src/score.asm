@@ -530,7 +530,7 @@ end:
 	php
 
 	sta livesCounter
-	cmp $0a
+	cmp #$0a
 	bcc :+							; if lives counter is less than 10 continue
 
 	lda #$09						; else we top it to 9
