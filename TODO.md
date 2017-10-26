@@ -4,14 +4,13 @@ IN PROGRESS
 * implement first draft of upcoming grabbing enemies
 * make hero lose a life and restart level or game over
 * set scripted hero in title screen
+* some grab enemy have their hands up since the beginning
 
 BUGS
 ====
 
-* some grab enemy have their hands up since the beginning
 * reactEnemyGrab is really slow (10 vertical scanline per enemy on screen, start to slow down after 10 or 11) 
-* Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
-
+  
 REFACTORING
 ===========
 
@@ -34,6 +33,8 @@ TODO
 DONE
 ====
 
+* ~~Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)
+  -> this is due to the fact that the enemy start off screen and are considered like being near (or so)~~ fixed 26/10/17
 * ~~high score screen (and put it in the demo loop)~~ fixed 24/10/17
 * ~~Minor glitch on top of screen when setting pause due to force vblank on event that print pause (see REFACTORING)~~ fixed 24/10/17
 * ~~add event in start of level (hero moving alone)~~ fixed 24/10/17

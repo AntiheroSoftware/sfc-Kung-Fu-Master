@@ -23,7 +23,7 @@ heroFallXOffset:
 ;******************************************************************************
 ;*** Metasprites **************************************************************
 ;******************************************************************************
-;*** Adress in bank for tiles                                               ***
+;*** Address in bank for tiles                                              ***
 ;*** Hit type and hit zone                                                  ***
 ;*** Normal mode hit offset                                                 ***
 ;*** Mirror mode hit offset                                                 ***

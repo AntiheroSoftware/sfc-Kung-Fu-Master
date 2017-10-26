@@ -855,9 +855,6 @@ reactCheckGrab:
 	bit #ENEMY_STATUS_TYPE_GRAB
 	beq reactCheckKnife
 
-	;sty EnemyCurrentArrayIndexByte
-	;stx EnemyCurrentArrayIndexWord
-
 	jsr reactEnemyGrab
 	bra skipReact
 
@@ -903,6 +900,7 @@ endReactLoop:
 	phy
 	php
 
+	; TODO replace with bit instruction and no need to save A
 	pha									; save enemyFlag
 	and #ENEMY_STATUS_HIT_MASK
 	cmp #ENEMY_STATUS_HIT_MASK			; check if enemy is hit
@@ -998,15 +996,21 @@ notGrabbing:
 	;*** Normal mode ***
 	;*******************
 
+	; TODO check hero mirror/normal to see if opposite direction or not
+
 normalMode:
 	lda heroXOffset
 	sec
 	sbc EnemyArrayXOffset,X					; calculate distance between enemy and hero
 
+	pha 									; save calculated enemy offset
+
+	lda heroFlag
+	and #HERO_STATUS_MIRROR_FLAG
+	beq :+
+
 	;*** Check for hit ***
 	;*********************
-
-	pha 									; save calculated enemy offset
 
 	lda heroHitOffset
 	cmp #$0000
@@ -1015,8 +1019,12 @@ normalMode:
 	pla
 	pha										; set back calculated enemy offset and keep it in stack
 
+	cmp #%01111111
+	bpl :+
+
 	sec
 	sbc heroHitOffset
+	; TODO this test is bad we need to check boundaries
 	bpl :+									; if difference is positive -> continue
 
 	pla
@@ -1026,6 +1034,9 @@ normalMode:
 	ora heroHitZone
 	sta EnemyArrayFlag,X					; set hit high flag
 	jmp fall								; else fall
+
+	;*** No hit check ***
+	;********************
 
 :	pla										; restore calculated enemy offset
 
@@ -1069,15 +1080,11 @@ normalModeGoRight:
 	cmp #LEVEL_SCROLL_RIGHT
 	beq :++
 
-	lda EnemyArrayXOffset,X						; go right double speed
-	inc
-	inc
-	sta EnemyArrayXOffset,X						; increment enemy X Offset
+	inc EnemyArrayXOffset,X						; go right double speed
+	inc EnemyArrayXOffset,X						; increment enemy X Offset
 	bra :++
 
-:	lda EnemyArrayXOffset,X						; go right
-	inc
-	sta EnemyArrayXOffset,X						; increment enemy X Offset
+:	inc EnemyArrayXOffset,X						; go right , increment enemy X Offset
 
 :	jmp end
 
@@ -1090,13 +1097,16 @@ normalModeGoRight:
 mirrorMode:
 	lda EnemyArrayXOffset,X
 	sec
-	sbc heroXOffset
-	;and #$ff									; calculate distance between enemy and hero
+	sbc heroXOffset							; calculate distance between enemy and hero
+
+	pha 									; save calculated enemy offset
+
+	lda heroFlag
+	and #HERO_STATUS_MIRROR_FLAG
+	bne :+
 
 	;*** Check for hit ***
 	;*********************
-
-	pha 									; save calculated enemy offset
 
 	lda heroHitOffset
 	cmp #$0000
@@ -1105,8 +1115,11 @@ mirrorMode:
 	pla
 	pha										; set back calculated enemy offset and keep it in stack
 
+	cmp #%01111111
+	bpl :+
+
 	sec
-	sbc heroHitOffset
+	sbc heroHitOffset						; TODO this test is bad we need to check boundaries
 	bpl :+									; if difference is positive -> continue
 
 	pla
@@ -1159,15 +1172,11 @@ mirrorModeGoLeft:
 	cmp #LEVEL_SCROLL_LEFT
 	beq :++
 
-	lda EnemyArrayXOffset,X						; go left double speed
-	dec
-	dec
-	sta EnemyArrayXOffset,X						; decrement enemy X Offset
+	dec EnemyArrayXOffset,X						; go left double speed
+	dec EnemyArrayXOffset,X						; decrement enemy X Offset
 	bra :++
 
-:	lda EnemyArrayXOffset,X						; go left
-	dec
-	sta EnemyArrayXOffset,X						; decrement enemy X Offset
+:	dec EnemyArrayXOffset,X						; go left / decrement enemy X Offset
 
 :	bra end
 
