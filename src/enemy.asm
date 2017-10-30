@@ -189,27 +189,6 @@ initArrayLoop:
 
 endInitArrayLoop:
 
-	;*** add an enemy for test ***
-	;*****************************
-
-	lda #$00						; set enemy type
-	ora #ENEMY_STATUS_TYPE_GRAB		; grab
-	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
-	jsr findEmptySlotEnemy			; Load X with a free enemy slot ( 0 - 13 )
-	jsr addEnemy
-
-	;*** add a second enemy for test ***
-	;***********************************
-
-	jsr findEmptySlotEnemy
-	jsr addEnemy
-
-	;*** then clear it ***
-	;*********************
-
-	ldx #$0002
-	jsr clearEnemy
-
 	plb
 	plp
 	ply
