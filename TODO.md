@@ -2,8 +2,6 @@ IN PROGRESS
 ===========
 
 * implement first draft of upcoming grabbing enemies
-* make hero lose a life and restart level or game over
-* set scripted hero in title screen
 
 BUGS
 ====
@@ -20,6 +18,8 @@ REFACTORING
 TODO
 ====
 
+* set scripted hero in title screen
+* don't have points when you shake out ennemies
 * have a simple way to disable collision for testing (invincible mode)
 * use superfamiconv for all conversion
 * put snesgss code in sfclib
@@ -33,6 +33,7 @@ TODO
 DONE
 ====
 
+* ~~make hero lose a life and restart level or game over~~ fixed 30/10/17
 * ~~hero go fast even if the screen doesnt scroll (scrollDirection must be set to none when hero is grabbed)~~ fixed 26/10/17
 * ~~some grab enemy have their hands up since the beginning~~ fixed 26/10/17
 * ~~Sometimes there is a bug where enemy fall a second time from upper position (reproduced it on first punch hit directly going on left)

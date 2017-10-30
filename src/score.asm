@@ -13,6 +13,7 @@
             .include	"includes/base.inc"
             .include	"includes/scoreDefine.inc"
             .include	"includes/scoreData.inc"
+            .include	"includes/settings.inc"
 
             .export 	initScore
             .export 	updateTime
@@ -144,7 +145,7 @@ loopCopyScoreMap:
 	jsr updateScorePlayer1
 	jsr updateScorePlayer2
 
-	lda #$02
+	lda settingsLivesValue
 	jsr setLiveCounter
 
 	plp

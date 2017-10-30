@@ -68,3 +68,8 @@ gamePausedString:
 	.byte $07, "             ",$0a
 	.byte      " GAME PAUSED ",$0a
 	.byte      "             ",$00
+
+gameOverString:
+    .byte $07, "           ",$0a
+    .byte      " GAME OVER ",$0a
+    .byte      "           ",$00

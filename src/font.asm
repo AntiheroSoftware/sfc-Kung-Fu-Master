@@ -51,6 +51,7 @@
             .export 	readyString
             .export 	onePlayerFirstFloorString
             .export 	gamePausedString
+            .export 	gameOverString
 
             .export skipSpaces
             .export _writeToVRAM

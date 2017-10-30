@@ -24,6 +24,7 @@
 			.include	"../includes/font.inc"
 			.include	"../includes/screen.inc"
 			.include	"../includes/scriptedPad.inc"
+			.include	"../includes/highScore.inc"
 
 			.import 	titleScreen
 
@@ -194,8 +195,11 @@ noStartPressed:
 	cmp #$00
 	bne :+
 
+	jsr gameOver
+
+	jsr highScoreMainLoop
+
 	jmp titleScreen					; game over jmp to title screen
-									; TODO should print a game over message and go to highscore screen
 
 :	lda #$40						; reset energy player
 	jsr setEnergyPlayer
@@ -375,6 +379,46 @@ updateEnd:
 	plx
 	pla
 	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** gameOver *****************************************************************
+;******************************************************************************
+
+.proc gameOver
+	pha
+	phx
+	phy
+
+	lda #$01
+	sta gamePausedUpdated
+
+	ldx #$000a
+	ldy #$0009
+	jsr setFontCursorPosition
+
+	ldx #.LOWORD(gameOverString)
+	jsr writeFontString
+
+	; number of frames while displaying game over message (3 seconds)
+	ldx #(60*3)
+
+waitToReturn:
+
+	phx
+
+	jsr waitForVBlank
+
+	plx
+
+	dex
+	cpx #$0000
+	bne waitToReturn
+
+	ply
+	plx
+	pla
 	rts
 .endproc
 

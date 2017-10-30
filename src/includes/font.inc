@@ -32,3 +32,4 @@
 .import readyString
 .import onePlayerFirstFloorString
 .import gamePausedString
+.import gameOverString
