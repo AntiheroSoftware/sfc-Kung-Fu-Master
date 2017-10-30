@@ -3,6 +3,6 @@
 .IFNDEF ENEMY_STRATEGY_MAIN_CODE
 
 .import 	enemyStrategyInit
-.import 	enemyStrategyGrab
+.import 	enemyStrategy
 
 .ENDIF

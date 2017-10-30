@@ -227,7 +227,7 @@ gameStartContinue:
 
 	jsr hitProcess
 
-	jsr enemyStrategyGrab
+	jsr enemyStrategy
 
 	jsr waitForVBlank
 

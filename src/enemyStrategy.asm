@@ -15,10 +15,10 @@
 			.include    "includes/enemyStrategy.inc"
 
             .export 	enemyStrategyInit
-            .export 	enemyStrategyGrab
+            .export 	enemyStrategy
 
-            .export enemyStrategyGrabTable
-            .export enemyStrategyGrabTableSize
+            .export enemyStrategyLeftTable
+            .export enemyStrategyLeftTableSize
 
 ENEMY_GRAB_INTERVAL = 50
 
@@ -26,15 +26,16 @@ ENEMY_GRAB_INTERVAL = 50
 
 .segment "BSS"
 
-enemyStrategyGrabTableIndex:
+enemyStrategyLeftTableIndex:
 	.res 2
 
-enemyStrategyGrabTableCounter:
+enemyStrategyLeftTableCounter:
 	.res 2
 
 .segment "RODATA"
 
-enemyStrategyGrabTable:
+enemyStrategyLeftTable:
+
 	.word $0050
 	.byte ENEMY_STATUS_TYPE_GRAB
 	.word $0080
@@ -45,6 +46,9 @@ enemyStrategyGrabTable:
 	.byte ENEMY_STATUS_TYPE_GRAB
 	.word $0030
 	.byte ENEMY_STATUS_TYPE_GRAB
+
+	;*** For Testing purpose ***
+	;***************************
 
 	;.word $0010
 	;.byte ENEMY_STATUS_TYPE_GRAB
@@ -57,10 +61,10 @@ enemyStrategyGrabTable:
 	;.word $0005
 	;.byte ENEMY_STATUS_TYPE_GRAB
 
-enemyStrategyGrabTableEnd:
+enemyStrategyLeftTableEnd:
 
-enemyStrategyGrabTableSize:
-	.word enemyStrategyGrabTableEnd - enemyStrategyGrabTable
+enemyStrategyLeftTableSize:
+	.word enemyStrategyLeftTableEnd - enemyStrategyLeftTable
 
 .segment "CODE"
 
@@ -70,7 +74,7 @@ enemyStrategyGrabTableSize:
 ;******************************************************************************
 ;*** enemyStrategyInit ********************************************************
 ;******************************************************************************
-;***                     				    					     		***
+;*** No parameters         				    					     		***
 ;******************************************************************************
 
 .proc enemyStrategyInit
@@ -79,10 +83,10 @@ enemyStrategyGrabTableSize:
 	phy
 
 	ldx #$0000
-	stx enemyStrategyGrabTableIndex
+	stx enemyStrategyLeftTableIndex
 
-	ldy enemyStrategyGrabTable,X
-	sty enemyStrategyGrabTableCounter
+	ldy enemyStrategyLeftTable,X
+	sty enemyStrategyLeftTableCounter
 
 	ply
 	plx
@@ -91,62 +95,68 @@ enemyStrategyGrabTableSize:
 .endproc
 
 ;******************************************************************************
-;*** enemyStrategyGrab ********************************************************
+;*** enemyStrategy ************************************************************
 ;******************************************************************************
 ;*** Register A contains value to decrement                    		   		***
 ;******************************************************************************
+
+.proc enemyStrategy
+	jsr enemyStrategyLeft
+	jsr enemyStrategyRight
+	rts
+.endproc
 
 ; counter decrement is based on frame + scrolling left
 ; Warning : this is only for left ... need to do the same for right
 
 ; TODO implement boundaries for left / right
-; TODO rename function and make a call for left and right
 
-.proc enemyStrategyGrab
+;******************************************************************************
+;*** enemyStrategyLeft ********************************************************
+;******************************************************************************
+;*** Register A contains value to decrement                    		   		***
+;******************************************************************************
+
+.proc enemyStrategyLeft
 	php
 	pha
 	phx
 	phy
 
-	ldy enemyStrategyGrabTableCounter
+	ldy enemyStrategyLeftTableCounter
 	cpy #$0000
 	bne decrement
 
-	ldx enemyStrategyGrabTableIndex
-	lda enemyStrategyGrabTable+2,X
-
-	;lda #$00						; set enemy type
-	;ora #ENEMY_STATUS_TYPE_GRAB	; grab
-	;ora #ENEMY_STATUS_MIRROR_FLAG	; in mirror mode
 	jsr findEmptySlotEnemy			; Load X with a free enemy slot ( 0 - 13 )
 
 	cpx #$ffff						; no slot found
 	beq skip
 
+	ldx enemyStrategyLeftTableIndex
+	lda enemyStrategyLeftTable+2,X
 	jsr addEnemy
 
 skip:
 
-	ldx enemyStrategyGrabTableIndex
+	ldx enemyStrategyLeftTableIndex
 	inx
 	inx
 	inx
-	cpx enemyStrategyGrabTableSize
+	cpx enemyStrategyLeftTableSize
 	bne nextTableIndex
 
 	ldx #$0000
 
 nextTableIndex:
 
-	stx enemyStrategyGrabTableIndex
-	ldy enemyStrategyGrabTable,X
-	sty enemyStrategyGrabTableCounter
+	stx enemyStrategyLeftTableIndex
+	ldy enemyStrategyLeftTable,X
+	sty enemyStrategyLeftTableCounter
 
 decrement:
 
-	;ldx enemyStrategyGrabTableCounter	; TODO get decrement value from A
-	dey
-	sty enemyStrategyGrabTableCounter
+	dey									; TODO get decrement value from A
+	sty enemyStrategyLeftTableCounter
 
 end:
 
@@ -154,5 +164,15 @@ end:
 	plx
 	pla
 	plp
+	rts
+.endproc
+
+;******************************************************************************
+;*** enemyStrategyRight *******************************************************
+;******************************************************************************
+;*** Register A contains value to decrement                    		   		***
+;******************************************************************************
+
+.proc enemyStrategyRight
 	rts
 .endproc
