@@ -6,6 +6,8 @@ IN PROGRESS
 BUGS
 ====
 
+* enemy scroll issue if left / right pressed during animation of punch or kick
+* enemies stop when right edge visible and hero going right
 * small glitch in OAM table right after hero die
   
 REFACTORING
@@ -18,6 +20,7 @@ REFACTORING
 TODO
 ====
 
+* enemies go faster (1.5 pixel/frame)
 * set scripted hero in title screen
 * don't have points when you shake out ennemies
 * have a simple way to disable collision for testing (invincible mode)
