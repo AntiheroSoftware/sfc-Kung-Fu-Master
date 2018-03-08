@@ -1,4 +1,6 @@
 oldSrc
+movies
+artwork
 *.iml
-.DS_Store
 *.o
+.DS_Store
